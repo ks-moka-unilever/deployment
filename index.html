@@ -3,429 +3,125 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moka Deployment Portal</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Portal Implementor Moka</title>
   <style>
-    .spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #2563eb;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      animation: spin 0.8s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px; width: 100%; max-width: 420px; }
+    .title { text-align: center; font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+    .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+    input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; transition: all 0.2s; }
+    input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .btn { width: 100%; padding: 12px; background-color: #1d4ed8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .btn:hover { background-color: #1e40af; }
+    .btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff; border-radius: 50%; border-top-color: transparent; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4">
-  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 space-y-4">
+<body>
+
+  <div class="card">
+    <h1 class="title">Moka Deployment</h1>
+    <p class="subtitle">Portal Implementor Lapangan</p>
     
-    <!-- Header -->
-    <div class="border-b pb-3 text-center">
-      <h2 class="text-xl font-bold text-gray-800">Moka Deployment</h2>
-      <p class="text-xs text-gray-500">Portal Implementor Lapangan</p>
-    </div>
-
-    <!-- 1. LOGIN SECTION -->
-    <div id="loginSection" class="space-y-3">
-      <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Implementor ID</label>
-        <input type="text" id="userImplId" class="w-full p-2 border rounded-md text-sm uppercase" placeholder="Contoh: IMP-01">
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="implId">Implementor ID</label>
+        <input type="text" id="implId" placeholder="Contoh: MTI0888" required autocomplete="off">
       </div>
-      <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Email Terdaftar</label>
-        <input type="email" id="userEmail" class="w-full p-2 border rounded-md text-sm" placeholder="nama@email.com">
+      
+      <div class="form-group">
+        <label for="email">Email Terdaftar</label>
+        <input type="email" id="email" placeholder="email@contoh.com" required autocomplete="off">
       </div>
-      <button onclick="loadStores()" id="btnLogin" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-md font-semibold text-sm flex justify-center items-center gap-2">
-        <span>Masuk & Lihat Dashboard</span>
+      
+      <button type="submit" id="submitBtn" class="btn">
+        <span id="btnText">Masuk & Lihat Dashboard</span>
       </button>
-    </div>
-
-    <!-- 2. DASHBOARD SUMMARY SECTION -->
-    <div id="dashboardSection" class="hidden space-y-4">
-      <div class="flex justify-between items-center border-b pb-2">
-        <span class="text-xs font-bold text-gray-600">Ringkasan Status Deployment</span>
-        <button onclick="logout()" class="text-xs text-red-500 underline">Logout</button>
-      </div>
-
-      <!-- Ringkasan Status -->
-      <div class="grid grid-cols-1 gap-2">
-        <button onclick="filterByStatus('In Progress')" class="p-3 border rounded-lg bg-yellow-50 hover:bg-yellow-100 text-left flex justify-between items-center">
-          <span class="font-bold text-xs text-yellow-800">In Progress</span>
-          <span id="countInProgress" class="bg-yellow-200 text-yellow-800 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-        </button>
-
-        <button onclick="filterByStatus('Schedule')" class="p-3 border rounded-lg bg-blue-50 hover:bg-blue-100 text-left flex justify-between items-center">
-          <span class="font-bold text-xs text-blue-800">Schedule</span>
-          <span id="countSchedule" class="bg-blue-200 text-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-        </button>
-
-        <button onclick="filterByStatus('Go Live ULI')" class="p-3 border rounded-lg bg-green-50 hover:bg-green-100 text-left flex justify-between items-center">
-          <span class="font-bold text-xs text-green-800">Go Live ULI</span>
-          <span id="countGoLiveULI" class="bg-green-200 text-green-800 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-        </button>
-
-        <button onclick="filterByStatus('Go Live Store')" class="p-3 border rounded-lg bg-emerald-50 hover:bg-emerald-100 text-left flex justify-between items-center">
-          <span class="font-bold text-xs text-emerald-800">Go Live Store</span>
-          <span id="countGoLiveStore" class="bg-emerald-200 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-        </button>
-
-        <button onclick="filterByStatus('Not Started')" class="p-3 border rounded-lg bg-gray-50 hover:bg-gray-100 text-left flex justify-between items-center">
-          <span class="font-bold text-xs text-gray-700">Not Started / Lainnya</span>
-          <span id="countNotStarted" class="bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-        </button>
-      </div>
-
-      <!-- Container List Toko Terfilter -->
-      <div id="storeListContainer" class="hidden border-t pt-3 space-y-2">
-        <div class="flex justify-between items-center">
-          <h4 id="selectedStatusTitle" class="font-bold text-xs text-gray-800">Daftar Toko</h4>
-          <button onclick="closeStoreList()" class="text-xs text-gray-400">Tutup ✕</button>
-        </div>
-        <div id="filteredStoreList" class="space-y-2"></div>
-      </div>
-    </div>
-
-    <!-- 3. FORM ABSEN -->
-    <div id="absenForm" class="hidden border-t pt-4 space-y-3">
-      <h3 class="font-bold text-sm text-blue-600">Form Absen Harian</h3>
-      <p id="targetStoreLabel" class="text-xs font-semibold text-gray-600"></p>
-      
-      <select id="absenType" class="w-full p-2 border rounded-md text-sm">
-        <option value="( IN ) Absen Masuk">Absen Masuk (Pagi)</option>
-        <option value="( OUT ) Absen Keluar">Absen Keluar (Sore)</option>
-      </select>
-
-      <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Foto Selfie *</label>
-        <input type="file" id="absenSelfie" accept="image/*" capture="camera" class="w-full p-1 border rounded-md text-xs">
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-gray-700 mb-1">Lokasi (Geo Location)</label>
-        <div class="flex gap-2">
-          <input type="text" id="absenGeo" readonly class="w-full p-2 border bg-gray-50 rounded-md text-xs" placeholder="Klik Ambil Lokasi...">
-          <button type="button" onclick="getLocation()" class="bg-gray-700 text-white text-xs px-2 py-1 rounded">GPS</button>
-        </div>
-      </div>
-      
-      <textarea id="activity" class="w-full p-2 border rounded-md text-sm" placeholder="Aktivitas deployment hari ini... *"></textarea>
-      
-      <button onclick="submitAbsenData()" id="btnAbsen" class="w-full bg-green-600 text-white py-2.5 rounded-md font-semibold text-sm flex justify-center items-center gap-2">
-        <span>Kirim Absen</span>
-      </button>
-      <button onclick="closeForms()" class="w-full bg-gray-200 text-gray-700 py-1 rounded-md text-xs">Batal</button>
-    </div>
-
-    <!-- 4. FORM BAST -->
-    <div id="bastForm" class="hidden border-t pt-4 space-y-3">
-      <h3 class="font-bold text-sm text-purple-600">Form BAST Store</h3>
-      <p id="targetBastStoreLabel" class="text-xs font-semibold text-gray-600"></p>
-      
-      <div class="space-y-2 border-b pb-2">
-        <p class="text-xs font-bold text-gray-700">Identitas Tuan Toko / Merchant</p>
-        <input type="text" id="merchantName" class="w-full p-2 border rounded-md text-sm" placeholder="Nama Tuan Toko / Owner *">
-        <input type="text" id="merchantPhone" class="w-full p-2 border rounded-md text-sm" placeholder="Nomor HP Tuan Toko">
-        <input type="email" id="merchantEmail" class="w-full p-2 border rounded-md text-sm" placeholder="Email Tuan Toko">
-        <div class="grid grid-cols-2 gap-2">
-          <select id="merchantGender" class="p-2 border rounded-md text-sm">
-            <option value="Laki-laki">Laki-laki</option>
-            <option value="Perempuan">Perempuan</option>
-          </select>
-          <input type="number" id="merchantAge" class="p-2 border rounded-md text-sm" placeholder="Umur (Tahun)">
-        </div>
-      </div>
-      
-      <div class="space-y-2 border-b pb-2">
-        <p class="text-xs font-bold text-gray-700">Validasi Hardware</p>
-        <input type="text" id="imei" class="w-full p-2 border rounded-md text-sm" placeholder="IMEI Tablet">
-        <input type="text" id="scannerSn" class="w-full p-2 border rounded-md text-sm" placeholder="SN Barcode Scanner">
-        <input type="text" id="printerSn" class="w-full p-2 border rounded-md text-sm" placeholder="SN Printer">
-      </div>
-
-      <div class="space-y-2">
-        <p class="text-xs font-bold text-gray-700">Dokumentasi & Berkas</p>
-        <div>
-          <label class="block text-[10px] text-gray-500">Foto Tampak Depan Toko *</label>
-          <input type="file" id="storeFrontFile" accept="image/*" class="w-full p-1 border rounded-md text-xs">
-        </div>
-        <div>
-          <label class="block text-[10px] text-gray-500">Upload Doc BAST Bertanda Tangan (PDF/Foto) *</label>
-          <input type="file" id="bastDocFile" accept="image/*,application/pdf" class="w-full p-1 border rounded-md text-xs">
-        </div>
-      </div>
-
-      <button onclick="submitBASTData()" id="btnBast" class="w-full bg-purple-600 text-white py-2.5 rounded-md font-semibold text-sm flex justify-center items-center gap-2">
-        <span>Submit BAST</span>
-      </button>
-      <button onclick="closeForms()" class="w-full bg-gray-200 text-gray-700 py-1 rounded-md text-xs">Batal</button>
-    </div>
-
-    <!-- MODAL DETAIL TOKO -->
-    <div id="detailModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-lg p-5 max-w-sm w-full space-y-3 text-xs">
-        <h3 class="font-bold text-sm text-gray-800 border-b pb-2" id="modalStoreName">Detail Toko</h3>
-        <div class="space-y-1.5 text-gray-600">
-          <p><strong>Store Code:</strong> <span id="modalStoreCode"></span></p>
-          <p><strong>Alamat Toko:</strong> <span id="modalStoreAddr"></span></p>
-          <p><strong>Nama DT:</strong> <span id="modalDtName"></span></p>
-          <p><strong>Alamat DT:</strong> <span id="modalDtAddr"></span></p>
-          <p><strong>ASM/DSM Name:</strong> <span id="modalAsm"></span></p>
-          <p><strong>Implementation Planned Date:</strong> <span id="modalPlanDate"></span></p>
-          <p><strong>Status Deployment:</strong> <span id="modalStatus" class="font-bold text-blue-600"></span></p>
-        </div>
-        <button onclick="closeModal()" class="w-full bg-gray-800 text-white py-1.5 rounded-md font-semibold mt-3">Tutup Detail</button>
-      </div>
-    </div>
-
+    </form>
   </div>
 
   <script>
-    // PASTE WEB APP URL APPS SCRIPT BARU KAMU DI SINI
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbymM5-j2SrCJWtwb_ISnibC0nmBuyT0d2bvXP0s7lbar6fvTs5mjIuk_Yc6Hpok_N-mBw/exec"; 
-    
-    let allAssignedStores = [];
-    let selectedStore = {};
+    // URL Web App Google Apps Script Kamu
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymM5-j2SrCJWtwb_ISnibC0nmBuyT0d2bvXP0s7lbar6fvTs5mjIuk_Yc6Hpok_N-mBw/exec";
 
-    async function loadStores() {
-      const implId = document.getElementById("userImplId").value.trim();
-      const email = document.getElementById("userEmail").value.trim();
-      const btnLogin = document.getElementById("btnLogin");
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
       
-      if (!implId || !email) return alert("Implementor ID dan Email wajib diisi!");
+      const implId = document.getElementById('implId').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-      btnLogin.disabled = true;
-      btnLogin.innerHTML = `<span class="spinner"></span> <span>Memuat Data...</span>`;
-
-      try {
-        const res = await fetch(`${GAS_API_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`);
-        const result = await res.json();
-
-        if (result.status === "success") {
-          allAssignedStores = result.data;
-          document.getElementById("loginSection").classList.add("hidden");
-          document.getElementById("dashboardSection").classList.remove("hidden");
-          
-          calculateCounts();
-        } else {
-          alert(result.message || "Data tidak ditemukan.");
-        }
-      } catch (err) {
-        alert("Terjadi kesalahan sistem: " + err.toString());
-      } finally {
-        btnLogin.disabled = false;
-        btnLogin.innerHTML = `<span>Masuk & Lihat Dashboard</span>`;
-      }
-    }
-
-    function calculateCounts() {
-      let inProg = 0, sched = 0, goLiveULI = 0, goLiveStore = 0, notStarted = 0;
-
-      allAssignedStores.forEach(s => {
-        const st = s.status.toLowerCase();
-        if (st.includes("progress")) inProg++;
-        else if (st.includes("schedule")) sched++;
-        else if (st.includes("go live - uli") || st.includes("go live uli")) goLiveULI++;
-        else if (st.includes("go live store")) goLiveStore++;
-        else notStarted++;
-      });
-
-      document.getElementById("countInProgress").innerText = inProg;
-      document.getElementById("countSchedule").innerText = sched;
-      document.getElementById("countGoLiveULI").innerText = goLiveULI;
-      document.getElementById("countGoLiveStore").innerText = goLiveStore;
-      document.getElementById("countNotStarted").innerText = notStarted;
-    }
-
-    function filterByStatus(statusName) {
-      const container = document.getElementById("storeListContainer");
-      const listDiv = document.getElementById("filteredStoreList");
-      document.getElementById("selectedStatusTitle").innerText = `Daftar Toko: ${statusName}`;
-      
-      listDiv.innerHTML = "";
-      container.classList.remove("hidden");
-
-      const filtered = allAssignedStores.filter(s => {
-        const st = s.status.toLowerCase();
-        if (statusName === 'In Progress') return st.includes('progress');
-        if (statusName === 'Schedule') return st.includes('schedule');
-        if (statusName === 'Go Live ULI') return st.includes('go live - uli') || st.includes('go live uli');
-        if (statusName === 'Go Live Store') return st.includes('go live store');
-        return !st.includes('progress') && !st.includes('schedule') && !st.includes('go live');
-      });
-
-      if (filtered.length === 0) {
-        listDiv.innerHTML = `<p class="text-xs text-gray-400 italic py-2">Tidak ada toko dengan status ini.</p>`;
+      if (!implId || !email) {
+        alert("Harap isi Implementor ID dan Email!");
         return;
       }
 
-      filtered.forEach(store => {
-        listDiv.innerHTML += `
-          <div class="p-3 border rounded-lg bg-gray-50 space-y-1">
-            <p class="font-bold text-xs text-gray-800">${store.storeName}</p>
-            <p class="text-[11px] text-gray-500">Kode: ${store.storeCode} | OID: ${store.oid}</p>
-            <div class="pt-2 flex gap-1.5 flex-wrap">
-              <button onclick='showModal(${JSON.stringify(store)})' class="bg-gray-700 text-white text-[10px] px-2.5 py-1 rounded"> Detail</button>
-              <button onclick='openAbsenForm(${JSON.stringify(store)})' class="bg-blue-600 text-white text-[10px] px-2.5 py-1 rounded">Absen</button>
-              <button onclick='openBastForm(${JSON.stringify(store)})' class="bg-purple-600 text-white text-[10px] px-2.5 py-1 rounded">BAST</button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function showModal(store) {
-      document.getElementById("modalStoreName").innerText = store.storeName;
-      document.getElementById("modalStoreCode").innerText = store.storeCode;
-      document.getElementById("modalStoreAddr").innerText = store.storeAddress;
-      document.getElementById("modalDtName").innerText = store.dtName;
-      document.getElementById("modalDtAddr").innerText = store.dtAddress;
-      document.getElementById("modalAsm").innerText = store.asmDsmName;
-      document.getElementById("modalPlanDate").innerText = store.plannedDate;
-      document.getElementById("modalStatus").innerText = store.status;
-      document.getElementById("detailModal").classList.remove("hidden");
-    }
-
-    function closeModal() { document.getElementById("detailModal").classList.add("hidden"); }
-    function closeStoreList() { document.getElementById("storeListContainer").classList.add("hidden"); }
-
-    function openAbsenForm(store) {
-      selectedStore = store;
-      closeForms();
-      document.getElementById("absenForm").classList.remove("hidden");
-      document.getElementById("targetStoreLabel").innerText = `${store.storeName} (${store.storeCode})`;
-    }
-
-    function openBastForm(store) {
-      selectedStore = store;
-      closeForms();
-      document.getElementById("bastForm").classList.remove("hidden");
-      document.getElementById("targetBastStoreLabel").innerText = `${store.storeName} (${store.storeCode})`;
-    }
-
-    function closeForms() {
-      document.getElementById("absenForm").classList.add("hidden");
-      document.getElementById("bastForm").classList.add("hidden");
-    }
-
-    function logout() {
-      document.getElementById("loginSection").classList.remove("hidden");
-      document.getElementById("dashboardSection").classList.add("hidden");
-      closeForms();
-      closeStoreList();
-    }
-
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-          document.getElementById("absenGeo").value = `${pos.coords.latitude}, ${pos.coords.longitude}`;
-        }, () => alert("Gagal mengambil posisi GPS. Pastikan izin lokasi aktif."));
-      } else { alert("Browser tidak mendukung Geo Location."); }
-    }
-
-    function fileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        if (!file) resolve(null);
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-      });
-    }
-
-    async function submitAbsenData() {
-      const implId = document.getElementById("userImplId").value.trim();
-      const email = document.getElementById("userEmail").value.trim();
-      const activity = document.getElementById("activity").value.trim();
-      const selfieInput = document.getElementById("absenSelfie");
-      const btn = document.getElementById("btnAbsen");
-
-      if (!activity) return alert("Aktivitas wajib diisi!");
-      if (!selfieInput.files || selfieInput.files.length === 0) return alert("Wajib unggah foto selfie!");
-
-      btn.disabled = true;
-      btn.innerHTML = `<span class="spinner"></span> <span>Mengirim...</span>`;
+      // Tampilkan status Loading
+      setLoading(true);
 
       try {
-        const photoBase64 = await fileToBase64(selfieInput.files[0]);
-        const payload = {
-          action: "submitAbsen",
-          email: email,
-          implId: implId,
-          storeCode: selectedStore.storeCode,
-          storeName: selectedStore.storeName,
-          oid: selectedStore.oid,
-          type: document.getElementById("absenType").value,
-          workingDate: new Date().toISOString().split('T')[0],
-          activity: activity,
-          geoLocation: document.getElementById("absenGeo").value,
-          photoData: photoBase64,
-          photoName: selfieInput.files[0].name,
-          photoMime: selfieInput.files[0].type
-        };
+        // Gunakan POST dengan text/plain untuk bypass kendala CORS Google Apps Script
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            action: "getAssignedStores",
+            implId: implId,
+            email: email
+          }),
+          redirect: "follow"
+        });
 
-        await fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) });
-        alert("Absen berhasil dikirim!");
-        closeForms();
-      } catch (err) {
-        alert("Gagal kirim absen: " + err.toString());
+        const textResponse = await response.text();
+        let result;
+        
+        try {
+          result = JSON.parse(textResponse);
+        } catch (err) {
+          throw new Error("Gagal memproses data dari server. Pastikan Deployment ID sudah diset ke 'Anyone'.");
+        }
+
+        if (result.status === "success") {
+          // Simpan data login di SessionStorage
+          sessionStorage.setItem("userSession", JSON.stringify({
+            implId: implId,
+            email: email,
+            stores: result.data
+          }));
+
+          alert(`Login Berhasil! Ditemukan ${result.data.length} toko.`);
+          console.log("Data Toko Ter-assign:", result.data);
+          
+          // Arahkan ke dashboard jika file dashboard.html ada
+          // window.location.href = "dashboard.html";
+        } else {
+          alert("Gagal Login: " + result.message);
+        }
+
+      } catch (error) {
+        console.error("Login Error:", error);
+        alert("Terjadi kesalahan sistem: " + error.message);
       } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Kirim Absen</span>`;
+        setLoading(false);
       }
-    }
+    });
 
-    async function submitBASTData() {
-      const implId = document.getElementById("userImplId").value.trim();
-      const email = document.getElementById("userEmail").value.trim();
-      const mName = document.getElementById("merchantName").value.trim();
-      const storeFrontInput = document.getElementById("storeFrontFile");
-      const bastDocInput = document.getElementById("bastDocFile");
-      const btn = document.getElementById("btnBast");
-
-      if (!mName) return alert("Nama Tuan Toko wajib diisi!");
-      if (!storeFrontInput.files.length || !bastDocInput.files.length) return alert("Wajib mengunggah Foto Tampak Depan dan Berkas BAST!");
-
-      btn.disabled = true;
-      btn.innerHTML = `<span class="spinner"></span> <span>Mengunggah BAST...</span>`;
-
-      try {
-        const storeFrontBase64 = await fileToBase64(storeFrontInput.files[0]);
-        const bastDocBase64 = await fileToBase64(bastDocInput.files[0]);
-
-        const payload = {
-          action: "submitBAST",
-          email: email,
-          implId: implId,
-          storeCode: selectedStore.storeCode,
-          storeName: selectedStore.storeName,
-          oid: selectedStore.oid,
-          merchantName: mName,
-          merchantPhone: document.getElementById("merchantPhone").value,
-          merchantEmail: document.getElementById("merchantEmail").value,
-          merchantGender: document.getElementById("merchantGender").value,
-          merchantAge: document.getElementById("merchantAge").value,
-          imei: document.getElementById("imei").value,
-          scannerSn: document.getElementById("scannerSn").value,
-          printerSn: document.getElementById("printerSn").value,
-          storeFrontData: storeFrontBase64,
-          storeFrontName: storeFrontInput.files[0].name,
-          storeFrontMime: storeFrontInput.files[0].type,
-          bastDocData: bastDocBase64,
-          bastDocName: bastDocInput.files[0].name,
-          bastDocMime: bastDocInput.files[0].type
-        };
-
-        await fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) });
-        alert("BAST Berhasil Disubmit!");
-        closeForms();
-        loadStores();
-      } catch (err) {
-        alert("Gagal kirim BAST: " + err.toString());
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>Submit BAST</span>`;
+    function setLoading(isLoading) {
+      if (isLoading) {
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<div class="spinner"></div> Memuat Data...';
+      } else {
+        submitBtn.disabled = false;
+        btnText.innerHTML = 'Masuk & Lihat Dashboard';
       }
     }
   </script>
