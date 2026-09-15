@@ -8,30 +8,32 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f6f9; min-height: 100vh; padding: 16px; display: flex; justify-content: center; align-items: flex-start; }
     
-    /* STYLES LOGIN */
     .login-container { width: 100%; max-width: 420px; margin-top: 40px; }
     .card { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px; }
     .title { text-align: center; font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
     .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 24px; }
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
-    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 12.5px; font-weight: 600; color: #334155; margin-bottom: 5px; }
+    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; outline: none; }
     input:focus, select:focus, textarea:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-    .btn { width: 100%; padding: 12px; background-color: #1d4ed8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-    .btn:hover { background-color: #1e40af; }
+    
+    .btn { width: 100%; padding: 12px; background-color: #1d4ed8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
     .btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
     
     .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff; border-radius: 50%; border-top-color: transparent; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* STYLES DASHBOARD */
     .dashboard-container { width: 100%; max-width: 850px; display: none; }
     .header-card { background: #ffffff; padding: 20px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
     .header-title { font-size: 20px; font-weight: 700; color: #1e293b; }
     .header-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
+    
+    .total-stores-banner { background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 14px rgba(37,99,235,0.25); }
+    .total-stores-banner .label { font-size: 14px; font-weight: 600; opacity: 0.9; }
+    .total-stores-banner .value { font-size: 28px; font-weight: 800; line-height: 1; }
+
     .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
 
-    /* KLASIFIKASI STATUS SUMMARY (KOLOM AG) */
     .summary-section { margin-bottom: 20px; }
     .summary-title { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 10px; }
     .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
@@ -39,35 +41,33 @@
     .summary-card .count { font-size: 22px; font-weight: 700; color: #0f172a; }
     .summary-card .label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-top: 2px; }
 
-    /* SEARCH BAR */
     .search-box { margin-bottom: 16px; }
 
-    /* STORE CARDS */
     .store-card { background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 16px; border-top: 4px solid #2563eb; }
     .store-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
     .store-name { font-size: 17px; font-weight: 700; color: #0f172a; }
-    .store-detail { font-size: 13.5px; color: #475569; margin-bottom: 4px; line-height: 1.4; }
+    .store-detail { font-size: 13px; color: #475569; margin-bottom: 5px; line-height: 1.4; }
     
-    /* SKU COMPLETED BADGE (KOLOM AJ) */
+    .info-tag { display: inline-block; background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 11.5px; color: #334155; margin-top: 4px; margin-right: 4px; }
     .sku-badge { display: inline-flex; align-items: center; background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 700; margin-top: 8px; border: 1px solid #bae6fd; }
     .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #f1f5f9; color: #334155; }
 
     .action-bar { margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; flex-wrap: wrap; }
-    .btn-action { padding: 9px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; background: #2563eb; color: white; transition: background 0.2s; }
+    .btn-action { padding: 9px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; background: #2563eb; color: white; }
     .btn-action.bast { background: #059669; }
-    .btn-action.bast:hover { background: #047857; }
-    .btn-action:hover { background: #1d4ed8; }
 
-    /* MODALS */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; padding: 20px; }
-    .modal-content { background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 520px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
     .modal-header { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .warning-note { background: #fffbebf8; border-left: 3px solid #f59e0b; padding: 8px 12px; font-size: 11.5px; color: #b45309; margin-bottom: 12px; border-radius: 4px; }
+    .field-hint { font-size: 11px; color: #64748b; margin-top: 3px; display: block; }
   </style>
 </head>
 <body>
 
-  <!-- PAGE 1: LOGIN FORM -->
+  <!-- LOGIN PAGE -->
   <div id="loginView" class="login-container">
     <div class="card">
       <h1 class="title">Moka Deployment</h1>
@@ -91,7 +91,7 @@
     </div>
   </div>
 
-  <!-- PAGE 2: DASHBOARD -->
+  <!-- DASHBOARD PAGE -->
   <div id="dashboardView" class="dashboard-container">
     <div class="header-card">
       <div>
@@ -101,22 +101,28 @@
       <button class="btn-logout" onclick="logout()">Keluar</button>
     </div>
 
-    <!-- REKAP KLASIFIKASI STATUS (KOLOM AG) -->
+    <!-- BANNER TOTAL TOKO -->
+    <div class="total-stores-banner">
+      <div class="label">Total Toko Di-Assign Ke Anda</div>
+      <div class="value" id="totalStoresCount">0</div>
+    </div>
+
+    <!-- SUMMARY KLASIFIKASI STATUS -->
     <div class="summary-section">
       <div class="summary-title">Ringkasan Klasifikasi Implementation Status:</div>
       <div id="summaryGrid" class="summary-grid"></div>
     </div>
 
-    <!-- SEARCH BAR TOKO -->
+    <!-- SEARCH BAR -->
     <div class="search-box">
       <input type="text" id="searchStoreInput" placeholder="🔍 Cari Nama Toko / Kode Toko / OID..." oninput="filterStores()">
     </div>
 
-    <!-- DAFTAR TOKO ASSIGNED -->
+    <!-- STORE LIST -->
     <div id="storeListContainer"></div>
   </div>
 
-  <!-- MODAL 1: ABSEN & VISIT LAPANGAN (FOTO SELFIE) -->
+  <!-- MODAL VISIT -->
   <div id="visitModal" class="modal">
     <div class="modal-content">
       <div class="modal-header" id="modalVisitTitle">Form Absen & Visit Lapangan</div>
@@ -132,7 +138,7 @@
         </div>
 
         <div class="form-group">
-          <label>📸 Upload Foto Selfie Absen / Visit (Wajib)</label>
+          <label>📸 Foto Selfie Absen / Visit (Wajib)</label>
           <input type="file" id="selfieFile" accept="image/*" capture="camera" required>
         </div>
         
@@ -149,24 +155,82 @@
     </div>
   </div>
 
-  <!-- MODAL 2: UPLOAD DOKUMEN BAST SIGNED -->
+  <!-- MODAL BAST LENGKAP -->
   <div id="bastModal" class="modal">
     <div class="modal-content">
-      <div class="modal-header" id="modalBastTitle">Upload Dokumen BAST</div>
+      <div class="modal-header" id="modalBastTitle">Upload Dokumen BAST & Identitas Merchant</div>
+      
+      <div class="warning-note">
+        ⚠️ <strong>Peringatan:</strong> Pastikan seluruh data serial number (IMEI, Scanner, Printer) diisi dengan BENAR sesuai fisik perangkat. Dilarang melakukan typo atau menginput data asal-asalan!
+      </div>
+
       <form id="bastForm">
+        <!-- DATA TUAN TOKO / MERCHANT -->
         <div class="form-group">
-          <label>📄 File Dokumen BAST (PDF / Foto Signed)</label>
-          <input type="file" id="bastFile" accept="image/*,application/pdf" required>
+          <label>Nama Tuan Toko / Owner *</label>
+          <input type="text" id="ownerName" placeholder="Nama Lengkap Tuan Toko" required>
         </div>
-        
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email PIC / Tuan Toko *</label>
+            <input type="email" id="ownerEmail" placeholder="merchant@gmail.com" required>
+          </div>
+          <div class="form-group">
+            <label>Nomor HP Tuan Toko *</label>
+            <input type="tel" id="ownerPhone" placeholder="08123456789" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Gender Tuan Toko *</label>
+            <select id="ownerGender" required>
+              <option value="">-- Pilih --</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Umur Tuan Toko (Tahun) *</label>
+            <input type="number" id="ownerAge" placeholder="Contoh: 35" min="17" max="90" required>
+          </div>
+        </div>
+
+        <!-- HARDWARE IDENTIFICATION WITH EXACT VALIDATIONS -->
         <div class="form-group">
-          <label>Catatan BAST / Penandatangan Merchant</label>
-          <textarea id="bastNotes" rows="3" placeholder="Nama Penandatangan Tuan Toko / Pemilik Merchant..."></textarea>
+          <label>IMEI TAB (Wajib Pas 15 Digit Angka) *</label>
+          <input type="text" id="imeiTab" placeholder="Masukkan 15 digit angka IMEI" maxlength="15" minlength="15" pattern="[0-9]{15}" required title="IMEI wajib berupa 15 digit angka!">
+          <span class="field-hint">📌 Jika deployment bukan versi TAB, wajib isi angka 0 sebanyak 15 kali (<code>000000000000000</code>).</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>SN Scanner (10-15 Karakter) *</label>
+            <input type="text" id="snScanner" placeholder="Serial Number Scanner" maxlength="15" minlength="10" required>
+            <span class="field-hint">Minimal 10, maksimal 15 karakter.</span>
+          </div>
+          <div class="form-group">
+            <label>SN Printer (10-15 Karakter) *</label>
+            <input type="text" id="snPrinter" placeholder="Serial Number Printer" maxlength="15" minlength="10" required>
+            <span class="field-hint">Minimal 10, maksimal 15 karakter.</span>
+          </div>
+        </div>
+
+        <!-- FILE UPLOADS -->
+        <div class="form-group">
+          <label>🏢 Foto Tampak Depan Toko *</label>
+          <input type="file" id="storeFrontFile" accept="image/*" capture="camera" required>
+        </div>
+
+        <div class="form-group">
+          <label>📄 File Dokumen BAST Signed (PDF / Foto) *</label>
+          <input type="file" id="bastDocFile" accept="image/*,application/pdf" required>
         </div>
 
         <div class="modal-actions">
           <button type="button" class="btn-logout" style="background:#64748b" onclick="closeModal('bastModal')">Batal</button>
-          <button type="submit" id="btnSubmitBast" class="btn-action bast">Upload File BAST</button>
+          <button type="submit" id="btnSubmitBast" class="btn-action bast">Simpan & Upload BAST</button>
         </div>
       </form>
     </div>
@@ -174,6 +238,17 @@
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7Rjj-gM4ebCOdc9cUxFGSenSmDFIhPbmjpFDnw8bP1piR_N5UHIY_1r34VdCx0BY-mw/exec";
+
+    const STATUS_PRIORITY = [
+      "GO LIVE - STORE",
+      "IN PROGRESS",
+      "SCHEDULED",
+      "NOT STARTED",
+      "ON HOLD",
+      "GO LIVE - ULI",
+      "DROPPED",
+      "CANCELLED"
+    ];
 
     const loginView = document.getElementById('loginView');
     const dashboardView = document.getElementById('dashboardView');
@@ -184,19 +259,24 @@
     let currentImplId = "";
     let allStoresData = [];
     let activeStoreCode = "";
+    let currentGpsLocation = "";
 
-    // CHECK AUTO LOGIN
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        currentGpsLocation = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+      }, () => { currentGpsLocation = "GPS Disabled/Denied"; });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       const sessionData = sessionStorage.getItem("userSession");
       if (sessionData) {
         const user = JSON.parse(sessionData);
         currentImplId = user.implId;
-        allStoresData = user.stores || [];
+        allStoresData = sortStoresByStatus(user.stores || []);
         showDashboard(user);
       }
     });
 
-    // PROSES LOGIN
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const implId = document.getElementById('implId').value.trim();
@@ -212,8 +292,8 @@
 
         if (result.status === "success") {
           currentImplId = implId;
-          allStoresData = result.data;
-          const userData = { implId, email, stores: result.data };
+          allStoresData = sortStoresByStatus(result.data);
+          const userData = { implId, email, stores: allStoresData };
           sessionStorage.setItem("userSession", JSON.stringify(userData));
           showDashboard(userData);
         } else {
@@ -226,35 +306,62 @@
       }
     });
 
-    // DASHBOARD & SUMMARY STATUS (KOLOM AG)
+    function sortStoresByStatus(storesList) {
+      return storesList.sort((a, b) => {
+        const statusA = String(a.status || "").trim().toUpperCase();
+        const statusB = String(b.status || "").trim().toUpperCase();
+        
+        let indexA = STATUS_PRIORITY.indexOf(statusA);
+        let indexB = STATUS_PRIORITY.indexOf(statusB);
+
+        if (indexA === -1) indexA = 99;
+        if (indexB === -1) indexB = 99;
+
+        return indexA - indexB;
+      });
+    }
+
     function showDashboard(user) {
       loginView.style.display = "none";
       dashboardView.style.display = "block";
 
-      document.getElementById('userInfo').innerText = `ID: ${user.implId} | Total Toko: ${user.stores.length}`;
+      document.getElementById('userInfo').innerText = `ID: ${user.implId}`;
+      document.getElementById('totalStoresCount').innerText = user.stores.length;
 
-      // Klasifikasi Status (Kolom AG)
       const statusCounts = {};
       user.stores.forEach(s => {
-        const st = s.status || "Unassigned";
+        const st = String(s.status || "UNASSIGNED").trim().toUpperCase();
         statusCounts[st] = (statusCounts[st] || 0) + 1;
       });
 
       const summaryGrid = document.getElementById('summaryGrid');
       summaryGrid.innerHTML = "";
-      for (const [statusName, count] of Object.entries(statusCounts)) {
-        summaryGrid.innerHTML += `
-          <div class="summary-card">
-            <div class="count">${count}</div>
-            <div class="label">${statusName}</div>
-          </div>
-        `;
+
+      STATUS_PRIORITY.forEach(statusName => {
+        if (statusCounts[statusName] && statusCounts[statusName] > 0) {
+          summaryGrid.innerHTML += `
+            <div class="summary-card">
+              <div class="count">${statusCounts[statusName]}</div>
+              <div class="label">${statusName}</div>
+            </div>
+          `;
+        }
+      });
+
+      for (const [stName, count] of Object.entries(statusCounts)) {
+        if (!STATUS_PRIORITY.includes(stName) && count > 0) {
+          summaryGrid.innerHTML += `
+            <div class="summary-card">
+              <div class="count">${count}</div>
+              <div class="label">${stName}</div>
+            </div>
+          `;
+        }
       }
 
-      renderStoreCards(user.stores);
+      renderStoreCards(allStoresData);
     }
 
-    // RENDER STORE CARDS (KOLOM AJ INCLUDED)
     function renderStoreCards(stores) {
       const container = document.getElementById('storeListContainer');
       container.innerHTML = "";
@@ -267,6 +374,30 @@
       stores.forEach((store, index) => {
         const card = document.createElement('div');
         card.className = 'store-card';
+
+        const stUpper = String(store.status || "").trim().toUpperCase();
+
+        let plannedDateHtml = "";
+        let actualDateHtml = "";
+        let slaHtml = "";
+
+        if (stUpper.includes("SCHEDULE")) {
+          plannedDateHtml = `<div class="store-detail"><strong>Implementation Planned Date:</strong> ${store.plannedDate}</div>`;
+        }
+
+        if (stUpper.includes("IN PROGRESS") || stUpper.includes("GO LIVE") || stUpper.includes("SCHEDULE")) {
+          actualDateHtml = `<div class="store-detail"><strong>Implementation Actual Date:</strong> ${store.actualDate}</div>`;
+        }
+
+        if (stUpper.includes("IN PROGRESS") || stUpper.includes("GO LIVE")) {
+          slaHtml = `
+            <div>
+              <span class="info-tag">⏱️ <strong>SLA Status:</strong> ${store.slaStatus}</span>
+              <span class="info-tag">⏱️ <strong>SLA Implementation:</strong> ${store.slaImplementation}</span>
+            </div>
+          `;
+        }
+
         card.innerHTML = `
           <div class="store-header">
             <div class="store-name">${index + 1}. ${store.storeName}</div>
@@ -274,9 +405,14 @@
           </div>
           <div class="store-detail"><strong>OID:</strong> ${store.oid}</div>
           <div class="store-detail"><strong>Kode Toko:</strong> ${store.storeCode}</div>
-          <div class="store-detail"><strong>Alamat:</strong> ${store.storeAddress}</div>
-          <div class="store-detail"><strong>Distributor:</strong> ${store.dtName}</div>
+          <div class="store-detail"><strong>Alamat Toko:</strong> ${store.storeAddress}</div>
+          <div class="store-detail"><strong>Distributor:</strong> ${store.dtName} (${store.dtCode})</div>
+          <div class="store-detail"><strong>Alamat Distributor:</strong> ${store.dtAddress}</div>
           
+          ${plannedDateHtml}
+          ${actualDateHtml}
+          ${slaHtml}
+
           <div class="sku-badge">
             📦 Implementation SKU Completed #: ${store.skuCompleted}
           </div>
@@ -290,18 +426,21 @@
       });
     }
 
-    // SEARCH FILTER
     function filterStores() {
       const keyword = document.getElementById('searchStoreInput').value.toLowerCase().trim();
+      if (!keyword) {
+        renderStoreCards(allStoresData);
+        return;
+      }
       const filtered = allStoresData.filter(s => 
         s.storeName.toLowerCase().includes(keyword) || 
         s.storeCode.toLowerCase().includes(keyword) || 
-        s.oid.toLowerCase().includes(keyword)
+        s.oid.toLowerCase().includes(keyword) ||
+        s.dtName.toLowerCase().includes(keyword)
       );
       renderStoreCards(filtered);
     }
 
-    // MODAL ABSEN & VISIT (FOTO SELFIE)
     function openVisitModal(code, name) {
       activeStoreCode = code;
       document.getElementById('modalVisitTitle').innerText = `Absen Visit: ${name}`;
@@ -324,6 +463,7 @@
           storeCode: activeStoreCode,
           activityType: document.getElementById('activityType').value,
           notes: document.getElementById('visitNotes').value,
+          gpsLocation: currentGpsLocation,
           selfieBase64: base64
         };
 
@@ -340,7 +480,6 @@
       }
     });
 
-    // MODAL BAST UPLOAD
     function openBastModal(code, name) {
       activeStoreCode = code;
       document.getElementById('modalBastTitle').innerText = `Upload BAST: ${name}`;
@@ -349,20 +488,53 @@
 
     document.getElementById('bastForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      const imeiValue = document.getElementById('imeiTab').value.trim();
+      const snScannerValue = document.getElementById('snScanner').value.trim();
+      const snPrinterValue = document.getElementById('snPrinter').value.trim();
+
+      // VALIDASI JAGA-JAGA DI SISI JAVASCRIPT
+      if (!/^\d{15}$/.test(imeiValue)) {
+        alert("Peringatan: IMEI TAB harus tepat 15 digit angka! Jika versi non-TAB, masukkan angka 0 sebanyak 15 kali.");
+        return;
+      }
+
+      if (snScannerValue.length < 10 || snScannerValue.length > 15) {
+        alert("Peringatan: SN Scanner harus berjumlah antara 10 sampai 15 karakter!");
+        return;
+      }
+
+      if (snPrinterValue.length < 10 || snPrinterValue.length > 15) {
+        alert("Peringatan: SN Printer harus berjumlah antara 10 sampai 15 karakter!");
+        return;
+      }
+
       const btn = document.getElementById('btnSubmitBast');
       btn.disabled = true;
-      btn.innerText = "Mengupload File...";
+      btn.innerText = "Mengupload BAST...";
 
       try {
-        const fileInput = document.getElementById('bastFile');
-        const base64 = await convertFileToBase64(fileInput.files[0]);
+        const storeFrontFile = document.getElementById('storeFrontFile').files[0];
+        const bastDocFile = document.getElementById('bastDocFile').files[0];
+
+        const storeFrontBase64 = await convertFileToBase64(storeFrontFile);
+        const bastDocBase64 = await convertFileToBase64(bastDocFile);
 
         const payload = {
           action: "saveBAST",
           implId: currentImplId,
           storeCode: activeStoreCode,
-          notes: document.getElementById('bastNotes').value,
-          bastBase64: base64
+          ownerName: document.getElementById('ownerName').value.trim(),
+          ownerEmail: document.getElementById('ownerEmail').value.trim(),
+          ownerPhone: document.getElementById('ownerPhone').value.trim(),
+          ownerGender: document.getElementById('ownerGender').value,
+          ownerAge: document.getElementById('ownerAge').value,
+          imeiTab: imeiValue,
+          snScanner: snScannerValue,
+          snPrinter: snPrinterValue,
+          gpsLocation: currentGpsLocation,
+          storeFrontBase64: storeFrontBase64,
+          bastDocBase64: bastDocBase64
         };
 
         const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
@@ -371,14 +543,13 @@
         alert(result.message);
         closeModal('bastModal');
       } catch (err) {
-        alert("Gagal upload BAST: " + err.message);
+        alert("Gagal simpan BAST: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerText = "Upload File BAST";
+        btn.innerText = "Simpan & Upload BAST";
       }
     });
 
-    // HELPER FUNCTIONS
     function convertFileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
