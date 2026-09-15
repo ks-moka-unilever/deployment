@@ -42,12 +42,16 @@
     .summary-card .label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-top: 2px; }
 
     .search-box { margin-bottom: 16px; }
+    .search-box input { border: 2px solid #2563eb; font-size: 14px; font-weight: 500; }
 
     .store-card { background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 16px; border-top: 4px solid #2563eb; }
     .store-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
     .store-name { font-size: 17px; font-weight: 700; color: #0f172a; }
     .store-detail { font-size: 13px; color: #475569; margin-bottom: 5px; line-height: 1.4; }
     
+    .maps-btn { display: inline-block; margin-left: 6px; color: #2563eb; font-weight: 700; text-decoration: none; font-size: 12px; background: #eff6ff; padding: 2px 8px; border-radius: 4px; border: 1px solid #bfdbfe; }
+    .maps-btn:hover { background: #dbeafe; text-decoration: underline; }
+
     .info-tag { display: inline-block; background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 8px; border-radius: 6px; font-size: 11.5px; color: #334155; margin-top: 4px; margin-right: 4px; }
     .sku-badge { display: inline-flex; align-items: center; background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 700; margin-top: 8px; border: 1px solid #bae6fd; }
     .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #f1f5f9; color: #334155; }
@@ -113,9 +117,9 @@
       <div id="summaryGrid" class="summary-grid"></div>
     </div>
 
-    <!-- SEARCH BAR -->
+    <!-- SEARCH BAR REAL-TIME -->
     <div class="search-box">
-      <input type="text" id="searchStoreInput" placeholder="🔍 Cari Nama Toko / Kode Toko / OID..." oninput="filterStores()">
+      <input type="text" id="searchStoreInput" placeholder="🔍 Ketik Nama Toko / Kode Toko / OID / Distributor / ASM..." autocomplete="off">
     </div>
 
     <!-- STORE LIST -->
@@ -155,7 +159,7 @@
     </div>
   </div>
 
-  <!-- MODAL BAST LENGKAP -->
+  <!-- MODAL BAST -->
   <div id="bastModal" class="modal">
     <div class="modal-content">
       <div class="modal-header" id="modalBastTitle">Upload Dokumen BAST & Identitas Merchant</div>
@@ -165,7 +169,6 @@
       </div>
 
       <form id="bastForm">
-        <!-- DATA TUAN TOKO / MERCHANT -->
         <div class="form-group">
           <label>Nama Tuan Toko / Owner *</label>
           <input type="text" id="ownerName" placeholder="Nama Lengkap Tuan Toko" required>
@@ -197,7 +200,6 @@
           </div>
         </div>
 
-        <!-- HARDWARE IDENTIFICATION WITH EXACT VALIDATIONS -->
         <div class="form-group">
           <label>IMEI TAB (Wajib Pas 15 Digit Angka) *</label>
           <input type="text" id="imeiTab" placeholder="Masukkan 15 digit angka IMEI" maxlength="15" minlength="15" pattern="[0-9]{15}" required title="IMEI wajib berupa 15 digit angka!">
@@ -217,7 +219,6 @@
           </div>
         </div>
 
-        <!-- FILE UPLOADS -->
         <div class="form-group">
           <label>🏢 Foto Tampak Depan Toko *</label>
           <input type="file" id="storeFrontFile" accept="image/*" capture="camera" required>
@@ -255,6 +256,7 @@
     const loginForm = document.getElementById('loginForm');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
+    const searchInput = document.getElementById('searchStoreInput');
 
     let currentImplId = "";
     let allStoresData = [];
@@ -362,6 +364,27 @@
       renderStoreCards(allStoresData);
     }
 
+    // EVENT LISTENER SEARCH REAL-TIME KARAKTER DEMI KARAKTER
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.toLowerCase().trim();
+      if (!keyword) {
+        renderStoreCards(allStoresData);
+        return;
+      }
+
+      const filtered = allStoresData.filter(s => {
+        return (
+          (s.storeName && s.storeName.toLowerCase().includes(keyword)) ||
+          (s.storeCode && s.storeCode.toLowerCase().includes(keyword)) ||
+          (s.oid && s.oid.toLowerCase().includes(keyword)) ||
+          (s.dtName && s.dtName.toLowerCase().includes(keyword)) ||
+          (s.asmName && s.asmName.toLowerCase().includes(keyword))
+        );
+      });
+
+      renderStoreCards(filtered);
+    });
+
     function renderStoreCards(stores) {
       const container = document.getElementById('storeListContainer');
       container.innerHTML = "";
@@ -398,6 +421,16 @@
           `;
         }
 
+        // GENERATE LINK GMAPS ALTERNATIF
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.storeAddress)}`;
+        const mapsBtnHtml = `<a href="${mapsUrl}" target="_blank" class="maps-btn">🗺️ Buka di Google Maps</a>`;
+
+        // FORMAT ASM / AASM UNILEVER + NO HP
+        let asmText = store.asmName || "-";
+        if (store.asmPhone && String(store.asmPhone).trim() !== "" && String(store.asmPhone).trim() !== "-") {
+          asmText += ` (${store.asmPhone})`;
+        }
+
         card.innerHTML = `
           <div class="store-header">
             <div class="store-name">${index + 1}. ${store.storeName}</div>
@@ -405,9 +438,12 @@
           </div>
           <div class="store-detail"><strong>OID:</strong> ${store.oid}</div>
           <div class="store-detail"><strong>Kode Toko:</strong> ${store.storeCode}</div>
-          <div class="store-detail"><strong>Alamat Toko:</strong> ${store.storeAddress}</div>
+          <div class="store-detail">
+            <strong>Alamat Toko:</strong> ${store.storeAddress} ${mapsBtnHtml}
+          </div>
           <div class="store-detail"><strong>Distributor:</strong> ${store.dtName} (${store.dtCode})</div>
           <div class="store-detail"><strong>Alamat Distributor:</strong> ${store.dtAddress}</div>
+          <div class="store-detail"><strong>Nama ASM/AASM Unilever:</strong> ${asmText}</div>
           
           ${plannedDateHtml}
           ${actualDateHtml}
@@ -424,21 +460,6 @@
         `;
         container.appendChild(card);
       });
-    }
-
-    function filterStores() {
-      const keyword = document.getElementById('searchStoreInput').value.toLowerCase().trim();
-      if (!keyword) {
-        renderStoreCards(allStoresData);
-        return;
-      }
-      const filtered = allStoresData.filter(s => 
-        s.storeName.toLowerCase().includes(keyword) || 
-        s.storeCode.toLowerCase().includes(keyword) || 
-        s.oid.toLowerCase().includes(keyword) ||
-        s.dtName.toLowerCase().includes(keyword)
-      );
-      renderStoreCards(filtered);
     }
 
     function openVisitModal(code, name) {
@@ -493,7 +514,6 @@
       const snScannerValue = document.getElementById('snScanner').value.trim();
       const snPrinterValue = document.getElementById('snPrinter').value.trim();
 
-      // VALIDASI JAGA-JAGA DI SISI JAVASCRIPT
       if (!/^\d{15}$/.test(imeiValue)) {
         alert("Peringatan: IMEI TAB harus tepat 15 digit angka! Jika versi non-TAB, masukkan angka 0 sebanyak 15 kali.");
         return;
@@ -554,10 +574,12 @@
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
+        reader.onload = () => resolve(resolveResult(reader.result));
         reader.onerror = error => reject(error);
       });
     }
+
+    function resolveResult(res) { return res; }
 
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = "none";
