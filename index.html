@@ -70,7 +70,7 @@
       <div>
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ringkasan Klasifikasi Implementation Status:</h3>
-          <span class="text-[10px] text-slate-400">*Klik kartu untuk memfilter (Bisa pilih >1 status)</span>
+          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk memfilter (bisa pilih multiple)</span>
         </div>
         <div id="summaryCardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <!-- Kartu status dimasukkan lewat JavaScript -->
@@ -206,7 +206,7 @@
 
     let allStoresData = [];
     let currentUser = { implId: "", email: "" };
-    let selectedStatuses = new Set(); // Multi-selection filter status
+    let selectedStatuses = []; // Array menampung status terpilih
 
     // AUTOLOGIN
     window.onload = function() {
@@ -254,7 +254,7 @@
             document.getElementById("userDisplayId").innerText = implId;
 
             allStoresData = res.data || [];
-            selectedStatuses.clear(); // Reset filter
+            selectedStatuses = []; // Reset filter aktif
             
             document.getElementById("totalStoresBadge").innerText = allStoresData.length;
             
@@ -270,32 +270,34 @@
         });
     }
 
-    // RENDER KARTU STATUS (MULTI FILTER)
+    // RENDER KARTU STATUS
     function renderSummaryCards(stores) {
       const container = document.getElementById("summaryCardsContainer");
       if (!container) return;
 
       const counts = {};
       stores.forEach(s => {
-        const st = s.status || "Unassigned";
+        const st = (s.status || "Unassigned").trim();
         counts[st] = (counts[st] || 0) + 1;
       });
 
       let html = "";
       Object.keys(counts).forEach(status => {
-        const isSelected = selectedStatuses.has(status);
-        const cardBg = isSelected 
-          ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
-          : "bg-white border border-slate-200 opacity-60 hover:opacity-100";
+        const isSelected = selectedStatuses.includes(status);
         
-        const badge = isSelected ? `<span class="ml-1 text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded-full font-bold">✓ Aktif</span>` : "";
+        // Style visual aktif vs tidak
+        const cardStyle = isSelected 
+          ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
+          : "bg-white border border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100";
+        
+        const badge = isSelected ? `<span class="ml-1.5 text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">✓ Aktif</span>` : "";
 
         html += `
           <div onclick="toggleStatusFilter('${status}')" 
-               class="cursor-pointer p-4 rounded-xl transition-all duration-200 select-none flex justify-between items-center ${cardBg}">
+               class="cursor-pointer p-4 rounded-xl transition-all duration-200 select-none flex justify-between items-center ${cardStyle}">
             <div>
               <div class="text-2xl font-black text-slate-800">${counts[status]}</div>
-              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1 flex items-center">
+              <div class="text-xs font-bold text-slate-600 uppercase tracking-wider mt-1 flex items-center">
                 ${status} ${badge}
               </div>
             </div>
@@ -306,13 +308,15 @@
       container.innerHTML = html;
     }
 
-    // TOGGLE MULTI STATUS
+    // TOGGLE FILTER STATUS (MULTI SELECTION)
     function toggleStatusFilter(status) {
-      if (selectedStatuses.has(status)) {
-        selectedStatuses.delete(status);
+      const index = selectedStatuses.indexOf(status);
+      if (index > -1) {
+        selectedStatuses.splice(index, 1); // Hapus jika sudah terpilih
       } else {
-        selectedStatuses.add(status);
+        selectedStatuses.push(status); // Tambahkan jika belum terpilih
       }
+      
       renderSummaryCards(allStoresData);
       filterAndRenderStores();
     }
@@ -322,8 +326,10 @@
       const searchInput = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
 
       const filtered = allStoresData.filter(store => {
-        // Multi-status selection match
-        const matchesStatus = selectedStatuses.size === 0 || selectedStatuses.has(store.status);
+        const storeStatus = (store.status || "Unassigned").trim();
+        
+        // Multi-status filter: Jika kosong -> tampilkan semua. Jika ada isi -> toko harus termasuk dalam array
+        const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
         
         // Search bar match
         const targetText = `${store.storeName} ${store.storeCode} ${store.oid} ${store.dtName} ${store.asmName}`.toLowerCase();
@@ -341,7 +347,7 @@
       if (!container) return;
 
       if (stores.length === 0) {
-        container.innerHTML = `<div class="text-center py-10 text-slate-400 font-medium">Tidak ada data toko yang cocok.</div>`;
+        container.innerHTML = `<div class="text-center py-10 text-slate-400 font-medium">Tidak ada data toko yang cocok dengan filter.</div>`;
         return;
       }
 
