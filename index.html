@@ -30,12 +30,12 @@
     <form id="loginForm">
       <div class="form-group">
         <label for="implId">Implementor ID</label>
-        <input type="text" id="implId" placeholder="Contoh: MTI0851" required autocomplete="off">
+        <input type="text" id="implId" placeholder="Contoh: MTI0888" required autocomplete="off">
       </div>
       
       <div class="form-group">
         <label for="email">Email Terdaftar</label>
-        <input type="email" id="email" placeholder="capacaromeo@gmail.com" required autocomplete="off">
+        <input type="email" id="email" placeholder="nama@domain.com" required autocomplete="off">
       </div>
       
       <button type="submit" id="submitBtn" class="btn">
@@ -65,7 +65,6 @@
       setLoading(true);
 
       try {
-        // Pemanggilan via GET parameter yang 100% kompatibel dan super cepat
         const requestUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
         
         const response = await fetch(requestUrl, {
@@ -73,7 +72,14 @@
           redirect: "follow"
         });
 
-        const result = await response.json();
+        const rawText = await response.text();
+        let result;
+
+        try {
+          result = JSON.parse(rawText);
+        } catch (jsonErr) {
+          throw new Error("Server Apps Script mengalami Timeout / Error.");
+        }
 
         if (result.status === "success") {
           sessionStorage.setItem("userSession", JSON.stringify({
@@ -90,7 +96,7 @@
 
       } catch (error) {
         console.error("Login Error:", error);
-        alert("Terjadi kesalahan sistem: " + error.message);
+        alert("Terjadi kesalahan: " + error.message);
       } finally {
         setLoading(false);
       }
