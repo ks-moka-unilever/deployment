@@ -30,12 +30,12 @@
     <form id="loginForm">
       <div class="form-group">
         <label for="implId">Implementor ID</label>
-        <input type="text" id="implId" placeholder="Contoh: MTI0888" required autocomplete="off">
+        <input type="text" id="implId" placeholder="Contoh: MTI0851" required autocomplete="off">
       </div>
       
       <div class="form-group">
         <label for="email">Email Terdaftar</label>
-        <input type="email" id="email" placeholder="email@contoh.com" required autocomplete="off">
+        <input type="email" id="email" placeholder="capacaromeo@gmail.com" required autocomplete="off">
       </div>
       
       <button type="submit" id="submitBtn" class="btn">
@@ -45,7 +45,6 @@
   </div>
 
   <script>
-    // URL Web App Google Apps Script Kamu
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymM5-j2SrCJWtwb_ISnibC0nmBuyT0d2bvXP0s7lbar6fvTs5mjIuk_Yc6Hpok_N-mBw/exec";
 
     const loginForm = document.getElementById('loginForm');
@@ -63,46 +62,28 @@
         return;
       }
 
-      // Tampilkan status Loading
       setLoading(true);
 
       try {
-        // Gunakan POST dengan text/plain untuk bypass kendala CORS Google Apps Script
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
-          body: JSON.stringify({
-            action: "getAssignedStores",
-            implId: implId,
-            email: email
-          }),
+        // Pemanggilan via GET parameter yang 100% kompatibel dan super cepat
+        const requestUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
+        
+        const response = await fetch(requestUrl, {
+          method: "GET",
           redirect: "follow"
         });
 
-        const textResponse = await response.text();
-        let result;
-        
-        try {
-          result = JSON.parse(textResponse);
-        } catch (err) {
-          throw new Error("Gagal memproses data dari server. Pastikan Deployment ID sudah diset ke 'Anyone'.");
-        }
+        const result = await response.json();
 
         if (result.status === "success") {
-          // Simpan data login di SessionStorage
           sessionStorage.setItem("userSession", JSON.stringify({
             implId: implId,
             email: email,
             stores: result.data
           }));
 
-          alert(`Login Berhasil! Ditemukan ${result.data.length} toko.`);
+          alert(`Login Berhasil!\nJumlah Toko Ditemukan: ${result.data.length}`);
           console.log("Data Toko Ter-assign:", result.data);
-          
-          // Arahkan ke dashboard jika file dashboard.html ada
-          // window.location.href = "dashboard.html";
         } else {
           alert("Gagal Login: " + result.message);
         }
