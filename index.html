@@ -119,7 +119,7 @@
 
     <!-- SEARCH BAR REAL-TIME -->
     <div class="search-box">
-      <input type="text" id="searchStoreInput" placeholder="🔍 Ketik Nama Toko / Kode Toko / OID / Distributor / ASM..." autocomplete="off">
+      <input type="text" id="searchStoreInput" placeholder="🔍 Ketik Nama Toko / Kode / OID / Distributor / ASM..." autocomplete="off">
     </div>
 
     <!-- STORE LIST -->
@@ -364,32 +364,39 @@
       renderStoreCards(allStoresData);
     }
 
-    // EVENT LISTENER SEARCH REAL-TIME KARAKTER DEMI KARAKTER
-    searchInput.addEventListener('input', () => {
-      const keyword = searchInput.value.toLowerCase().trim();
+    // SEARCH REAL-TIME FLEKSIBEL (AMAN DARI UNDEFINED)
+    searchInput.addEventListener('keyup', filterStores);
+    searchInput.addEventListener('input', filterStores);
+
+    function filterStores() {
+      const keyword = String(searchInput.value || "").toLowerCase().trim();
       if (!keyword) {
         renderStoreCards(allStoresData);
         return;
       }
 
       const filtered = allStoresData.filter(s => {
-        return (
-          (s.storeName && s.storeName.toLowerCase().includes(keyword)) ||
-          (s.storeCode && s.storeCode.toLowerCase().includes(keyword)) ||
-          (s.oid && s.oid.toLowerCase().includes(keyword)) ||
-          (s.dtName && s.dtName.toLowerCase().includes(keyword)) ||
-          (s.asmName && s.asmName.toLowerCase().includes(keyword))
-        );
+        const sName = String(s.storeName || "").toLowerCase();
+        const sCode = String(s.storeCode || "").toLowerCase();
+        const sOid  = String(s.oid || "").toLowerCase();
+        const sDt   = String(s.dtName || "").toLowerCase();
+        const sAsm  = String(s.asmName || "").toLowerCase();
+
+        return sName.includes(keyword) || 
+               sCode.includes(keyword) || 
+               sOid.includes(keyword) || 
+               sDt.includes(keyword) || 
+               sAsm.includes(keyword);
       });
 
       renderStoreCards(filtered);
-    });
+    }
 
     function renderStoreCards(stores) {
       const container = document.getElementById('storeListContainer');
       container.innerHTML = "";
 
-      if (stores.length === 0) {
+      if (!stores || stores.length === 0) {
         container.innerHTML = '<div class="store-card"><p style="text-align:center; color:#64748b;">Tidak ada data toko yang cocok.</p></div>';
         return;
       }
@@ -421,11 +428,11 @@
           `;
         }
 
-        // GENERATE LINK GMAPS ALTERNATIF
+        // GOOGLE MAPS ALTERNATIF
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.storeAddress)}`;
         const mapsBtnHtml = `<a href="${mapsUrl}" target="_blank" class="maps-btn">🗺️ Buka di Google Maps</a>`;
 
-        // FORMAT ASM / AASM UNILEVER + NO HP
+        // FORMAT NAMA ASM/AASM UNILEVER & NO HP
         let asmText = store.asmName || "-";
         if (store.asmPhone && String(store.asmPhone).trim() !== "" && String(store.asmPhone).trim() !== "-") {
           asmText += ` (${store.asmPhone})`;
@@ -574,12 +581,10 @@
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(resolveResult(reader.result));
+        reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
       });
     }
-
-    function resolveResult(res) { return res; }
 
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = "none";
