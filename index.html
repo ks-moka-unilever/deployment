@@ -15,16 +15,22 @@
 
     <!-- Login Section -->
     <div id="loginSection" class="space-y-3">
-      <label class="block text-sm font-medium text-gray-700">Email Implementor</label>
-      <input type="email" id="userEmail" class="w-full p-2 border rounded-md text-sm" placeholder="nama@email.com">
-      <button onclick="loadStores()" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold text-sm">Lihat Daftar Toko</button>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Implementor ID</label>
+        <input type="text" id="userImplId" class="w-full p-2 border rounded-md text-sm uppercase" placeholder="Contoh: IMP-01">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Email Terdaftar</label>
+        <input type="email" id="userEmail" class="w-full p-2 border rounded-md text-sm" placeholder="nama@email.com">
+      </div>
+      <button onclick="loadStores()" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold text-sm">Masuk & Lihat Toko</button>
     </div>
 
     <!-- Dashboard Section -->
     <div id="dashboardSection" class="hidden space-y-3">
       <div class="flex justify-between items-center">
         <h3 class="font-bold text-sm text-gray-700">Daftar Toko Di-Assign:</h3>
-        <button onclick="logout()" class="text-xs text-red-500 underline">Ganti Email</button>
+        <button onclick="logout()" class="text-xs text-red-500 underline">Ganti User</button>
       </div>
       <div id="storeList" class="space-y-2"></div>
     </div>
@@ -67,16 +73,18 @@
   </div>
 
   <script>
-    // PASTE WEB APP URL HASIL DEPLOY DARI APPS SCRIPT PRIBADI DI BAWAH INI
+    // PASTE URL EXEC GOOGLE APPS SCRIPT BARU KAMU DI BAWAH INI
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyJyQ3h6T3rOMvUF6_9UrM_qciUrWkGq4Qdy7ya_Cv0wnNfrK3JQ-VzR-pWhTBzFZJpWg/exec"; 
     
     let selectedStore = {};
 
     async function loadStores() {
+      const implId = document.getElementById("userImplId").value.trim();
       const email = document.getElementById("userEmail").value.trim();
-      if (!email) return alert("Email wajib diisi!");
+      
+      if (!implId || !email) return alert("Implementor ID dan Email wajib diisi!");
 
-      const res = await fetch(`${GAS_API_URL}?action=getAssignedStores&email=${encodeURIComponent(email)}`);
+      const res = await fetch(`${GAS_API_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`);
       const result = await res.json();
 
       if (result.status === "success" && result.data.length > 0) {
@@ -100,7 +108,7 @@
           `;
         });
       } else {
-        alert("Data toko tidak ditemukan untuk email ini.");
+        alert(result.message || "Data toko tidak ditemukan.");
       }
     }
 
@@ -130,6 +138,7 @@
     }
 
     async function submitAbsenData() {
+      const implId = document.getElementById("userImplId").value.trim();
       const email = document.getElementById("userEmail").value.trim();
       const activity = document.getElementById("activity").value.trim();
       if (!activity) return alert("Aktivitas wajib diisi!");
@@ -139,6 +148,7 @@
       const payload = {
         action: "submitAbsen",
         email: email,
+        implId: implId,
         storeName: selectedStore.storeName,
         oid: selectedStore.oid,
         type: document.getElementById("absenType").value,
@@ -154,6 +164,7 @@
     }
 
     async function submitBASTData() {
+      const implId = document.getElementById("userImplId").value.trim();
       const email = document.getElementById("userEmail").value.trim();
       const mName = document.getElementById("merchantName").value.trim();
       if (!mName) return alert("Nama Tuan Toko wajib diisi!");
@@ -163,6 +174,7 @@
       const payload = {
         action: "submitBAST",
         email: email,
+        implId: implId,
         storeCode: selectedStore.storeCode,
         storeName: selectedStore.storeName,
         oid: selectedStore.oid,
