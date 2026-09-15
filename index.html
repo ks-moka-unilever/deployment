@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moka Deployment Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 space-y-4">
+    <div class="border-b pb-3">
+      <h2 class="text-xl font-bold text-gray-800">Moka Deployment</h2>
+      <p class="text-xs text-gray-500">Portal Implementor Lapangan</p>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="space-y-3">
+      <label class="block text-sm font-medium text-gray-700">Email Implementor</label>
+      <input type="email" id="userEmail" class="w-full p-2 border rounded-md text-sm" placeholder="nama@email.com">
+      <button onclick="loadStores()" class="w-full bg-blue-600 text-white py-2 rounded-md font-semibold text-sm">Lihat Daftar Toko</button>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="hidden space-y-3">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-sm text-gray-700">Daftar Toko Di-Assign:</h3>
+        <button onclick="logout()" class="text-xs text-red-500 underline">Ganti Email</button>
+      </div>
+      <div id="storeList" class="space-y-2"></div>
+    </div>
+
+    <!-- Form Absen -->
+    <div id="absenForm" class="hidden border-t pt-4 space-y-3">
+      <h3 class="font-bold text-sm text-blue-600">Form Absen Harian</h3>
+      <p id="targetStoreLabel" class="text-xs font-semibold text-gray-600"></p>
+      
+      <select id="absenType" class="w-full p-2 border rounded-md text-sm">
+        <option value="( IN ) Absen Masuk">Absen Masuk (Pagi)</option>
+        <option value="( OUT ) Absen Keluar">Absen Keluar (Sore)</option>
+      </select>
+      
+      <textarea id="activity" class="w-full p-2 border rounded-md text-sm" placeholder="Aktivitas deployment hari ini..."></textarea>
+      
+      <button onclick="submitAbsenData()" id="btnAbsen" class="w-full bg-green-600 text-white py-2 rounded-md font-semibold text-sm">Kirim Absen</button>
+      <button onclick="closeForms()" class="w-full bg-gray-200 text-gray-700 py-1 rounded-md text-xs">Batal</button>
+    </div>
+
+    <!-- Form BAST -->
+    <div id="bastForm" class="hidden border-t pt-4 space-y-3">
+      <h3 class="font-bold text-sm text-purple-600">Form BAST Store</h3>
+      <p id="targetBastStoreLabel" class="text-xs font-semibold text-gray-600"></p>
+      
+      <input type="text" id="merchantName" class="w-full p-2 border rounded-md text-sm" placeholder="Nama Tuan Toko / Owner">
+      <input type="text" id="merchantPhone" class="w-full p-2 border rounded-md text-sm" placeholder="Nomor HP Tuan Toko">
+      <input type="email" id="merchantEmail" class="w-full p-2 border rounded-md text-sm" placeholder="Email Tuan Toko">
+      
+      <div class="border-t pt-2 space-y-2">
+        <p class="text-xs font-bold text-gray-600">Validasi Hardware</p>
+        <input type="text" id="imei" class="w-full p-2 border rounded-md text-sm" placeholder="IMEI Tablet">
+        <input type="text" id="scannerSn" class="w-full p-2 border rounded-md text-sm" placeholder="SN Barcode Scanner">
+        <input type="text" id="printerSn" class="w-full p-2 border rounded-md text-sm" placeholder="SN Printer">
+      </div>
+
+      <button onclick="submitBASTData()" id="btnBast" class="w-full bg-purple-600 text-white py-2 rounded-md font-semibold text-sm">Submit BAST</button>
+      <button onclick="closeForms()" class="w-full bg-gray-200 text-gray-700 py-1 rounded-md text-xs">Batal</button>
+    </div>
+  </div>
+
+  <script>
+    // PASTE WEB APP URL HASIL DEPLOY DARI APPS SCRIPT PRIBADI DI BAWAH INI
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwBkDYdYgvNV1t5C6F_1hWQfJTaX6CtbCNWXOuP78r7dkADYTFQB7Q_M8OZf1qyGhyj8A/exec"; 
+    
+    let selectedStore = {};
+
+    async function loadStores() {
+      const email = document.getElementById("userEmail").value.trim();
+      if (!email) return alert("Email wajib diisi!");
+
+      const res = await fetch(`${GAS_API_URL}?action=getAssignedStores&email=${encodeURIComponent(email)}`);
+      const result = await res.json();
+
+      if (result.status === "success" && result.data.length > 0) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("dashboardSection").classList.remove("hidden");
+        
+        const listDiv = document.getElementById("storeList");
+        listDiv.innerHTML = "";
+        
+        result.data.forEach(store => {
+          listDiv.innerHTML += `
+            <div class="p-3 border rounded-lg bg-gray-50 space-y-1">
+              <p class="font-bold text-sm text-gray-800">${store.storeName}</p>
+              <p class="text-xs text-gray-500">Kode: <span class="font-semibold text-blue-600">${store.storeCode}</span> | OID: ${store.oid}</p>
+              <p class="text-xs text-gray-500">DT: ${store.dtName}</p>
+              <div class="pt-2 flex gap-2">
+                <button onclick='openAbsenForm(${JSON.stringify(store)})' class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded">Absen</button>
+                <button onclick='openBastForm(${JSON.stringify(store)})' class="bg-purple-600 text-white text-xs px-3 py-1.5 rounded">Submit BAST</button>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        alert("Data toko tidak ditemukan untuk email ini.");
+      }
+    }
+
+    function openAbsenForm(store) {
+      selectedStore = store;
+      closeForms();
+      document.getElementById("absenForm").classList.remove("hidden");
+      document.getElementById("targetStoreLabel").innerText = `${store.storeName} (${store.storeCode})`;
+    }
+
+    function openBastForm(store) {
+      selectedStore = store;
+      closeForms();
+      document.getElementById("bastForm").classList.remove("hidden");
+      document.getElementById("targetBastStoreLabel").innerText = `${store.storeName} (${store.storeCode})`;
+    }
+
+    function closeForms() {
+      document.getElementById("absenForm").classList.add("hidden");
+      document.getElementById("bastForm").classList.add("hidden");
+    }
+
+    function logout() {
+      document.getElementById("loginSection").classList.remove("hidden");
+      document.getElementById("dashboardSection").classList.add("hidden");
+      closeForms();
+    }
+
+    async function submitAbsenData() {
+      const email = document.getElementById("userEmail").value.trim();
+      const activity = document.getElementById("activity").value.trim();
+      if (!activity) return alert("Aktivitas wajib diisi!");
+
+      document.getElementById("btnAbsen").innerText = "Mengirim...";
+
+      const payload = {
+        action: "submitAbsen",
+        email: email,
+        storeName: selectedStore.storeName,
+        oid: selectedStore.oid,
+        type: document.getElementById("absenType").value,
+        workingDate: new Date().toISOString().split('T')[0],
+        activity: activity
+      };
+
+      await fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) });
+      alert("Absen berhasil dikirim!");
+      document.getElementById("activity").value = "";
+      document.getElementById("btnAbsen").innerText = "Kirim Absen";
+      closeForms();
+    }
+
+    async function submitBASTData() {
+      const email = document.getElementById("userEmail").value.trim();
+      const mName = document.getElementById("merchantName").value.trim();
+      if (!mName) return alert("Nama Tuan Toko wajib diisi!");
+
+      document.getElementById("btnBast").innerText = "Mengirim...";
+
+      const payload = {
+        action: "submitBAST",
+        email: email,
+        storeCode: selectedStore.storeCode,
+        storeName: selectedStore.storeName,
+        oid: selectedStore.oid,
+        merchantName: mName,
+        merchantPhone: document.getElementById("merchantPhone").value,
+        merchantEmail: document.getElementById("merchantEmail").value,
+        imei: document.getElementById("imei").value,
+        scannerSn: document.getElementById("scannerSn").value,
+        printerSn: document.getElementById("printerSn").value,
+        visitDate: new Date().toISOString().split('T')[0]
+      };
+
+      await fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) });
+      alert("Data BAST berhasil disubmit!");
+      document.getElementById("btnBast").innerText = "Submit BAST";
+      closeForms();
+    }
+  </script>
+</body>
+</html>
