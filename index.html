@@ -207,7 +207,6 @@
     let currentUser = { implId: "", email: "" };
     let selectedStatuses = [];
 
-    // AUTOLOGIN
     window.onload = function() {
       const savedId = localStorage.getItem("implId");
       const savedEmail = localStorage.getItem("email");
@@ -226,7 +225,6 @@
       setTimeout(() => alertBox.classList.add("hidden"), 5000);
     }
 
-    // HANDLER LOGIN
     function handleLogin(e) {
       e.preventDefault();
       const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
@@ -234,7 +232,6 @@
       fetchAssignedStores(implId, email);
     }
 
-    // FETCH DATA
     function fetchAssignedStores(implId, email) {
       const btnLogin = document.getElementById("btnLogin");
       if (btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
@@ -269,7 +266,6 @@
         });
     }
 
-    // RENDER KARTU STATUS
     function renderSummaryCards(stores) {
       const container = document.getElementById("summaryCardsContainer");
       if (!container) return;
@@ -306,7 +302,6 @@
       container.innerHTML = html;
     }
 
-    // TOGGLE FILTER STATUS (MULTI SELECTION)
     function toggleStatusFilter(status) {
       const index = selectedStatuses.indexOf(status);
       if (index > -1) {
@@ -319,7 +314,6 @@
       filterAndRenderStores();
     }
 
-    // FILTER & RENDER DAFTAR TOKO
     function filterAndRenderStores() {
       const searchInput = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
 
@@ -344,7 +338,6 @@
       renderStoreList(filtered);
     }
 
-    // RENDER LIST TOKO KE HTML
     function renderStoreList(stores) {
       const container = document.getElementById("storeListContainer");
       if (!container) return;
@@ -415,7 +408,6 @@
       container.innerHTML = html;
     }
 
-    // MODAL CONTROL
     function openVisitModal(code) {
       document.getElementById("visitStoreCode").value = code || "";
       document.getElementById("visitModal").classList.remove("hidden");
@@ -435,7 +427,6 @@
       location.reload();
     }
 
-    // HELPER FILE TO BASE64
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         if (!file) return resolve("");
@@ -446,7 +437,6 @@
       });
     }
 
-    // SUBMIT VISIT
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
@@ -495,7 +485,6 @@
       }
     }
 
-    // SUBMIT BAST
     async function submitBAST(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitBAST");
