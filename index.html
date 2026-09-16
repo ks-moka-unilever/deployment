@@ -3,232 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MOKA Implementation Dashboard</title>
-  <style>
-    :root {
-      --primary-color: #00875A;
-      --bg-color: #f4f5f7;
-      --card-bg: #ffffff;
-      --text-color: #172b4d;
-      --border-color: #e1e4e8;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 16px;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-
-    input[type="text"], input[type="email"] {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 14px;
-    }
-
-    button {
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      font-size: 14px;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .store-item {
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 12px;
-      background-color: #fff;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: bold;
-      text-transform: uppercase;
-      background-color: #dfe1e6;
-      color: #42526e;
-    }
-
-    .badge-success { background-color: #e3fcef; color: #006644; }
-    .badge-warning { background-color: #fffae6; color: #ff8b00; }
-
-    .meta-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    .meta-item {
-      color: #5e6c84;
-    }
-
-    .meta-item strong {
-      color: var(--text-color);
-    }
-
-    #loading, #errorMessage {
-      display: none;
-      text-align: center;
-      padding: 10px;
-      font-weight: bold;
-    }
-
-    #errorMessage {
-      color: #de350b;
-    }
-  </style>
+  <title>Moka Deployment Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen p-4">
+  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 space-y-4">
+    
+    <!-- HEADER PORTAL -->
+    <div class="border-b pb-3 text-center">
+      <h2 class="text-2xl font-bold text-slate-800">Moka Deployment</h2>
+      <p class="text-xs text-gray-500 mt-1">Portal Implementor Lapangan</p>
+    </div>
 
-<div class="container">
-  <!-- Form Login / Input FS ID & Email -->
-  <div class="card" id="loginSection">
-    <h2>Implementor Dashboard</h2>
-    <div class="form-group">
-      <label for="implId">Implementor ID (FS ID)</label>
-      <input type="text" id="implId" placeholder="Contoh: FS-102">
+    <!-- 1. FORM LOGIN -->
+    <div id="loginSection" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Implementor ID</label>
+        <input type="text" id="implId" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="MTI0888">
+      </div>
+      
+      <div>
+        <label class="block text-xs font-semibold text-gray-700 mb-1">Email Terdaftar</label>
+        <input type="email" id="userEmail" class="w-full p-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="nur.amirullah@aux.gojek.com">
+      </div>
+
+      <button onclick="loadStores()" id="btnLogin" class="w-full bg-blue-900 hover:bg-blue-950 text-white py-2.5 rounded-lg font-bold text-sm shadow">
+        Masuk & Lihat Dashboard
+      </button>
     </div>
-    <div class="form-group">
-      <label for="email">Email Terdaftar</label>
-      <input type="email" id="email" placeholder="nama@gmail.com">
+
+    <!-- 2. DASHBOARD DAFTAR TOKO -->
+    <div id="dashboardSection" class="hidden space-y-3">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h3 class="font-bold text-sm text-gray-700">Daftar Toko Di-Assign:</h3>
+        <button onclick="logout()" class="text-xs text-red-500 hover:underline">Ganti Akun</button>
+      </div>
+      <div id="storeList" class="space-y-3"></div>
     </div>
-    <button onclick="fetchAssignedStores()">Cari Daftar Toko</button>
+
+    <!-- 3. FORM ABSEN -->
+    <div id="absenForm" class="hidden border-t pt-4 space-y-3">
+      <h3 class="font-bold text-sm text-blue-800">Form Absen Harian</h3>
+      <p id="targetStoreLabel" class="text-xs font-semibold text-gray-600 bg-gray-100 p-2 rounded"></p>
+      
+      <select id="absenType" class="w-full p-2 border rounded-md text-sm">
+        <option value="( IN ) Absen Masuk">Absen Masuk (Pagi)</option>
+        <option value="( OUT ) Absen Keluar">Absen Keluar (Sore)</option>
+      </select>
+      
+      <textarea id="activity" class="w-full p-2 border rounded-md text-sm" placeholder="Rincian aktivitas visit..."></textarea>
+      
+      <button onclick="submitAbsenData()" id="btnAbsen" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md font-semibold text-sm">Kirim Absen</button>
+      <button onclick="closeForms()" class="w-full bg-gray-200 text-gray-700 py-1.5 rounded-md text-xs">Batal</button>
+    </div>
+
+    <!-- 4. FORM BAST -->
+    <div id="bastForm" class="hidden border-t pt-4 space-y-3">
+      <h3 class="font-bold text-sm text-purple-700">Form Pengumpulan BAST</h3>
+      <p id="targetBastStoreLabel" class="text-xs font-semibold text-gray-600 bg-gray-100 p-2 rounded"></p>
+      
+      <input type="text" id="merchantName" class="w-full p-2 border rounded-md text-sm" placeholder="Nama Tuan Toko / Owner">
+      <input type="text" id="merchantPhone" class="w-full p-2 border rounded-md text-sm" placeholder="Nomor HP Tuan Toko">
+      <input type="email" id="merchantEmail" class="w-full p-2 border rounded-md text-sm" placeholder="Email Tuan Toko">
+      
+      <div class="border-t pt-2 space-y-2">
+        <p class="text-xs font-bold text-gray-600">SNO / Hardware Info</p>
+        <input type="text" id="imei" class="w-full p-2 border rounded-md text-sm" placeholder="IMEI Tablet">
+        <input type="text" id="scannerSn" class="w-full p-2 border rounded-md text-sm" placeholder="SN Barcode Scanner">
+        <input type="text" id="printerSn" class="w-full p-2 border rounded-md text-sm" placeholder="SN Printer">
+      </div>
+
+      <button onclick="submitBASTData()" id="btnBast" class="w-full bg-purple-700 hover:bg-purple-800 text-white py-2 rounded-md font-semibold text-sm">Submit BAST</button>
+      <button onclick="closeForms()" class="w-full bg-gray-200 text-gray-700 py-1.5 rounded-md text-xs">Batal</button>
+    </div>
+
   </div>
 
-  <!-- Indicator Loading & Error -->
-  <div id="loading">Memuat data toko...</div>
-  <div id="errorMessage"></div>
+  <script>
+    // PASTE CANONICAL WEB APP URL DARI GOOGLE APPS SCRIPT DI BAWAH INI
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
+    
+    let selectedStore = {};
 
-  <!-- Container Output Hasil Toko -->
-  <div id="storeList"></div>
-</div>
+    async function loadStores() {
+      const implId = document.getElementById("implId").value.trim();
+      const email = document.getElementById("userEmail").value.trim();
 
-<script>
-  // GANTI SCRIPT_URL DI BAWAH INI DENGAN URL WEB APP APPSCRIPT TERBARU KAMU
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec";
-
-  async function fetchAssignedStores() {
-    const implId = document.getElementById("implId").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const storeListDiv = document.getElementById("storeList");
-    const loadingDiv = document.getElementById("loading");
-    const errorDiv = document.getElementById("errorMessage");
-
-    if (!implId || !email) {
-      alert("Harap isi Implementor ID dan Email!");
-      return;
-    }
-
-    // Reset UI State
-    storeListDiv.innerHTML = "";
-    errorDiv.style.display = "none";
-    loadingDiv.style.display = "block";
-
-    try {
-      const url = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
-      const response = await fetch(url);
-      const result = await response.json();
-
-      loadingDiv.style.display = "none";
-
-      if (result.status === "error") {
-        errorDiv.innerText = result.message;
-        errorDiv.style.display = "block";
+      if (!implId || !email) {
+        alert("Harap isi Implementor ID dan Email!");
         return;
       }
 
-      renderStores(result.data);
+      const btnLogin = document.getElementById("btnLogin");
+      btnLogin.innerText = "Memuat Data...";
+      btnLogin.disabled = true;
 
-    } catch (err) {
-      loadingDiv.style.display = "none";
-      errorDiv.innerText = "Gagal terhubung ke server: " + err.message;
-      errorDiv.style.display = "block";
+      try {
+        const reqUrl = `${GAS_API_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
+        
+        // Memanggil GAS tanpa header khusus agar tidak memicu error CORS
+        const res = await fetch(reqUrl);
+        const result = await res.json();
+
+        if (result.status === "success" && result.data.length > 0) {
+          document.getElementById("loginSection").classList.add("hidden");
+          document.getElementById("dashboardSection").classList.remove("hidden");
+          
+          const listDiv = document.getElementById("storeList");
+          listDiv.innerHTML = "";
+          
+          result.data.forEach(store => {
+            const statusColor = store.status.toLowerCase().includes("complete") ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800";
+
+            listDiv.innerHTML += `
+              <div class="p-3.5 border rounded-xl bg-gray-50 space-y-2 shadow-sm">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="font-bold text-sm text-gray-900">${store.storeName}</p>
+                    <p class="text-xs text-gray-500">Code: <span class="font-semibold text-blue-700">${store.storeCode}</span> | OID: ${store.oid}</p>
+                  </div>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded ${statusColor}">${store.status}</span>
+                </div>
+
+                <p class="text-xs text-gray-600"><strong>Alamat:</strong> ${store.storeAddress}</p>
+
+                <div class="grid grid-cols-2 gap-1 text-[11px] text-gray-500 bg-white p-2 rounded border">
+                  <div><strong>ASM Name:</strong> ${store.asmName}</div>
+                  <div><strong>DT Name:</strong> ${store.dtName}</div>
+                  <div><strong>Planned Date:</strong> ${store.plannedDate}</div>
+                  <div><strong>Actual Date:</strong> ${store.actualDate}</div>
+                  <div><strong>SLA Impl:</strong> ${store.slaImplementation}</div>
+                  <div><strong>SLA Status:</strong> ${store.slaStatus}</div>
+                </div>
+
+                <div class="pt-1 flex gap-2">
+                  <button onclick='openAbsenForm(${JSON.stringify(store)})' class="w-full bg-blue-700 text-white text-xs py-1.5 rounded-lg font-semibold shadow-sm">Absen</button>
+                  <button onclick='openBastForm(${JSON.stringify(store)})' class="w-full bg-purple-700 text-white text-xs py-1.5 rounded-lg font-semibold shadow-sm">Form BAST</button>
+                </div>
+              </div>
+            `;
+          });
+        } else {
+          alert("Gagal: " + (result.message || "Data toko tidak ditemukan!"));
+        }
+      } catch (err) {
+        alert("Gagal terhubung ke server. Pastikan URL Web App Apps Script sudah benar dan diset ke 'Anyone'.\nError: " + err.message);
+      } finally {
+        btnLogin.innerText = "Masuk & Lihat Dashboard";
+        btnLogin.disabled = false;
+      }
     }
-  }
 
-  function renderStores(stores) {
-    const storeListDiv = document.getElementById("storeList");
-    
-    if (!stores || stores.length === 0) {
-      storeListDiv.innerHTML = "<p>Tidak ada toko yang di-assign untuk ID ini.</p>";
-      return;
+    function openAbsenForm(store) {
+      selectedStore = store;
+      closeForms();
+      document.getElementById("absenForm").classList.remove("hidden");
+      document.getElementById("targetStoreLabel").innerText = `${store.storeName} (${store.storeCode})`;
     }
 
-    stores.forEach(store => {
-      // Pembacaan nama key JSON yang sudah disesuaikan dengan Apps Script terbaru
-      const statusClass = (store.status && store.status.toLowerCase().includes("complete")) ? "badge-success" : "badge-warning";
+    function openBastForm(store) {
+      selectedStore = store;
+      closeForms();
+      document.getElementById("bastForm").classList.remove("hidden");
+      document.getElementById("targetBastStoreLabel").innerText = `${store.storeName} (${store.storeCode})`;
+    }
 
-      const storeCard = `
-        <div class="card store-item">
-          <div style="display: flex; justify-content: space-between; align-items: start;">
-            <div>
-              <h3 style="margin: 0 0 4px 0;">${store.storeName || '-'}</h3>
-              <small style="color: #5e6c84;">Code: ${store.storeCode || '-'} | OID: ${store.oid || '-'}</small>
-            </div>
-            <span class="badge ${statusClass}">${store.status || 'Unassigned'}</span>
-          </div>
+    function closeForms() {
+      document.getElementById("absenForm").classList.add("hidden");
+      document.getElementById("bastForm").classList.add("hidden");
+    }
 
-          <p style="font-size: 13px; margin: 8px 0; color: #333;">
-            <strong>Alamat:</strong> ${store.storeAddress || '-'}
-          </p>
+    function logout() {
+      document.getElementById("loginSection").classList.remove("hidden");
+      document.getElementById("dashboardSection").classList.add("hidden");
+      closeForms();
+    }
 
-          <div class="meta-grid">
-            <div class="meta-item"><strong>ASM Name:</strong> ${store.asmName || '-'}</div>
-            <div class="meta-item"><strong>DT Name:</strong> ${store.dtName || '-'}</div>
-            <div class="meta-item"><strong>Planned Date:</strong> ${store.plannedDate || '-'}</div>
-            <div class="meta-item"><strong>Actual Date:</strong> ${store.actualDate || '-'}</div>
-            <div class="meta-item"><strong>SLA Implementation:</strong> ${store.slaImplementation || '-'}</div>
-            <div class="meta-item"><strong>SLA Status:</strong> ${store.slaStatus || '-'}</div>
-          </div>
-        </div>
-      `;
-      
-      storeListDiv.insertAdjacentHTML('beforeend', storeCard);
-    });
-  }
-</script>
+    async function submitAbsenData() {
+      const email = document.getElementById("userEmail").value.trim();
+      const implId = document.getElementById("implId").value.trim();
+      const activity = document.getElementById("activity").value.trim();
+      if (!activity) return alert("Aktivitas wajib diisi!");
 
+      const btn = document.getElementById("btnAbsen");
+      btn.innerText = "Mengirim...";
+      btn.disabled = true;
+
+      const payload = {
+        action: "submitAbsen",
+        email: email,
+        implId: implId,
+        storeName: selectedStore.storeName,
+        oid: selectedStore.oid,
+        type: document.getElementById("absenType").value,
+        workingDate: new Date().toISOString().split('T')[0],
+        activity: activity
+      };
+
+      try {
+        await fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) });
+        alert("Absen berhasil dikirim!");
+        document.getElementById("activity").value = "";
+        closeForms();
+      } catch (e) {
+        alert("Gagal mengirim absen: " + e.message);
+      } finally {
+        btn.innerText = "Kirim Absen";
+        btn.disabled = false;
+      }
+    }
+
+    async function submitBASTData() {
+      const email = document.getElementById("userEmail").value.trim();
+      const implId = document.getElementById("implId").value.trim();
+      const mName = document.getElementById("merchantName").value.trim();
+      if (!mName) return alert("Nama Tuan Toko wajib diisi!");
+
+      const btn = document.getElementById("btnBast");
+      btn.innerText = "Mengirim...";
+      btn.disabled = true;
+
+      const payload = {
+        action: "submitBAST",
+        email: email,
+        implId: implId,
+        storeCode: selectedStore.storeCode,
+        storeName: selectedStore.storeName,
+        oid: selectedStore.oid,
+        merchantName: mName,
+        merchantPhone: document.getElementById("merchantPhone").value,
+        merchantEmail: document.getElementById("merchantEmail").value,
+        imei: document.getElementById("imei").value,
+        scannerSn: document.getElementById("scannerSn").value,
+        printerSn: document.getElementById("printerSn").value,
+        visitDate: new Date().toISOString().split('T')[0]
+      };
+
+      try {
+        await fetch(GAS_API_URL, { method: "POST", body: JSON.stringify(payload) });
+        alert("Data BAST berhasil disubmit!");
+        closeForms();
+      } catch (e) {
+        alert("Gagal submit BAST: " + e.message);
+      } finally {
+        btn.innerText = "Submit BAST";
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
