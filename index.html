@@ -53,7 +53,7 @@
       <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center">
         <div>
           <h2 class="text-xl font-bold text-slate-900">Dashboard Implementor</h2>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">ID: <span id="userDisplayId" class="font-bold text-blue-600"></span></p>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span></p>
         </div>
         <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
           Keluar
@@ -105,7 +105,7 @@
             <option value="Check-In Visit">Check-In Visit Lapangan</option>
             <option value="Edukasi Aplikasi">Edukasi Aplikasi</option>
             <option value="Troubleshooting">Troubleshooting Hardware/App</option>
-            <option value="Pemasangan Posm">Pemasangan POSM / QR</option>
+            <option value="Pemasangan POSM">Pemasangan POSM / QR</option>
           </select>
         </div>
         <div>
@@ -207,6 +207,7 @@
     let currentUser = { implId: "", email: "" };
     let selectedStatuses = [];
 
+    // AUTOLOGIN
     window.onload = function() {
       const savedId = localStorage.getItem("implId");
       const savedEmail = localStorage.getItem("email");
@@ -220,11 +221,12 @@
     function showAlert(msg, isError = true) {
       const alertBox = document.getElementById("alertBox");
       alertBox.className = `p-4 rounded-xl text-sm font-medium ${isError ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`;
-      alertBox.innerText = msg;
+      alertBox.innerText = msg || (isError ? "Terjadi kesalahan sistem." : "Berhasil.");
       alertBox.classList.remove("hidden");
       setTimeout(() => alertBox.classList.add("hidden"), 5000);
     }
 
+    // HANDLER LOGIN
     function handleLogin(e) {
       e.preventDefault();
       const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
@@ -232,6 +234,7 @@
       fetchAssignedStores(implId, email);
     }
 
+    // FETCH DATA
     function fetchAssignedStores(implId, email) {
       const btnLogin = document.getElementById("btnLogin");
       if (btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
@@ -240,14 +243,14 @@
         .then(res => res.json())
         .then(res => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (res.status === "success") {
+          if (res && res.status === "success") {
             currentUser = { implId, email };
             localStorage.setItem("implId", implId);
             localStorage.setItem("email", email);
 
             document.getElementById("loginSection").classList.add("hidden");
             document.getElementById("dashboardSection").classList.remove("hidden");
-            document.getElementById("userDisplayId").innerText = implId;
+            document.getElementById("userDisplayId").innerText = implId || "-";
 
             allStoresData = res.data || [];
             selectedStatuses = [];
@@ -257,28 +260,30 @@
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
           } else {
-            showAlert(res.message, true);
+            showAlert(res ? res.message : "Gagal memuat data dari server.", true);
           }
         })
         .catch(err => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          showAlert("Terjadi kesalahan sistem: " + err.message, true);
+          showAlert("Terjadi kesalahan sistem: " + (err.message || err), true);
         });
     }
 
+    // RENDER KARTU STATUS
     function renderSummaryCards(stores) {
       const container = document.getElementById("summaryCardsContainer");
       if (!container) return;
 
       const counts = {};
       stores.forEach(s => {
-        const st = (s.status || "Unassigned").trim();
+        const st = (s && s.status ? String(s.status) : "Unassigned").trim();
         counts[st] = (counts[st] || 0) + 1;
       });
 
       let html = "";
       Object.keys(counts).forEach(status => {
         const isSelected = selectedStatuses.includes(status);
+        
         const cardStyle = isSelected 
           ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
           : "bg-white border border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100";
@@ -301,6 +306,7 @@
       container.innerHTML = html;
     }
 
+    // TOGGLE FILTER STATUS (MULTI SELECTION)
     function toggleStatusFilter(status) {
       const index = selectedStatuses.indexOf(status);
       if (index > -1) {
@@ -313,14 +319,23 @@
       filterAndRenderStores();
     }
 
+    // FILTER & RENDER DAFTAR TOKO
     function filterAndRenderStores() {
       const searchInput = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
 
       const filtered = allStoresData.filter(store => {
-        const storeStatus = (store.status || "Unassigned").trim();
+        const storeStatus = (store && store.status ? String(store.status) : "Unassigned").trim();
+        
         const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
         
-        const targetText = `${store.storeName} ${store.storeCode} ${store.oid} ${store.dtName} ${store.asmName}`.toLowerCase();
+        const targetText = [
+          store.storeName,
+          store.storeCode,
+          store.oid,
+          store.dtName,
+          store.asmName
+        ].filter(Boolean).join(" ").toLowerCase();
+
         const matchesSearch = !searchInput || targetText.includes(searchInput);
 
         return matchesStatus && matchesSearch;
@@ -329,6 +344,7 @@
       renderStoreList(filtered);
     }
 
+    // RENDER LIST TOKO KE HTML
     function renderStoreList(stores) {
       const container = document.getElementById("storeListContainer");
       if (!container) return;
@@ -340,40 +356,55 @@
 
       let html = "";
       stores.forEach((store, idx) => {
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((store.storeName || '') + ' ' + (store.storeAddress || ''))}`;
+        const storeName = store.storeName || "-";
+        const storeCode = store.storeCode || "-";
+        const oid = store.oid || "-";
+        const status = store.status || "Unassigned";
+        const storeAddress = store.storeAddress || "-";
+        const dtName = store.dtName || "-";
+        const dtCode = store.dtCode || "-";
+        const asmName = store.asmName || "-";
+        const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
+        const plannedDate = store.plannedDate || "-";
+        const actualDate = store.actualDate || "-";
+        const slaImplementation = store.slaImplementation || "-";
+        const slaStatus = store.slaStatus || "-";
+
+        const mapsQuery = [storeName, storeAddress].filter(v => v !== "-").join(" ");
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
         
         html += `
           <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             <div class="flex justify-between items-start gap-2">
               <div>
-                <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${store.storeName}</h4>
-                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${store.storeCode} | OID: ${store.oid}</p>
+                <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
+                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid}</p>
               </div>
               <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border">
-                ${store.status || 'Pending'}
+                ${status}
               </span>
             </div>
 
             <div class="text-xs text-slate-600 space-y-1">
-              <p>📍 <b>Alamat:</b> ${store.storeAddress || '-'} 
+              <p>📍 <b>Alamat:</b> ${storeAddress} 
                 <a href="${mapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps</a>
               </p>
-              <p>🚚 <b>Distributor:</b> ${store.dtName || '-'} ${store.dtCode ? `(${store.dtCode})` : ''}</p>
-              <p>👤 <b>ASM / AASM:</b> ${store.asmName || '-'} ${store.asmPhone ? `(${store.asmPhone})` : ''}</p>
+              <p>🚚 <b>Distributor:</b> ${dtName} (${dtCode})</p>
+              <p>👤 <b>ASM / AASM:</b> ${asmName} ${asmPhone}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500">
-              <div>Plan Date: <b class="text-slate-700">${store.plannedDate || '-'}</b></div>
-              <div>Actual Date: <b class="text-slate-700">${store.actualDate || '-'}</b></div>
-              <div>SLA Imp: <b class="text-slate-700">${store.slaImplementation || '-'}</b></div>
-              <div>SLA Status: <b class="text-slate-700">${store.slaStatus || '-'}</b></div>
+              <div>Plan Date: <b class="text-slate-700">${plannedDate}</b></div>
+              <div>Actual Date: <b class="text-slate-700">${actualDate}</b></div>
+              <div>SLA Imp: <b class="text-slate-700">${slaImplementation}</b></div>
+              <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
             </div>
 
             <div class="flex gap-2 pt-1">
-              <button onclick="openVisitModal('${store.storeCode}')" class="flex-1 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
+              <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
                 📷 Absen / Visit
               </button>
-              <button onclick="openBastModal('${store.storeCode}')" class="flex-1 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
+              <button onclick="openBastModal('${storeCode}')" class="flex-1 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
                 📝 Form BAST
               </button>
             </div>
@@ -384,13 +415,14 @@
       container.innerHTML = html;
     }
 
+    // MODAL CONTROL
     function openVisitModal(code) {
-      document.getElementById("visitStoreCode").value = code;
+      document.getElementById("visitStoreCode").value = code || "";
       document.getElementById("visitModal").classList.remove("hidden");
     }
 
     function openBastModal(code) {
-      document.getElementById("bastStoreCode").value = code;
+      document.getElementById("bastStoreCode").value = code || "";
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
@@ -403,9 +435,10 @@
       location.reload();
     }
 
+    // HELPER FILE TO BASE64
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
-        if (!file) return resolve(null);
+        if (!file) return resolve("");
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
@@ -413,6 +446,7 @@
       });
     }
 
+    // SUBMIT VISIT
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
@@ -420,17 +454,23 @@
       btn.disabled = true;
 
       try {
+        const storeCode = document.getElementById("visitStoreCode").value;
+        const store = allStoresData.find(s => s.storeCode === storeCode) || {};
         const fileInput = document.getElementById("visitSelfie").files[0];
         const selfieBase64 = await fileToBase64(fileInput);
 
         const payload = {
-          action: "saveVisitLog",
+          action: "submitAbsen",
           email: currentUser.email,
           implId: currentUser.implId,
-          storeCode: document.getElementById("visitStoreCode").value,
-          activityType: document.getElementById("visitActivityType").value,
+          storeCode: storeCode,
+          storeName: store.storeName || "",
+          oid: store.oid || "",
+          activity: document.getElementById("visitActivityType").value,
+          type: "Visit Lapangan",
           notes: document.getElementById("visitNotes").value,
-          selfieBase64: selfieBase64
+          photoIn: selfieBase64,
+          workingDate: new Date().toISOString().split('T')[0]
         };
 
         const res = await fetch(SCRIPT_URL, {
@@ -441,20 +481,21 @@
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
 
-        if (res.status === "success") {
-          showAlert(res.message, false);
+        if (res && res.status === "success") {
+          showAlert(res.message || "Data visit berhasil disimpan.", false);
           closeModal("visitModal");
           document.getElementById("visitForm").reset();
         } else {
-          showAlert(res.message, true);
+          showAlert(res ? res.message : "Gagal menyimpan data visit.", true);
         }
       } catch (err) {
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
-        showAlert("Gagal simpan visit: " + err.message, true);
+        showAlert("Gagal simpan visit: " + (err.message || err), true);
       }
     }
 
+    // SUBMIT BAST
     async function submitBAST(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitBAST");
@@ -462,6 +503,9 @@
       btn.disabled = true;
 
       try {
+        const storeCode = document.getElementById("bastStoreCode").value;
+        const store = allStoresData.find(s => s.storeCode === storeCode) || {};
+
         const storeFrontFile = document.getElementById("storeFrontPhoto").files[0];
         const bastDocFile = document.getElementById("bastDocument").files[0];
 
@@ -469,20 +513,23 @@
         const bastDocBase64 = await fileToBase64(bastDocFile);
 
         const payload = {
-          action: "saveBAST",
+          action: "submitBAST",
           email: currentUser.email,
           implId: currentUser.implId,
-          storeCode: document.getElementById("bastStoreCode").value,
-          ownerName: document.getElementById("ownerName").value,
-          ownerPhone: document.getElementById("ownerPhone").value,
-          ownerEmail: document.getElementById("ownerEmail").value,
-          ownerGender: document.getElementById("ownerGender").value,
-          ownerAge: document.getElementById("ownerAge").value,
-          imeiTab: document.getElementById("imeiTab").value,
-          snScanner: document.getElementById("snScanner").value,
-          snPrinter: document.getElementById("snPrinter").value,
-          storeFrontBase64: storeFrontBase64,
-          bastDocBase64: bastDocBase64
+          storeCode: storeCode,
+          storeName: store.storeName || "",
+          oid: store.oid || "",
+          merchantName: document.getElementById("ownerName").value,
+          merchantPhone: document.getElementById("ownerPhone").value,
+          merchantEmail: document.getElementById("ownerEmail").value,
+          merchantGender: document.getElementById("ownerGender").value,
+          merchantAge: document.getElementById("ownerAge").value,
+          imei: document.getElementById("imeiTab").value,
+          scannerSn: document.getElementById("snScanner").value,
+          printerSn: document.getElementById("snPrinter").value,
+          photoStore: storeFrontBase64,
+          bastFile: bastDocBase64,
+          visitDate: new Date().toISOString().split('T')[0]
         };
 
         const res = await fetch(SCRIPT_URL, {
@@ -493,17 +540,17 @@
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
 
-        if (res.status === "success") {
-          showAlert(res.message, false);
+        if (res && res.status === "success") {
+          showAlert(res.message || "BAST berhasil dikirim.", false);
           closeModal("bastModal");
           document.getElementById("bastForm").reset();
         } else {
-          showAlert(res.message, true);
+          showAlert(res ? res.message : "Gagal mengirim BAST.", true);
         }
       } catch (err) {
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
-        showAlert("Gagal simpan BAST: " + err.message, true);
+        showAlert("Gagal simpan BAST: " + (err.message || err), true);
       }
     }
   </script>
