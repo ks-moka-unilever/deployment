@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portal Implementor Lapangan</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .glass-card {
@@ -15,13 +14,11 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased">
 
-  <!-- CONTAINER UTAMA -->
   <div class="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
 
-    <!-- HEADER / ALERT ERROR -->
     <div id="alertBox" class="hidden p-4 rounded-xl text-sm font-medium transition-all"></div>
 
-    <!-- 1. FORM LOGIN -->
+    <!-- FORM LOGIN -->
     <div id="loginSection" class="glass-card p-6 sm:p-8 rounded-2xl shadow-xl border border-white max-w-md mx-auto mt-12">
       <div class="text-center space-y-2 mb-6">
         <h1 class="text-2xl font-bold text-slate-900">Portal Implementor Lapangan</h1>
@@ -46,10 +43,9 @@
       </form>
     </div>
 
-    <!-- 2. DASHBOARD UTAMA (DISEMBUNYIKAN SEBELUM LOGIN) -->
+    <!-- DASHBOARD -->
     <div id="dashboardSection" class="hidden space-y-6">
 
-      <!-- HEADER USER & LOGOUT -->
       <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center">
         <div>
           <h2 class="text-xl font-bold text-slate-900">Dashboard Implementor</h2>
@@ -60,40 +56,32 @@
         </button>
       </div>
 
-      <!-- BANNER TOTAL TOKO -->
       <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-2xl shadow-lg flex justify-between items-center">
         <span class="font-semibold text-sm">Total Toko Di-Assign Ke Anda</span>
         <span id="totalStoresBadge" class="text-3xl font-black">0</span>
       </div>
 
-      <!-- SUMMARY PROGRESS STATUS (MULTI SELECTION FILTER) -->
       <div>
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ringkasan Klasifikasi Implementation Status:</h3>
-          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk memfilter (bisa pilih multiple)</span>
+          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk memfilter</span>
         </div>
-        <div id="summaryCardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <!-- Kartu status dimasukkan lewat JavaScript -->
-        </div>
+        <div id="summaryCardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
       </div>
 
-      <!-- SEARCH BAR -->
       <div class="relative">
         <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
                placeholder="🔍 Ketik Nama Toko / Kode / OID / Distributor / ASM..." 
                class="w-full pl-4 pr-4 py-3.5 rounded-xl border border-blue-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
       </div>
 
-      <!-- DAFTAR TOKO -->
-      <div id="storeListContainer" class="space-y-4">
-        <!-- List toko di-render lewat JS -->
-      </div>
+      <div id="storeListContainer" class="space-y-4"></div>
 
     </div>
 
   </div>
 
-  <!-- MODAL VISIT LOG (ABSEN) -->
+  <!-- MODAL VISIT LOG -->
   <div id="visitModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8">
       <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Catat Absen & Visit Lapangan</h3>
@@ -199,9 +187,7 @@
     </div>
   </div>
 
-  <!-- SCRIPT LOGIKA UTAMA -->
   <script>
-    // MASUKKAN URL DEPLOYMENT APPS SCRIPT ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -217,6 +203,24 @@
         fetchAssignedStores(savedId, savedEmail);
       }
     };
+
+    // FORMATTER TANGGAL RAPI: Converts any ISO / GMT date string to '03-Sep-2026'
+    function formatDateNice(dateVal) {
+      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
+      
+      const str = String(dateVal).trim();
+      if (!str || str === "-") return "-";
+
+      const d = new Date(str);
+      if (isNaN(d.getTime())) return str; 
+
+      const day = String(d.getDate()).padStart(2, '0');
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const month = months[d.getMonth()];
+      const year = d.getFullYear();
+
+      return `${day}-${month}-${year}`;
+    }
 
     function showAlert(msg, isError = true) {
       const alertBox = document.getElementById("alertBox");
@@ -280,7 +284,6 @@
       let html = "";
       Object.keys(counts).forEach(status => {
         const isSelected = selectedStatuses.includes(status);
-        
         const cardStyle = isSelected 
           ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
           : "bg-white border border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100";
@@ -310,7 +313,6 @@
       } else {
         selectedStatuses.push(status);
       }
-      
       renderSummaryCards(allStoresData);
       filterAndRenderStores();
     }
@@ -320,7 +322,6 @@
 
       const filtered = allStoresData.filter(store => {
         const storeStatus = (store && store.status ? String(store.status) : "Unassigned").trim();
-        
         const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
         
         const targetText = [
@@ -359,21 +360,27 @@
         const dtCode = store.dtCode || "-";
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
-        const plannedDate = store.plannedDate || "-";
-        const actualDate = store.actualDate || "-";
         const slaImplementation = store.slaImplementation || "-";
         const slaStatus = store.slaStatus || "-";
 
-        // Logic Point 4: Penambahan Data Dinamis Sesuai Status
+        const stUpper = status.toUpperCase();
+
+        // LOGIKA PENAMPILAN POINT 4 SESUAI STATUS
         let extraFieldsHtml = "";
-        if (status === "Go Live - ULI") {
-          extraFieldsHtml += `<div>GL Store BAST: <b class="text-slate-700">${store.glStoreBAST || "-"}</b></div>`;
-          extraFieldsHtml += `<div>GL Comp. BAST: <b class="text-slate-700">${store.glCompleteBAST || "-"}</b></div>`;
-        } else if (status === "Go Live - Store") {
-          extraFieldsHtml += `<div>GL Plan Date: <b class="text-slate-700">${store.glPlannedDate || "-"}</b></div>`;
-          extraFieldsHtml += `<div>GL Store BAST: <b class="text-slate-700">${store.glStoreBAST || "-"}</b></div>`;
-        } else if (status === "In Progress" || status === "Scheduled") {
-          extraFieldsHtml += `<div>GL Plan Date: <b class="text-slate-700">${store.glPlannedDate || "-"}</b></div>`;
+
+        // 1. GL Planned Date (AP) -> Go Live - Store, In Progress, Scheduled
+        if (stUpper === "GO LIVE - STORE" || stUpper === "IN PROGRESS" || stUpper === "SCHEDULED") {
+          extraFieldsHtml += `<div>GL Plan Date: <b class="text-slate-700">${formatDateNice(store.glPlannedDate)}</b></div>`;
+        }
+
+        // 2. GL Store BAST (AS) -> Go Live - ULI, Go Live - Store
+        if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
+          extraFieldsHtml += `<div>GL Store BAST: <b class="text-slate-700">${formatDateNice(store.glStoreBAST)}</b></div>`;
+        }
+
+        // 3. GL Complete BAST (AT) -> Go Live - ULI
+        if (stUpper === "GO LIVE - ULI") {
+          extraFieldsHtml += `<div>GL Comp. BAST: <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
         }
 
         const mapsQuery = [storeName, storeAddress].filter(v => v !== "-").join(" ");
@@ -400,8 +407,8 @@
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500">
-              <div>Plan Date: <b class="text-slate-700">${plannedDate}</b></div>
-              <div>Actual Date: <b class="text-slate-700">${actualDate}</b></div>
+              <div>Plan Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
+              <div>Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
               <div>SLA Imp: <b class="text-slate-700">${slaImplementation}</b></div>
               <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
               ${extraFieldsHtml}
@@ -471,7 +478,6 @@
           storeName: store.storeName || "",
           oid: store.oid || "",
           activity: document.getElementById("visitActivityType").value,
-          type: "Visit Lapangan",
           notes: document.getElementById("visitNotes").value,
           photoIn: selfieBase64,
           workingDate: new Date().toISOString().split('T')[0]
