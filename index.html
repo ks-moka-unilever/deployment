@@ -28,7 +28,7 @@
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Implementor ID</label>
-          <input type="text" id="loginImplId" required placeholder="Contoh: MTI0851" 
+          <input type="text" id="loginImplId" required placeholder="Contoh: MTI0888" 
                  class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-semibold">
         </div>
         <div>
@@ -204,7 +204,7 @@
       }
     };
 
-    // FORMATTER TANGGAL RAPI: Converts any ISO / GMT date string to '03-Sep-2026'
+    // FORMAT TANGGAL RAPI: Mengubah teks tanggal ISO / GMT panjang menjadi '01-Jan-2026'
     function formatDateNice(dateVal) {
       if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
       
@@ -227,7 +227,7 @@
       alertBox.className = `p-4 rounded-xl text-sm font-medium ${isError ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`;
       alertBox.innerText = msg || (isError ? "Terjadi kesalahan sistem." : "Berhasil.");
       alertBox.classList.remove("hidden");
-      setTimeout(() => alertBox.classList.add("hidden"), 5000);
+      setTimeout(() => alertBox.classList.add("hidden"), 6000);
     }
 
     function handleLogin(e) {
@@ -241,8 +241,13 @@
       const btnLogin = document.getElementById("btnLogin");
       if (btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
 
-      fetch(`${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`)
-        .then(res => res.json())
+      const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
+
+      fetch(targetUrl)
+        .then(res => {
+          if (!res.ok) throw new Error("Respon server HTTP Error: " + res.status);
+          return res.json();
+        })
         .then(res => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
           if (res && res.status === "success") {
@@ -267,7 +272,7 @@
         })
         .catch(err => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          showAlert("Terjadi kesalahan sistem: " + (err.message || err), true);
+          showAlert("Gagal terhubung ke Google Apps Script. Pastikan 'Manage Deployment' diset ke 'Anyone' (Siapa Saja). Detail: " + err.message, true);
         });
     }
 
