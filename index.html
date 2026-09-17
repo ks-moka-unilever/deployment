@@ -375,17 +375,17 @@
 
         // 1. GL Planned Date (AP) -> Go Live - Store, In Progress, Scheduled
         if (stUpper === "GO LIVE - STORE" || stUpper === "IN PROGRESS" || stUpper === "SCHEDULED") {
-          extraFieldsHtml += `<div>GL Plan Date: <b class="text-slate-700">${formatDateNice(store.glPlannedDate)}</b></div>`;
+          extraFieldsHtml += `<div>Go Live Planned Date: <b class="text-slate-700">${formatDateNice(store.glPlannedDate)}</b></div>`;
         }
 
-        // 2. GL Store BAST (AS) -> Go Live - ULI, Go Live - Store
+        // 2. Go Live Date (Store BAST) (AS) -> Go Live - ULI, Go Live - Store
         if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
-          extraFieldsHtml += `<div>GL Store BAST: <b class="text-slate-700">${formatDateNice(store.glStoreBAST)}</b></div>`;
+          extraFieldsHtml += `<div>Go Live Date (Store BAST): <b class="text-slate-700">${formatDateNice(store.glStoreBAST)}</b></div>`;
         }
 
-        // 3. GL Complete BAST (AT) -> Go Live - ULI
+        // 3. Go Live Date (Complete BAST) (AT) -> Go Live - ULI
         if (stUpper === "GO LIVE - ULI") {
-          extraFieldsHtml += `<div>GL Comp. BAST: <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
+          extraFieldsHtml += `<div>Go Live Date (Complete BAST): <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
         }
 
         const mapsQuery = [storeName, storeAddress].filter(v => v !== "-").join(" ");
@@ -412,8 +412,8 @@
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500">
-              <div>Plan Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
-              <div>Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
+              <div>Implementation Planned Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
+              <div>Implementation Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
               <div>SLA Imp: <b class="text-slate-700">${slaImplementation}</b></div>
               <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
               ${extraFieldsHtml}
