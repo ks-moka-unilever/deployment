@@ -201,6 +201,7 @@
 
   <!-- SCRIPT LOGIKA UTAMA -->
   <script>
+    // MASUKKAN URL DEPLOYMENT APPS SCRIPT ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -352,7 +353,7 @@
         const storeName = store.storeName || "-";
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
-        const status = store.status || "Unassigned";
+        const status = (store.status || "Unassigned").trim();
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
         const dtCode = store.dtCode || "-";
@@ -362,6 +363,18 @@
         const actualDate = store.actualDate || "-";
         const slaImplementation = store.slaImplementation || "-";
         const slaStatus = store.slaStatus || "-";
+
+        // Logic Point 4: Penambahan Data Dinamis Sesuai Status
+        let extraFieldsHtml = "";
+        if (status === "Go Live - ULI") {
+          extraFieldsHtml += `<div>GL Store BAST: <b class="text-slate-700">${store.glStoreBAST || "-"}</b></div>`;
+          extraFieldsHtml += `<div>GL Comp. BAST: <b class="text-slate-700">${store.glCompleteBAST || "-"}</b></div>`;
+        } else if (status === "Go Live - Store") {
+          extraFieldsHtml += `<div>GL Plan Date: <b class="text-slate-700">${store.glPlannedDate || "-"}</b></div>`;
+          extraFieldsHtml += `<div>GL Store BAST: <b class="text-slate-700">${store.glStoreBAST || "-"}</b></div>`;
+        } else if (status === "In Progress" || status === "Scheduled") {
+          extraFieldsHtml += `<div>GL Plan Date: <b class="text-slate-700">${store.glPlannedDate || "-"}</b></div>`;
+        }
 
         const mapsQuery = [storeName, storeAddress].filter(v => v !== "-").join(" ");
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
@@ -373,7 +386,7 @@
                 <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
                 <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid}</p>
               </div>
-              <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border">
+              <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
                 ${status}
               </span>
             </div>
@@ -391,6 +404,7 @@
               <div>Actual Date: <b class="text-slate-700">${actualDate}</b></div>
               <div>SLA Imp: <b class="text-slate-700">${slaImplementation}</b></div>
               <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
+              ${extraFieldsHtml}
             </div>
 
             <div class="flex gap-2 pt-1">
