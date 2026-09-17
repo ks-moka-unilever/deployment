@@ -287,7 +287,7 @@
         })
         .catch(err => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          showAlert("Gagal terhubung ke Google Apps Script. Pastikan 'Manage Deployment' diset ke 'Anyone' (Siapa Saja). Detail: " + err.message, true);
+          showAlert("Gagal terhubung ke Google Apps Script. Detail: " + err.message, true);
         });
     }
 
@@ -350,6 +350,7 @@
           store.oid,
           store.devicePackage,
           store.dtName,
+          store.dtAddress,
           store.asmName
         ].filter(Boolean).join(" ").toLowerCase();
 
@@ -380,6 +381,7 @@
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
         const dtCode = store.dtCode || "-";
+        const dtAddress = store.dtAddress || "-";
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
         const slaImplementation = store.slaImplementation || "-";
@@ -401,9 +403,9 @@
           extraFieldsHtml += `<div>Go Live Date (Complete BAST): <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
         }
 
-        const mapsQuery = [storeName, storeAddress].filter(v => v !== "-").join(" ");
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
-        
+        const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
+        const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
+
         html += `
           <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             <div class="flex justify-between items-start gap-2">
@@ -417,10 +419,13 @@
             </div>
 
             <div class="text-xs text-slate-600 space-y-1">
-              <p>📍 <b>Alamat:</b> ${storeAddress} 
-                <a href="${mapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps</a>
+              <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
+                <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps Toko</a>
               </p>
               <p>🚚 <b>Distributor:</b> ${dtName} (${dtCode})</p>
+              <p>🏢 <b>Alamat DT:</b> ${dtAddress} 
+                ${dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 hover:underline">🗺️ Maps DT</a>` : ''}
+              </p>
               <p>👤 <b>ASM / AASM:</b> ${asmName} ${asmPhone}</p>
             </div>
 
