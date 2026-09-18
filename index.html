@@ -53,7 +53,6 @@
             ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span> 
             <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
-          <!-- REVISI POINT 3: LINKTREE HEADER -->
           <div class="mt-2">
             <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
                class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-xs font-bold transition-all">
@@ -202,7 +201,7 @@
     </div>
   </div>
 
-  <!-- REVISI POINT 2: MODAL TRAVEL FEE -->
+  <!-- MODAL TRAVEL FEE -->
   <div id="travelModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto">
       <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Pengajuan Travel Fee Visit</h3>
@@ -245,7 +244,6 @@
           </div>
         </div>
 
-        <!-- Dynamic Proposal Budget Field -->
         <div id="proposalBudgetWrapper" class="hidden space-y-1">
           <label class="font-semibold text-slate-600">Proposal Budget (Rupiah) <span class="text-rose-500">*</span></label>
           <input type="text" id="travelProposalBudget" pattern="[0-9]+" title="Hanya angka tanpa titik/koma" placeholder="Contoh: 500000" class="w-full p-2.5 border rounded-xl font-mono">
@@ -430,10 +428,10 @@
         const storeName = store.storeName || "-";
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
-        const devicePackage = store.devicePackage || "-";
-        const projectLead = store.projectLead || "-"; // REVISI POINT 1
+        const devicePackage = store.devicePackage || "-"; // FIX REVISI 1: Tipe Package (Kolom BP)
+        const projectLead = store.projectLead || "-";
         const status = (store.status || "Unassigned").trim();
-        const travelStatus = store.travelStatus || "Belum Mengajukan"; // REVISI POINT 2
+        const travelStatus = store.travelStatus || "Belum Mengajukan"; // FIX REVISI 2: Status Realtime
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
         const dtCode = store.dtCode || "-";
@@ -441,7 +439,6 @@
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
 
-        // Badge Travel Fee Formatting
         let travelBadgeClass = "bg-slate-100 text-slate-600 border-slate-200";
         if (travelStatus.toLowerCase().includes("approved") || travelStatus.toLowerCase().includes("acc")) {
           travelBadgeClass = "bg-emerald-100 text-emerald-700 border-emerald-300";
@@ -459,16 +456,14 @@
             <div class="flex justify-between items-start gap-2">
               <div>
                 <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <!-- REVISI POINT 1: PROJECT LEAD NAME DIPASANG SANGAT RAPI DENGAN OID & PACKAGE -->
                 <p class="text-xs text-slate-500 font-mono mt-0.5">
-                  Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage} | <span class="font-bold text-indigo-600">Project Lead: ${projectLead}</span>
+                  Kode Toko: ${storeCode} | OID: ${oid} | Package: <b class="text-slate-700">${devicePackage}</b> | <span class="font-bold text-indigo-600">Project Lead: ${projectLead}</span>
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1">
                 <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
                   ${status}
                 </span>
-                <!-- REVISI POINT 2: BADGE STATUS PENGAJUAN TRAVEL FEE -->
                 <span class="px-2 py-0.5 text-[9px] font-bold rounded-md border ${travelBadgeClass}">
                   Travel: ${travelStatus}
                 </span>
@@ -500,7 +495,6 @@
               <button onclick="openBastModal('${storeCode}')" class="flex-1 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
                 📝 Form BAST
               </button>
-              <!-- REVISI POINT 2: TOMBOL TRAVEL FEE -->
               <button onclick="openTravelModal('${storeCode}', '${escapeQuotes(storeName)}', '${escapeQuotes(storeAddress)}')" class="flex-1 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold text-xs rounded-xl border border-purple-200 transition-all">
                 🚀 Travel Fee
               </button>
@@ -522,7 +516,6 @@
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
-    // REVISI POINT 2: BUKA MODAL TRAVEL FEE
     function openTravelModal(code, name, address) {
       document.getElementById("travelStoreCode").value = code;
       document.getElementById("travelDisplayStoreCode").value = code;
@@ -679,7 +672,6 @@
       }
     }
 
-    // REVISI POINT 2: SUBMIT TRAVEL FEE
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
@@ -708,7 +700,7 @@
           showAlert(res.message || "Pengajuan Travel Fee Berhasil Disimpan!", false);
           closeModal("travelModal");
           document.getElementById("travelForm").reset();
-          fetchAssignedStores(currentUser.implId, currentUser.email); // Reload status
+          fetchAssignedStores(currentUser.implId, currentUser.email);
         } else {
           showAlert(res ? res.message : "Gagal mengirim Travel Fee.", true);
         }
