@@ -46,7 +46,7 @@
     <!-- DASHBOARD -->
     <div id="dashboardSection" class="hidden space-y-6">
 
-      <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center">
+      <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center flex-wrap gap-3">
         <div>
           <h2 class="text-xl font-bold text-slate-900">Dashboard Implementor</h2>
           <p class="text-xs text-slate-500 font-medium mt-0.5">
@@ -54,9 +54,16 @@
             <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
         </div>
-        <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
-          Keluar
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- REVISI 3: LINKTREE HEADER -->
+          <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
+             class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
+            <span>📚 Pusat Materi & Panduan</span>
+          </a>
+          <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+            Keluar
+          </button>
+        </div>
       </div>
 
       <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-2xl shadow-lg flex justify-between items-center">
@@ -74,7 +81,7 @@
 
       <div class="relative">
         <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Ketik Nama Toko / Kode / OID / Distributor / ASM..." 
+               placeholder="🔍 Ketik Nama Toko / Kode / OID / Distributor / ASM / Lead..." 
                class="w-full pl-4 pr-4 py-3.5 rounded-xl border border-blue-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
       </div>
 
@@ -190,6 +197,69 @@
         <div class="flex justify-end gap-2 pt-3 border-t">
           <button type="button" onclick="closeModal('bastModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
           <button type="submit" id="btnSubmitBAST" class="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim BAST</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- REVISI 2: MODAL TRAVEL FEE -->
+  <div id="travelModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto text-xs">
+      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Pengajuan Travel Visit Fee</h3>
+      <form id="travelForm" onsubmit="submitTravelFee(event)" class="space-y-3">
+        <input type="hidden" id="travelStoreCodeHidden">
+
+        <div>
+          <label class="font-semibold text-slate-600">Nama Implementor <span class="text-rose-500">*</span></label>
+          <input type="text" id="travelImplName" readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold text-slate-700">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-semibold text-slate-600">Kode Toko (18 Digit) <span class="text-rose-500">*</span></label>
+            <input type="text" id="travelStoreCode" required pattern="\d{18}" title="Kode Toko harus tepat 18 digit angka" maxlength="18" placeholder="Contoh: 123456789012345678" class="w-full p-2 border rounded-lg mt-1 font-mono">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-600">Nama Toko <span class="text-rose-500">*</span></label>
+            <input type="text" id="travelStoreName" required readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold text-slate-700">
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-600">Alamat Lengkap Toko <span class="text-rose-500">*</span></label>
+          <textarea id="travelStoreAddress" required readonly rows="2" class="w-full p-2 border rounded-lg mt-1 bg-slate-100 text-slate-700"></textarea>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-600">Alamat Lengkap Implementor <span class="text-rose-500">*</span></label>
+          <textarea id="travelImplAddress" required placeholder="Masukkan alamat lengkap domisili Anda..." rows="2" class="w-full p-2 border rounded-lg mt-1"></textarea>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-600">Kabupaten/Kota Domisili Implementor <span class="text-rose-500">*</span></label>
+          <input type="text" id="travelImplCity" required placeholder="Contoh: Jakarta Selatan" class="w-full p-2 border rounded-lg mt-1">
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-600">Jarak Domisili ke Toko (Km) <span class="text-rose-500">*</span></label>
+          <div class="relative flex items-center mt-1">
+            <input type="number" id="travelDistance" required min="1" step="any" placeholder="Masukkan angka jarak, misal: 15" oninput="handleDistanceChange(this.value)" class="w-full p-2 pr-12 border rounded-lg font-bold">
+            <span class="absolute right-3 font-bold text-slate-400 select-none">Km</span>
+          </div>
+        </div>
+
+        <div id="proposalBudgetWrapper" class="hidden">
+          <label class="font-semibold text-slate-600">Proposal Budget Rupiah <span class="text-rose-500">*</span></label>
+          <div class="relative flex items-center mt-1">
+            <span class="absolute left-3 font-bold text-slate-400 select-none">Rp</span>
+            <input type="text" id="travelProposalBudget" pattern="[0-9]+" title="Angka saja tanpa titik atau koma" placeholder="Contoh: 500000" class="w-full p-2 pl-10 border rounded-lg font-mono">
+          </div>
+          <p class="text-[10px] text-amber-600 mt-1">⚠️ Jarak melebihi 50 Km. Harap isi proposal budget dalam angka tanpa titik/koma (Contoh: 500000).</p>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t">
+          <button type="button" onclick="closeModal('travelModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
+          <button type="submit" id="btnSubmitTravel" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim Pengajuan</button>
         </div>
       </form>
     </div>
@@ -351,7 +421,8 @@
           store.devicePackage,
           store.dtName,
           store.dtAddress,
-          store.asmName
+          store.asmName,
+          store.projectLeadName
         ].filter(Boolean).join(" ").toLowerCase();
 
         const matchesSearch = !searchInput || targetText.includes(searchInput);
@@ -377,6 +448,7 @@
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
         const devicePackage = store.devicePackage || "-";
+        const projectLeadName = store.projectLeadName || "-";
         const status = (store.status || "Unassigned").trim();
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
@@ -386,6 +458,7 @@
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
         const slaImplementation = store.slaImplementation || "-";
         const slaStatus = store.slaStatus || "-";
+        const travelStatus = store.travelStatus || "Belum Diajukan";
 
         const stUpper = status.toUpperCase();
 
@@ -406,12 +479,27 @@
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
 
+        // Formatting Badge Travel Fee
+        let travelBadgeHtml = "";
+        const trLower = travelStatus.toLowerCase();
+        if (trLower.includes("approved") || trLower.includes("disetujui")) {
+          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">🟢 Travel Fee: Disetujui</span>`;
+        } else if (trLower.includes("pending") || trLower.includes("menunggu")) {
+          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-amber-100 text-amber-800 border border-amber-200">🟡 Travel Fee: Menunggu Persetujuan</span>`;
+        } else if (trLower.includes("reject") || trLower.includes("ditolak")) {
+          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-rose-100 text-rose-800 border border-rose-200">🔴 Travel Fee: Ditolak</span>`;
+        } else {
+          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-600 border border-slate-200">⚪ Travel Fee: Belum Diajukan</span>`;
+        }
+
         html += `
           <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             <div class="flex justify-between items-start gap-2">
               <div>
                 <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage}</p>
+                <!-- REVISI 1: PENAMBAHAN PROJECT LEAD NAME DI SAMPING OID/PACKAGE -->
+                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage} | Lead: <b class="text-slate-700">${projectLeadName}</b></p>
+                <div class="mt-1.5">${travelBadgeHtml}</div>
               </div>
               <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
                 ${status}
@@ -437,12 +525,16 @@
               ${extraFieldsHtml}
             </div>
 
-            <div class="flex gap-2 pt-1">
-              <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
+            <!-- REVISI 2: TOMBOL TAMBAHAN PENGASUHAN TRAVEL FEE -->
+            <div class="flex gap-2 pt-1 flex-wrap sm:flex-nowrap">
+              <button onclick="openVisitModal('${storeCode}')" class="flex-1 min-w-[120px] py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
                 📷 Absen / Visit
               </button>
-              <button onclick="openBastModal('${storeCode}')" class="flex-1 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
+              <button onclick="openBastModal('${storeCode}')" class="flex-1 min-w-[120px] py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
                 📝 Form BAST
+              </button>
+              <button onclick="openTravelModal('${storeCode}')" class="flex-1 min-w-[120px] py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold text-xs rounded-xl border border-amber-200 transition-all">
+                🚗 Travel Fee
               </button>
             </div>
           </div>
@@ -460,6 +552,39 @@
     function openBastModal(code) {
       document.getElementById("bastStoreCode").value = code || "";
       document.getElementById("bastModal").classList.remove("hidden");
+    }
+
+    // REVISI 2: AMBIL DATA TOKO & BUKA MODAL TRAVEL FEE
+    function openTravelModal(code) {
+      const store = allStoresData.find(s => s.storeCode === code) || {};
+      
+      document.getElementById("travelStoreCodeHidden").value = code || "";
+      document.getElementById("travelImplName").value = currentUser.name || currentUser.implId || "";
+      document.getElementById("travelStoreCode").value = store.storeCode || "";
+      document.getElementById("travelStoreName").value = store.storeName || "";
+      document.getElementById("travelStoreAddress").value = store.storeAddress || "";
+      
+      document.getElementById("travelDistance").value = "";
+      document.getElementById("travelProposalBudget").value = "";
+      document.getElementById("proposalBudgetWrapper").classList.add("hidden");
+      document.getElementById("travelProposalBudget").removeAttribute("required");
+
+      document.getElementById("travelModal").classList.remove("hidden");
+    }
+
+    function handleDistanceChange(val) {
+      const dist = parseFloat(val);
+      const budgetWrapper = document.getElementById("proposalBudgetWrapper");
+      const budgetInput = document.getElementById("travelProposalBudget");
+
+      if (!isNaN(dist) && dist > 50) {
+        budgetWrapper.classList.remove("hidden");
+        budgetInput.setAttribute("required", "required");
+      } else {
+        budgetWrapper.classList.add("hidden");
+        budgetInput.removeAttribute("required");
+        budgetInput.value = "";
+      }
     }
 
     function closeModal(id) {
@@ -583,6 +708,51 @@
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
         showAlert("Gagal simpan BAST: " + (err.message || err), true);
+      }
+    }
+
+    // REVISI 2: SUBMIT PENGAJUAN TRAVEL FEE
+    async function submitTravelFee(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmitTravel");
+      btn.innerText = "Mengirim...";
+      btn.disabled = true;
+
+      try {
+        const payload = {
+          action: "submitTravelFee",
+          userName: currentUser.name || currentUser.implId,
+          implId: currentUser.implId,
+          storeCode: document.getElementById("travelStoreCode").value,
+          storeName: document.getElementById("travelStoreName").value,
+          storeAddress: document.getElementById("travelStoreAddress").value,
+          implAddress: document.getElementById("travelImplAddress").value,
+          implCity: document.getElementById("travelImplCity").value,
+          distance: document.getElementById("travelDistance").value,
+          proposalBudget: document.getElementById("travelProposalBudget").value || "-"
+        };
+
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        btn.innerText = "Kirim Pengajuan";
+        btn.disabled = false;
+
+        if (res && res.status === "success") {
+          showAlert(res.message || "Pengajuan Travel Fee berhasil dikirim.", false);
+          closeModal("travelModal");
+          document.getElementById("travelForm").reset();
+          // Re-fetch data untuk memperbarui status badge
+          fetchAssignedStores(currentUser.implId, currentUser.email);
+        } else {
+          showAlert(res ? res.message : "Gagal mengirim pengajuan travel fee.", true);
+        }
+      } catch (err) {
+        btn.innerText = "Kirim Pengajuan";
+        btn.disabled = false;
+        showAlert("Gagal simpan pengajuan travel fee: " + (err.message || err), true);
       }
     }
   </script>
