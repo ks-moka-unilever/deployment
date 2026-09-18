@@ -4,18 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Implementor Portal</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
-  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans">
 
   <!-- ALERT NOTIFICATION -->
   <div id="alertContainer" class="fixed top-4 right-4 z-50 max-w-sm w-full hidden">
@@ -29,24 +21,24 @@
   </div>
 
   <!-- LOGIN SECTION -->
-  <section id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-900 to-indigo-800">
-    <div class="glass-card max-w-md w-full p-8 rounded-2xl shadow-2xl border border-white/20 text-center">
+  <section id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-slate-900">
+    <div class="bg-slate-800 max-w-md w-full p-8 rounded-2xl shadow-2xl border border-slate-700 text-center">
       <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white text-2xl shadow-lg shadow-blue-500/30">
         <i class="fa-solid fa-user-check"></i>
       </div>
-      <h2 class="text-2xl font-bold text-slate-800 mb-1">Implementor Portal</h2>
-      <p class="text-sm text-slate-500 mb-6">Silakan masuk menggunakan identitas terdaftar Anda</p>
+      <h2 class="text-2xl font-bold text-white mb-1">Implementor Portal</h2>
+      <p class="text-sm text-slate-400 mb-6">Silakan masuk menggunakan identitas terdaftar Anda</p>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-left">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Implementor ID</label>
-          <input type="text" id="inputImplId" required placeholder="Contoh: IMP-001" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all uppercase">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Implementor ID</label>
+          <input type="text" id="inputImplId" required placeholder="Contoh: MTI0888" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all uppercase">
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Email Terdaftar</label>
-          <input type="email" id="inputEmail" required placeholder="nama@email.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Email Terdaftar</label>
+          <input type="email" id="inputEmail" required placeholder="nama@email.com" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all">
         </div>
-        <button type="submit" id="btnLogin" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 mt-2">
+        <button type="submit" id="btnLogin" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 mt-2">
           <span>Masuk Portal</span>
           <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
@@ -56,129 +48,109 @@
 
   <!-- DASHBOARD SECTION -->
   <section id="dashboardSection" class="hidden flex-1 flex flex-col">
-    <!-- Navbar -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <nav class="bg-slate-800 border-b border-slate-700 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-500/20">
             IP
           </div>
           <div>
-            <h1 class="text-sm font-bold text-slate-800 leading-tight">Implementor Portal</h1>
-            <p class="text-xs text-slate-500">
-              ID: <span id="userDisplayId" class="font-semibold text-slate-700"></span>
-              <span id="userDisplayNameWrapper" class="hidden"> | <span id="userDisplayName" class="font-semibold text-blue-600"></span></span>
+            <h1 class="text-sm font-bold text-white leading-tight">Implementor Portal</h1>
+            <p class="text-xs text-slate-400">
+              ID: <span id="userDisplayId" class="font-semibold text-slate-200"></span>
+              <span id="userDisplayNameWrapper" class="hidden"> | <span id="userDisplayName" class="font-semibold text-blue-400"></span></span>
             </p>
           </div>
         </div>
-        <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold transition-all flex items-center gap-1.5">
+        <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs font-semibold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-right-from-bracket"></i>
           <span class="hidden sm:inline">Keluar</span>
         </button>
       </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-6 w-full space-y-6 flex-1">
-      
-      <!-- Summary Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="summaryCards">
-        <!-- Rendered by JS -->
-      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="summaryCards"></div>
 
-      <!-- Controls & Filter Header -->
-      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+      <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm space-y-4">
         <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
           <div class="relative w-full sm:w-80">
-            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-            <input type="text" id="searchInput" oninput="filterAndRenderStores()" placeholder="Cari Toko, OID, atau DT..." class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-500 text-sm"></i>
+            <input type="text" id="searchInput" oninput="filterAndRenderStores()" placeholder="Cari Toko, OID, atau DT..." class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
           </div>
           <div class="flex items-center gap-2 w-full sm:w-auto">
-            <span class="text-xs text-slate-500 font-medium">Total Toko: <strong id="totalStoresBadge" class="text-slate-800">0</strong></span>
+            <span class="text-xs text-slate-400 font-medium">Total Toko: <strong id="totalStoresBadge" class="text-white">0</strong></span>
           </div>
         </div>
-
-        <!-- Filter Badges / Status -->
-        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100" id="statusFilterBadges">
-          <!-- Rendered by JS -->
-        </div>
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-700" id="statusFilterBadges"></div>
       </div>
 
-      <!-- Store List Grid -->
-      <div id="storeListGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Rendered by JS -->
-      </div>
+      <div id="storeListGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
-      <!-- Empty State -->
-      <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-200">
-        <i class="fa-solid fa-store-slash text-4xl text-slate-300 mb-3"></i>
-        <p class="text-slate-500 font-medium text-sm">Tidak ada data toko yang cocok dengan pencarian.</p>
+      <div id="emptyState" class="hidden text-center py-12 bg-slate-800 rounded-2xl border border-slate-700">
+        <i class="fa-solid fa-store-slash text-4xl text-slate-600 mb-3"></i>
+        <p class="text-slate-400 font-medium text-sm">Tidak ada data toko yang cocok dengan pencarian.</p>
       </div>
-
     </main>
   </section>
 
   <!-- MODAL ABSEN VISIT -->
-  <div id="modalAbsen" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white max-w-lg w-full rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
-          <i class="fa-solid fa-camera text-blue-600"></i> Form Absen Visit
+  <div id="modalAbsen" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-800 max-w-lg w-full rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-slate-800/50 border-b border-slate-700 flex items-center justify-between">
+        <h3 class="font-bold text-white flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-camera text-blue-400"></i> Form Absen Visit
         </h3>
-        <button onclick="closeModal('modalAbsen')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <button onclick="closeModal('modalAbsen')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-      
       <form id="formAbsen" onsubmit="submitFormAbsen(event)" class="p-5 space-y-4 overflow-y-auto text-sm">
         <input type="hidden" id="absenStoreCode">
         <input type="hidden" id="absenStoreName">
         <input type="hidden" id="absenOid">
 
-        <div class="bg-blue-50 p-3 rounded-xl border border-blue-100 space-y-1">
-          <p class="text-xs text-blue-600 font-medium">Toko Tujuan:</p>
-          <p class="font-bold text-slate-800" id="absenTargetDisplay"></p>
+        <div class="bg-blue-950/40 p-3 rounded-xl border border-blue-800/50 space-y-1">
+          <p class="text-xs text-blue-400 font-medium">Toko Tujuan:</p>
+          <p class="font-bold text-white" id="absenTargetDisplay"></p>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Visit</label>
-          <input type="date" id="absenWorkingDate" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Tanggal Visit</label>
+          <input type="date" id="absenWorkingDate" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-blue-500">
         </div>
-
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Aktivitas</label>
-          <select id="absenActivity" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Aktivitas</label>
+          <select id="absenActivity" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-blue-500">
             <option value="Visit & Edukasi Toko">Visit & Edukasi Toko</option>
             <option value="Pemasangan Perangkat (Go Live)">Pemasangan Perangkat (Go Live)</option>
             <option value="Maintenance / Troubleshooting">Maintenance / Troubleshooting</option>
             <option value="Pengambilan Perangkat (BAST)">Pengambilan Perangkat (BAST)</option>
           </select>
         </div>
-
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Catatan Visit</label>
-          <textarea id="absenNotes" rows="3" placeholder="Tulis catatan atau kendala di lapangan..." class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500"></textarea>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Catatan Visit</label>
+          <textarea id="absenNotes" rows="3" placeholder="Tulis catatan atau kendala..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Foto Visit (Selfie / Kondisi Toko)</label>
+          <input type="file" id="absenPhoto" accept="image/*" capture="environment" required class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500">
         </div>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Foto Visit (Selfie / Kondisi Toko)</label>
-          <input type="file" id="absenPhoto" accept="image/*" capture="environment" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-        </div>
-
-        <div class="pt-3 border-t flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modalAbsen')" class="px-4 py-2 rounded-xl border text-slate-600 hover:bg-slate-50 font-semibold text-xs">Batal</button>
-          <button type="submit" id="btnSubmitAbsen" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-md shadow-blue-500/20">Kirim Absensi</button>
+        <div class="pt-3 border-t border-slate-700 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modalAbsen')" class="px-4 py-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-700 font-semibold text-xs">Batal</button>
+          <button type="submit" id="btnSubmitAbsen" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-md shadow-blue-500/20">Kirim Absensi</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL BAST -->
-  <div id="modalBAST" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white max-w-xl w-full rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
-      <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-        <h3 class="font-bold text-slate-800 flex items-center gap-2 text-sm">
-          <i class="fa-solid fa-file-signature text-emerald-600"></i> Form Submission BAST
+  <div id="modalBAST" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-800 max-w-xl w-full rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-slate-800/50 border-b border-slate-700 flex items-center justify-between">
+        <h3 class="font-bold text-white flex items-center gap-2 text-sm">
+          <i class="fa-solid fa-file-signature text-emerald-400"></i> Form Submission BAST
         </h3>
-        <button onclick="closeModal('modalBAST')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <button onclick="closeModal('modalBAST')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
 
       <form id="formBAST" onsubmit="submitFormBAST(event)" class="p-5 space-y-4 overflow-y-auto text-sm">
@@ -186,95 +158,90 @@
         <input type="hidden" id="bastStoreName">
         <input type="hidden" id="bastOid">
 
-        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100 space-y-1">
-          <p class="text-xs text-emerald-600 font-medium">Toko Tujuan:</p>
-          <p class="font-bold text-slate-800" id="bastTargetDisplay"></p>
+        <div class="bg-emerald-950/40 p-3 rounded-xl border border-emerald-800/50 space-y-1">
+          <p class="text-xs text-emerald-400 font-medium">Toko Tujuan:</p>
+          <p class="font-bold text-white" id="bastTargetDisplay"></p>
         </div>
 
-        <!-- Section 1: Informasi PIC Toko -->
         <div class="space-y-3">
-          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider border-b pb-1">Data Owner / PIC Toko</h4>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Data Owner / PIC Toko</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Owner / PIC</label>
-              <input type="text" id="bastMerchantName" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Owner / PIC</label>
+              <input type="text" id="bastMerchantName" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">No. Handphone</label>
-              <input type="tel" id="bastMerchantPhone" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">No. Handphone</label>
+              <input type="tel" id="bastMerchantPhone" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500">
             </div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Email</label>
-              <input type="email" id="bastMerchantEmail" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Email</label>
+              <input type="email" id="bastMerchantEmail" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
-              <select id="bastMerchantGender" required class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Jenis Kelamin</label>
+              <select id="bastMerchantGender" required class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500">
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Estimasi Umur</label>
-              <input type="number" id="bastMerchantAge" placeholder="25" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Estimasi Umur</label>
+              <input type="number" id="bastMerchantAge" placeholder="25" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500">
             </div>
           </div>
         </div>
 
-        <!-- Section 2: Serial Number Perangkat -->
         <div class="space-y-3 pt-2">
-          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider border-b pb-1">Detail Perangkat</h4>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Detail Perangkat</h4>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">IMEI Tablet</label>
-              <input type="text" id="bastImei" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 uppercase">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">IMEI Tablet</label>
+              <input type="text" id="bastImei" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500 uppercase">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">SN Scanner</label>
-              <input type="text" id="bastScannerSn" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 uppercase">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">SN Scanner</label>
+              <input type="text" id="bastScannerSn" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500 uppercase">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">SN Printer</label>
-              <input type="text" id="bastPrinterSn" class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 uppercase">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">SN Printer</label>
+              <input type="text" id="bastPrinterSn" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white focus:ring-2 focus:ring-emerald-500 uppercase">
             </div>
           </div>
         </div>
 
-        <!-- Section 3: Lampiran File -->
         <div class="space-y-3 pt-2">
-          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider border-b pb-1">Lampiran</h4>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-1">Lampiran</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Foto Depan Toko</label>
-              <input type="file" id="bastPhotoStore" accept="image/*" capture="environment" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-emerald-50 file:text-emerald-700">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Foto Depan Toko</label>
+              <input type="file" id="bastPhotoStore" accept="image/*" capture="environment" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-emerald-600 file:text-white">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Dokumen BAST (PDF/Gambar)</label>
-              <input type="file" id="bastFile" accept="image/*,application/pdf" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-emerald-50 file:text-emerald-700">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Dokumen BAST (PDF/Gambar)</label>
+              <input type="file" id="bastFile" accept="image/*,application/pdf" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:bg-emerald-600 file:text-white">
             </div>
           </div>
         </div>
 
-        <div class="pt-3 border-t flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modalBAST')" class="px-4 py-2 rounded-xl border text-slate-600 hover:bg-slate-50 font-semibold text-xs">Batal</button>
-          <button type="submit" id="btnSubmitBAST" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-md shadow-emerald-500/20">Kirim Dokumen BAST</button>
+        <div class="pt-3 border-t border-slate-700 flex justify-end gap-2">
+          <button type="button" onclick="closeModal('modalBAST')" class="px-4 py-2 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-700 font-semibold text-xs">Batal</button>
+          <button type="submit" id="btnSubmitBAST" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-500/20">Kirim Dokumen BAST</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- JAVASCRIPT LOGIC -->
   <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT SIKLUS TERBARU DI SINI
+    // MASUKKAN WEB APP URL DARI DEPLOYMENT APPS SCRIPT ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec";
 
     let currentUser = { implId: "", email: "", name: "" };
     let allStoresData = [];
     let selectedStatuses = [];
 
-    // --- INITIALIZATION ---
     window.addEventListener("DOMContentLoaded", () => {
       const savedImplId = localStorage.getItem("implId");
       const savedEmail = localStorage.getItem("email");
@@ -286,7 +253,6 @@
       }
     });
 
-    // --- LOGIN & LOGOUT ---
     function handleLogin(e) {
       e.preventDefault();
       const implId = document.getElementById("inputImplId").value.trim().toUpperCase();
@@ -304,13 +270,11 @@
       localStorage.removeItem("email");
       currentUser = { implId: "", email: "", name: "" };
       allStoresData = [];
-      
       document.getElementById("dashboardSection").classList.add("hidden");
       document.getElementById("loginSection").classList.remove("hidden");
       showAlert("Berhasil keluar dari akun.");
     }
 
-    // --- FETCH DATA STORE FROM BACKEND ---
     function fetchAssignedStores(implId, email) {
       const btnLogin = document.getElementById("btnLogin");
       if (btnLogin) btnLogin.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Memuat Data...</span>`;
@@ -358,7 +322,6 @@
         });
     }
 
-    // --- CARDS & STATUS FILTERS ---
     function renderSummaryCards(stores) {
       const summaryContainer = document.getElementById("summaryCards");
       const total = stores.length;
@@ -370,21 +333,21 @@
       }, {});
 
       summaryContainer.innerHTML = `
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium">Total Toko</p>
-          <h3 class="text-2xl font-bold text-slate-800">${total}</h3>
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+          <p class="text-xs text-slate-400 font-medium">Total Toko</p>
+          <h3 class="text-2xl font-bold text-white">${total}</h3>
         </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium">Complete</p>
-          <h3 class="text-2xl font-bold text-emerald-600">${counts['Complete'] || 0}</h3>
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+          <p class="text-xs text-slate-400 font-medium">Complete</p>
+          <h3 class="text-2xl font-bold text-emerald-400">${counts['Complete'] || 0}</h3>
         </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium">In Progress</p>
-          <h3 class="text-2xl font-bold text-amber-500">${counts['In Progress'] || counts['In progress'] || 0}</h3>
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+          <p class="text-xs text-slate-400 font-medium">In Progress</p>
+          <h3 class="text-2xl font-bold text-amber-400">${counts['In Progress'] || counts['In progress'] || 0}</h3>
         </div>
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-          <p class="text-xs text-slate-500 font-medium">Unassigned / Pending</p>
-          <h3 class="text-2xl font-bold text-slate-400">${counts['Unassigned'] || counts['Pending'] || 0}</h3>
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-sm">
+          <p class="text-xs text-slate-400 font-medium">Unassigned / Pending</p>
+          <h3 class="text-2xl font-bold text-slate-500">${counts['Unassigned'] || counts['Pending'] || 0}</h3>
         </div>
       `;
     }
@@ -398,7 +361,7 @@
           Semua
         </button>
       ` + statuses.map(st => `
-        <button onclick="toggleStatusFilter('${st}')" id="filterBadge-${st.replace(/\s+/g, '_')}" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+        <button onclick="toggleStatusFilter('${st}')" id="filterBadge-${st.replace(/\s+/g, '_')}" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all">
           ${st}
         </button>
       `).join('');
@@ -416,12 +379,11 @@
         }
       }
 
-      // Update UI Badges
       const allBtn = document.getElementById('filterBadge-ALL');
       if (selectedStatuses.length === 0) {
         allBtn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white transition-all";
       } else {
-        allBtn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+        allBtn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all";
       }
 
       const buttons = document.querySelectorAll("[id^='filterBadge-']");
@@ -431,7 +393,7 @@
         if (selectedStatuses.includes(key)) {
           btn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white transition-all";
         } else {
-          btn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all";
+          btn.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-700 text-slate-300 hover:bg-slate-600 transition-all";
         }
       });
 
@@ -465,12 +427,12 @@
 
       emptyState.classList.add("hidden");
       grid.innerHTML = filtered.map(store => `
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div class="bg-slate-800 rounded-2xl border border-slate-700 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
           <div class="space-y-3">
             <div class="flex items-start justify-between gap-2">
               <div>
-                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md">OID: ${store.oid || '-'}</span>
-                <h3 class="font-bold text-slate-800 text-base mt-1 line-clamp-1">${store.storeName}</h3>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 bg-slate-700 text-slate-300 rounded-md">OID: ${store.oid || '-'}</span>
+                <h3 class="font-bold text-white text-base mt-1 line-clamp-1">${store.storeName}</h3>
                 <p class="text-xs text-slate-400 font-mono">${store.storeCode}</p>
               </div>
               <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${getStatusBadgeClass(store.status)} whitespace-nowrap">
@@ -478,18 +440,18 @@
               </span>
             </div>
 
-            <div class="text-xs text-slate-500 space-y-1 pt-1 border-t border-slate-100">
-              <p><i class="fa-solid fa-location-dot text-slate-400 w-4"></i> ${store.storeAddress || '-'}</p>
-              <p><i class="fa-solid fa-truck text-slate-400 w-4"></i> ${store.dtName || '-'} (${store.dtCode || '-'})</p>
-              <p><i class="fa-solid fa-box text-slate-400 w-4"></i> Package: <span class="font-medium text-slate-700">${store.devicePackage || '-'}</span></p>
+            <div class="text-xs text-slate-400 space-y-1 pt-1 border-t border-slate-700">
+              <p><i class="fa-solid fa-location-dot text-slate-500 w-4"></i> ${store.storeAddress || '-'}</p>
+              <p><i class="fa-solid fa-truck text-slate-500 w-4"></i> ${store.dtName || '-'} (${store.dtCode || '-'})</p>
+              <p><i class="fa-solid fa-box text-slate-500 w-4"></i> Package: <span class="font-medium text-slate-200">${store.devicePackage || '-'}</span></p>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 pt-4 mt-3 border-t border-slate-100">
-            <button onclick="openModalAbsen('${store.storeCode}', '${escapeQuotes(store.storeName)}', '${store.oid}')" class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+          <div class="grid grid-cols-2 gap-2 pt-4 mt-3 border-t border-slate-700">
+            <button onclick="openModalAbsen('${store.storeCode}', '${escapeQuotes(store.storeName)}', '${store.oid}')" class="w-full py-2 bg-blue-900/40 hover:bg-blue-900/60 text-blue-400 font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 border border-blue-800/50">
               <i class="fa-solid fa-camera"></i> Absen Visit
             </button>
-            <button onclick="openModalBAST('${store.storeCode}', '${escapeQuotes(store.storeName)}', '${store.oid}')" class="w-full py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5">
+            <button onclick="openModalBAST('${store.storeCode}', '${escapeQuotes(store.storeName)}', '${store.oid}')" class="w-full py-2 bg-emerald-900/40 hover:bg-emerald-900/60 text-emerald-400 font-semibold rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 border border-emerald-800/50">
               <i class="fa-solid fa-file-signature"></i> Form BAST
             </button>
           </div>
@@ -497,7 +459,6 @@
       `).join('');
     }
 
-    // --- MODAL & FORM HANDLERS ---
     function openModalAbsen(code, name, oid) {
       document.getElementById("absenStoreCode").value = code;
       document.getElementById("absenStoreName").value = name;
@@ -607,7 +568,6 @@
       }
     }
 
-    // --- HELPER FUNCTIONS ---
     async function sendPostRequest(payload) {
       const response = await fetch(SCRIPT_URL, {
         method: "POST",
@@ -631,9 +591,9 @@
 
     function getStatusBadgeClass(status) {
       const st = (status || "").toLowerCase();
-      if (st.includes("complete")) return "bg-emerald-100 text-emerald-700";
-      if (st.includes("progress")) return "bg-amber-100 text-amber-700";
-      return "bg-slate-100 text-slate-600";
+      if (st.includes("complete")) return "bg-emerald-900/50 text-emerald-400 border border-emerald-700/50";
+      if (st.includes("progress")) return "bg-amber-900/50 text-amber-400 border border-amber-700/50";
+      return "bg-slate-700 text-slate-300";
     }
 
     function escapeQuotes(str) {
