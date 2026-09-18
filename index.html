@@ -3,477 +3,517 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Implementor Lapangan</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Portal Implementor Moka</title>
   <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; min-height: 100vh; padding: 16px; display: flex; justify-content: center; align-items: flex-start; }
+    
+    /* STYLES LOGIN */
+    .login-container { width: 100%; max-width: 420px; margin-top: 40px; }
+    .card { background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 32px; }
+    .title { text-align: center; font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+    .subtitle { text-align: center; font-size: 14px; color: #64748b; margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .btn { width: 100%; padding: 12px; background-color: #1d4ed8; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .btn:hover { background-color: #1e40af; }
+    .btn:disabled { background-color: #94a3b8; cursor: not-allowed; }
+    
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff; border-radius: 50%; border-top-color: transparent; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* STYLES DASHBOARD */
+    .dashboard-container { width: 100%; max-width: 850px; display: none; }
+    .header-card { background: #ffffff; padding: 20px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .header-title { font-size: 20px; font-weight: 700; color: #1e293b; }
+    .header-sub { font-size: 13px; color: #64748b; margin-top: 2px; }
+    .btn-logout { background-color: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; }
+
+    /* LINKTREE BANNER (POIN 3) */
+    .linktree-banner { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+    .linktree-text { font-size: 12.5px; font-weight: 600; color: #334155; }
+    .linktree-btn { background: #0284c7; color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; }
+    .linktree-btn:hover { background: #0369a1; }
+
+    /* KLASIFIKASI STATUS SUMMARY */
+    .summary-section { margin-bottom: 20px; }
+    .summary-title { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 10px; }
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+    .summary-card { background: #ffffff; padding: 12px 14px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-left: 4px solid #2563eb; }
+    .summary-card .count { font-size: 22px; font-weight: 700; color: #0f172a; }
+    .summary-card .label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-top: 2px; }
+
+    /* SEARCH BAR */
+    .search-box { margin-bottom: 16px; }
+
+    /* STORE CARDS */
+    .store-card { background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 16px; border-top: 4px solid #2563eb; }
+    .store-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+    .store-name { font-size: 17px; font-weight: 700; color: #0f172a; }
+    .store-detail { font-size: 13.5px; color: #475569; margin-bottom: 4px; line-height: 1.4; }
+    
+    .sku-badge { display: inline-flex; align-items: center; background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 700; margin-top: 8px; border: 1px solid #bae6fd; }
+    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; background: #f1f5f9; color: #334155; }
+    
+    /* STATUS TRAVEL BADGE */
+    .travel-status-badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; margin-left: 6px; }
+    .ts-approved { background: #dcfce7; color: #15803d; }
+    .ts-pending { background: #fef9c3; color: #a16207; }
+    .ts-rejected { background: #fee2e2; color: #b91c1c; }
+    .ts-none { background: #f1f5f9; color: #64748b; }
+
+    .action-bar { margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9; display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-action { padding: 9px 14px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: none; cursor: pointer; background: #2563eb; color: white; transition: background 0.2s; }
+    .btn-action.bast { background: #059669; }
+    .btn-action.bast:hover { background: #047857; }
+    .btn-action.travel { background: #d97706; }
+    .btn-action.travel:hover { background: #b45309; }
+    .btn-action:hover { background: #1d4ed8; }
+
+    /* MODALS */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+    .modal-content { background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 480px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+    .modal-header { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .unit-input { display: flex; align-items: center; gap: 8px; }
+    .unit-text { font-size: 13px; font-weight: 700; color: #475569; }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased">
+<body>
 
-  <div class="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
-
-    <div id="alertBox" class="hidden p-4 rounded-xl text-sm font-medium transition-all"></div>
-
-    <!-- FORM LOGIN -->
-    <div id="loginSection" class="glass-card p-6 sm:p-8 rounded-2xl shadow-xl border border-white max-w-md mx-auto mt-12">
-      <div class="text-center space-y-2 mb-6">
-        <h1 class="text-2xl font-bold text-slate-900">Portal Implementor Lapangan</h1>
-        <p class="text-sm text-slate-500">Silakan login menggunakan kredensial terdaftar Anda</p>
-      </div>
-
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Implementor ID</label>
-          <input type="text" id="loginImplId" required placeholder="Contoh: MTI0888" 
-                 class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-semibold">
+  <!-- PAGE 1: LOGIN FORM -->
+  <div id="loginView" class="login-container">
+    <div class="card">
+      <h1 class="title">Moka Deployment</h1>
+      <p class="subtitle">Portal Implementor Lapangan</p>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="implId">Implementor ID</label>
+          <input type="text" id="implId" placeholder="MTI001" required autocomplete="off">
         </div>
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Email Terdaftar</label>
-          <input type="email" id="loginEmail" required placeholder="nama@email.com" 
-                 class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        
+        <div class="form-group">
+          <label for="email">Email Terdaftar</label>
+          <input type="email" id="email" placeholder="namaemail@domain.com" required autocomplete="off">
         </div>
-        <button type="submit" id="btnLogin" 
-                class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex justify-center items-center gap-2">
-          <span>Masuk Portal</span>
+        
+        <button type="submit" id="submitBtn" class="btn">
+          <span id="btnText">Masuk & Lihat Dashboard</span>
         </button>
       </form>
     </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboardSection" class="hidden space-y-6">
-
-      <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center">
-        <div>
-          <h2 class="text-xl font-bold text-slate-900">Dashboard Implementor</h2>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">
-            ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span> 
-            <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
-          </p>
-        </div>
-        <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
-          Keluar
-        </button>
-      </div>
-
-      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-2xl shadow-lg flex justify-between items-center">
-        <span class="font-semibold text-sm">Total Toko Di-Assign Ke Anda</span>
-        <span id="totalStoresBadge" class="text-3xl font-black">0</span>
-      </div>
-
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ringkasan Klasifikasi Implementation Status:</h3>
-          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk memfilter</span>
-        </div>
-        <div id="summaryCardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
-      </div>
-
-      <div class="relative">
-        <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Ketik Nama Toko / Kode / OID / Distributor / ASM..." 
-               class="w-full pl-4 pr-4 py-3.5 rounded-xl border border-blue-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
-      </div>
-
-      <div id="storeListContainer" class="space-y-4"></div>
-
-    </div>
-
   </div>
 
-  <!-- MODAL VISIT LOG -->
-  <div id="visitModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8">
-      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Catat Absen & Visit Lapangan</h3>
-      <form id="visitForm" onsubmit="submitVisitLog(event)" class="space-y-3">
-        <input type="hidden" id="visitStoreCode">
+  <!-- PAGE 2: DASHBOARD -->
+  <div id="dashboardView" class="dashboard-container">
+    <div class="header-card">
+      <div class="header-top">
         <div>
-          <label class="block text-xs font-semibold text-slate-600">Tipe Aktivitas <span class="text-rose-500">*</span></label>
-          <select id="visitActivityType" required class="w-full p-2.5 border rounded-xl text-sm mt-1 bg-white">
-            <option value="" disabled selected>-- Pilih Aktivitas --</option>
-            <option value="Check-In Visit">Check-In Visit Lapangan</option>
-            <option value="Edukasi Aplikasi">Edukasi Aplikasi</option>
-            <option value="Troubleshooting">Troubleshooting Hardware/App</option>
-            <option value="Pemasangan POSM">Pemasangan POSM / QR</option>
+          <div class="header-title">Dashboard Implementor</div>
+          <div id="userInfo" class="header-sub">Memuat data...</div>
+        </div>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+      </div>
+
+      <!-- LINKTREE BANNER (POIN 3) -->
+      <div class="linktree-banner">
+        <span class="linktree-text">📚 Pusat Materi & Tutorial FS</span>
+        <a href="https://linktr.ee/fsmoka" target="_blank" class="linktree-btn">Buka Linktree 🔗</a>
+      </div>
+    </div>
+
+    <!-- REKAP KLASIFIKASI STATUS -->
+    <div class="summary-section">
+      <div class="summary-title">Ringkasan Klasifikasi Implementation Status:</div>
+      <div id="summaryGrid" class="summary-grid"></div>
+    </div>
+
+    <!-- SEARCH BAR TOKO -->
+    <div class="search-box">
+      <input type="text" id="searchStoreInput" placeholder="🔍 Cari Nama Toko / Kode Toko / OID..." oninput="filterStores()">
+    </div>
+
+    <!-- DAFTAR TOKO ASSIGNED -->
+    <div id="storeListContainer"></div>
+  </div>
+
+  <!-- MODAL 1: ABSEN & VISIT LAPANGAN -->
+  <div id="visitModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header" id="modalVisitTitle">Form Absen & Visit Lapangan</div>
+      <form id="visitForm">
+        <div class="form-group">
+          <label>Tipe Aktivitas Visit</label>
+          <select id="activityType" required>
+            <option value="Check-In Absen Masuk Toko">Check-In Absen Masuk Toko</option>
+            <option value="Edukasi & Input SKU Moka">Edukasi & Input SKU Moka</option>
+            <option value="Troubleshooting / Kendala Lapangan">Troubleshooting / Kendala Lapangan</option>
+            <option value="Check-Out Visit Selesai">Check-Out Visit Selesai</option>
           </select>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600">Catatan Ringkas <span class="text-rose-500">*</span></label>
-          <textarea id="visitNotes" rows="2" placeholder="Tuliskan hasil kunjungan..." required class="w-full p-2.5 border rounded-xl text-sm mt-1"></textarea>
+
+        <div class="form-group">
+          <label>📸 Upload Foto Selfie Absen / Visit (Wajib)</label>
+          <input type="file" id="selfieFile" accept="image/*" capture="camera" required>
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <input type="file" id="visitSelfie" accept="image/*" capture="camera" required class="w-full text-xs mt-1">
+        
+        <div class="form-group">
+          <label>Catatan Progress / Kendala Toko</label>
+          <textarea id="visitNotes" rows="3" placeholder="Tuliskan detail progress SKU atau kendala di toko..."></textarea>
         </div>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('visitModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitVisit" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md">Simpan Visit</button>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-logout" style="background:#64748b" onclick="closeModal('visitModal')">Batal</button>
+          <button type="submit" id="btnSubmitVisit" class="btn-action">Kirim Absen & Visit</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL BAST -->
-  <div id="bastModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto">
-      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Formulir Digital BAST</h3>
-      <form id="bastForm" onsubmit="submitBAST(event)" class="space-y-3 text-xs">
-        <input type="hidden" id="bastStoreCode">
+  <!-- MODAL 2: UPLOAD DOKUMEN BAST -->
+  <div id="bastModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header" id="modalBastTitle">Upload Dokumen BAST</div>
+      <form id="bastForm">
+        <div class="form-group">
+          <label>📄 File Dokumen BAST (PDF / Foto Signed)</label>
+          <input type="file" id="bastFile" accept="image/*,application/pdf" required>
+        </div>
         
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="font-semibold text-slate-600">Nama Tuan Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="ownerName" required class="w-full p-2 border rounded-lg mt-1">
-          </div>
-          <div>
-            <label class="font-semibold text-slate-600">No HP PIC <span class="text-rose-500">*</span></label>
-            <input type="tel" id="ownerPhone" required pattern="[0-9]{9,15}" title="Masukkan nomor HP yang valid (9-15 digit angka)" placeholder="08xxxxxxxxxx" class="w-full p-2 border rounded-lg mt-1">
+        <div class="form-group">
+          <label>Catatan BAST / Penandatangan Merchant</label>
+          <textarea id="bastNotes" rows="3" placeholder="Nama Penandatangan Tuan Toko / Pemilik Merchant..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-logout" style="background:#64748b" onclick="closeModal('bastModal')">Batal</button>
+          <button type="submit" id="btnSubmitBast" class="btn-action bast">Upload File BAST</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: FORM TRAVEL FEE (POIN 2) -->
+  <div id="travelModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header" id="modalTravelTitle">Pengajuan Travel Fee</div>
+      <form id="travelForm">
+        <div class="form-group">
+          <label>Alamat Lengkap Implementor (Domisili) *</label>
+          <textarea id="implAddress" rows="2" placeholder="Masukkan alamat lengkap tempat tinggal kamu..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Kabupaten/Kota Domisili Implementor *</label>
+          <input type="text" id="implCity" placeholder="Contoh: Jakarta Selatan" required>
+        </div>
+
+        <div class="form-group">
+          <label>Jarak (Km) dari Domisili ke Toko *</label>
+          <div class="unit-input">
+            <input type="number" id="travelDistance" placeholder="Contoh: 10" min="1" step="any" oninput="checkDistanceLogic()" required>
+            <span class="unit-text">Km</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="font-semibold text-slate-600">Email PIC <span class="text-rose-500">*</span></label>
-            <input type="email" id="ownerEmail" required placeholder="email@toko.com" class="w-full p-2 border rounded-lg mt-1">
-          </div>
-          <div>
-            <label class="font-semibold text-slate-600">Gender <span class="text-rose-500">*</span></label>
-            <select id="ownerGender" required class="w-full p-2 border rounded-lg mt-1 bg-white">
-              <option value="" disabled selected>-- Pilih --</option>
-              <option value="Laki-laki">Laki-laki</option>
-              <option value="Perempuan">Perempuan</option>
-            </select>
-          </div>
+        <div class="form-group" id="budgetGroup" style="display: none;">
+          <label>Proposal Budget (Rupiah) *</label>
+          <input type="text" id="travelBudget" placeholder="Contoh: 500000" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+          <small style="color: #64748b; font-size: 11px;">*Wajib diisi angka tanpa titik/koma jika jarak > 50 Km</small>
         </div>
 
-        <div>
-          <label class="font-semibold text-slate-600">Umur <span class="text-rose-500">*</span></label>
-          <input type="number" id="ownerAge" required min="17" max="99" placeholder="Contoh: 30" class="w-full p-2 border rounded-lg mt-1">
-        </div>
-
-        <hr class="my-2">
-        <p class="font-bold text-slate-700">Serial Number & Hardware</p>
-        <p class="text-[10px] text-amber-600 font-medium bg-amber-50 p-2 rounded-lg border border-amber-200">
-          💡 <b>Info:</b> Jika toko menggunakan <b>Moka PC</b>, isi IMEI TAB dengan angka 0 sebanyak 15 digit (<code>000000000000000</code>).
-        </p>
-
-        <div class="grid grid-cols-3 gap-2">
-          <div>
-            <label class="font-semibold text-slate-600">IMEI Tab <span class="text-rose-500">*</span></label>
-            <input type="text" id="imeiTab" required pattern="\d{15}" title="IMEI wajib tepat 15 digit angka" maxlength="15" placeholder="15 digit angka" class="w-full p-2 border rounded-lg mt-1 font-mono">
-          </div>
-          <div>
-            <label class="font-semibold text-slate-600">SN Scanner <span class="text-rose-500">*</span></label>
-            <input type="text" id="snScanner" required pattern="[a-zA-Z0-9]{9,16}" title="SN Scanner harus 9 - 16 digit alfanumerik" maxlength="16" placeholder="9-16 digit" class="w-full p-2 border rounded-lg mt-1 font-mono">
-          </div>
-          <div>
-            <label class="font-semibold text-slate-600">SN Printer <span class="text-rose-500">*</span></label>
-            <input type="text" id="snPrinter" required pattern="[a-zA-Z0-9]{9,16}" title="SN Printer harus 9 - 16 digit alfanumerik" maxlength="16" placeholder="9-16 digit" class="w-full p-2 border rounded-lg mt-1 font-mono">
-          </div>
-        </div>
-
-        <hr class="my-2">
-        <p class="font-bold text-slate-700">Upload Lampiran Dokumen</p>
-
-        <div>
-          <label class="font-semibold text-slate-600">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <input type="file" id="storeFrontPhoto" accept="image/*" capture="camera" required class="w-full mt-1">
-        </div>
-        <div>
-          <label class="font-semibold text-slate-600">Upload Dokumen BAST (PDF/Image) <span class="text-rose-500">*</span></label>
-          <input type="file" id="bastDocument" accept="image/*,application/pdf" required class="w-full mt-1">
-        </div>
-
-        <div class="flex justify-end gap-2 pt-3 border-t">
-          <button type="button" onclick="closeModal('bastModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitBAST" class="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim BAST</button>
+        <div class="modal-actions">
+          <button type="button" class="btn-logout" style="background:#64748b" onclick="closeModal('travelModal')">Batal</button>
+          <button type="submit" id="btnSubmitTravel" class="btn-action travel">Submit Travel Fee</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
+    // PASTE URL EXEC APPS SCRIPT KAMU DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbymM5-j2SrCJWtwb_ISnibC0nmBuyT0d2bvXP0s7lbar6fvTs5mjIuk_Yc6Hpok_N-mBw/exec";
 
+    const loginView = document.getElementById('loginView');
+    const dashboardView = document.getElementById('dashboardView');
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+
+    let currentImplId = "";
     let allStoresData = [];
-    let currentUser = { implId: "", email: "", name: "" };
-    let selectedStatuses = [];
+    let activeStore = {};
 
-    window.onload = function() {
-      const savedId = localStorage.getItem("implId");
-      const savedEmail = localStorage.getItem("email");
-      if (savedId && savedEmail) {
-        document.getElementById("loginImplId").value = savedId;
-        document.getElementById("loginEmail").value = savedEmail;
-        fetchAssignedStores(savedId, savedEmail);
+    // AUTO LOGIN CHECK
+    window.addEventListener('DOMContentLoaded', () => {
+      const sessionData = sessionStorage.getItem("userSession");
+      if (sessionData) {
+        const user = JSON.parse(sessionData);
+        currentImplId = user.implId;
+        allStoresData = user.stores || [];
+        showDashboard(user);
       }
-    };
+    });
 
-    function formatDateNice(dateVal) {
-      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
-      
-      const str = String(dateVal).trim();
-      if (!str || str === "-") return "-";
-
-      const d = new Date(str);
-      if (isNaN(d.getTime())) return str; 
-
-      const day = String(d.getDate()).padStart(2, '0');
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      const month = months[d.getMonth()];
-      const year = d.getFullYear();
-
-      return `${day}-${month}-${year}`;
-    }
-
-    function showAlert(msg, isError = true) {
-      const alertBox = document.getElementById("alertBox");
-      alertBox.className = `p-4 rounded-xl text-sm font-medium ${isError ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`;
-      alertBox.innerText = msg || (isError ? "Terjadi kesalahan sistem." : "Berhasil.");
-      alertBox.classList.remove("hidden");
-      setTimeout(() => alertBox.classList.add("hidden"), 6000);
-    }
-
-    function handleLogin(e) {
+    // PROSES LOGIN
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      fetchAssignedStores(implId, email);
-    }
+      const implId = document.getElementById('implId').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-    function fetchAssignedStores(implId, email) {
-      const btnLogin = document.getElementById("btnLogin");
-      if (btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
+      setLoading(true);
 
-      const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
+      try {
+        const requestUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
+        const response = await fetch(requestUrl, { method: "GET", redirect: "follow" });
+        const result = await response.json();
 
-      fetch(targetUrl)
-        .then(res => {
-          if (!res.ok) throw new Error("Respon server HTTP Error: " + res.status);
-          return res.json();
-        })
-        .then(res => {
-          if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (res && res.status === "success") {
-            const userName = res.userName || "";
-            currentUser = { implId, email, name: userName };
-            localStorage.setItem("implId", implId);
-            localStorage.setItem("email", email);
+        if (result.status === "success") {
+          currentImplId = implId;
+          allStoresData = result.data;
+          const userData = { implId, email, stores: result.data };
+          sessionStorage.setItem("userSession", JSON.stringify(userData));
+          showDashboard(userData);
+        } else {
+          alert("Gagal Login: " + result.message);
+        }
+      } catch (error) {
+        alert("Terjadi kesalahan sistem: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    });
 
-            document.getElementById("loginSection").classList.add("hidden");
-            document.getElementById("dashboardSection").classList.remove("hidden");
-            document.getElementById("userDisplayId").innerText = implId || "-";
+    function showDashboard(user) {
+      loginView.style.display = "none";
+      dashboardView.style.display = "block";
 
-            if (userName) {
-              document.getElementById("userDisplayName").innerText = userName;
-              document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
-            } else {
-              document.getElementById("userDisplayNameWrapper").classList.add("hidden");
-            }
+      document.getElementById('userInfo').innerText = `ID: ${user.implId} | Total Toko: ${user.stores.length}`;
 
-            allStoresData = res.data || [];
-            selectedStatuses = [];
-            
-            document.getElementById("totalStoresBadge").innerText = allStoresData.length;
-            
-            renderSummaryCards(allStoresData);
-            filterAndRenderStores();
-          } else {
-            showAlert(res ? res.message : "Gagal memuat data dari server.", true);
-          }
-        })
-        .catch(err => {
-          if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          showAlert("Gagal terhubung ke Google Apps Script. Detail: " + err.message, true);
-        });
-    }
-
-    function renderSummaryCards(stores) {
-      const container = document.getElementById("summaryCardsContainer");
-      if (!container) return;
-
-      const counts = {};
-      stores.forEach(s => {
-        const st = (s && s.status ? String(s.status) : "Unassigned").trim();
-        counts[st] = (counts[st] || 0) + 1;
+      const statusCounts = {};
+      user.stores.forEach(s => {
+        const st = s.status || "Unassigned";
+        statusCounts[st] = (statusCounts[st] || 0) + 1;
       });
 
-      let html = "";
-      Object.keys(counts).forEach(status => {
-        const isSelected = selectedStatuses.includes(status);
-        const cardStyle = isSelected 
-          ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
-          : "bg-white border border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100";
-        
-        const badge = isSelected ? `<span class="ml-1.5 text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">✓ Aktif</span>` : "";
-
-        html += `
-          <div onclick="toggleStatusFilter('${status}')" 
-               class="cursor-pointer p-4 rounded-xl transition-all duration-200 select-none flex justify-between items-center ${cardStyle}">
-            <div>
-              <div class="text-2xl font-black text-slate-800">${counts[status]}</div>
-              <div class="text-xs font-bold text-slate-600 uppercase tracking-wider mt-1 flex items-center">
-                ${status} ${badge}
-              </div>
-            </div>
+      const summaryGrid = document.getElementById('summaryGrid');
+      summaryGrid.innerHTML = "";
+      for (const [statusName, count] of Object.entries(statusCounts)) {
+        summaryGrid.innerHTML += `
+          <div class="summary-card">
+            <div class="count">${count}</div>
+            <div class="label">${statusName}</div>
           </div>
         `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function toggleStatusFilter(status) {
-      const index = selectedStatuses.indexOf(status);
-      if (index > -1) {
-        selectedStatuses.splice(index, 1);
-      } else {
-        selectedStatuses.push(status);
       }
-      renderSummaryCards(allStoresData);
-      filterAndRenderStores();
+
+      renderStoreCards(user.stores);
     }
 
-    function filterAndRenderStores() {
-      const searchInput = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
-
-      const filtered = allStoresData.filter(store => {
-        const storeStatus = (store && store.status ? String(store.status) : "Unassigned").trim();
-        const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
-        
-        const targetText = [
-          store.storeName,
-          store.storeCode,
-          store.oid,
-          store.devicePackage,
-          store.dtName,
-          store.dtAddress,
-          store.asmName
-        ].filter(Boolean).join(" ").toLowerCase();
-
-        const matchesSearch = !searchInput || targetText.includes(searchInput);
-
-        return matchesStatus && matchesSearch;
-      });
-
-      renderStoreList(filtered);
-    }
-
-    function renderStoreList(stores) {
-      const container = document.getElementById("storeListContainer");
-      if (!container) return;
+    function renderStoreCards(stores) {
+      const container = document.getElementById('storeListContainer');
+      container.innerHTML = "";
 
       if (stores.length === 0) {
-        container.innerHTML = `<div class="text-center py-10 text-slate-400 font-medium">Tidak ada data toko yang cocok dengan filter.</div>`;
+        container.innerHTML = '<div class="store-card"><p style="text-align:center; color:#64748b;">Tidak ada data toko yang cocok.</p></div>';
         return;
       }
 
-      let html = "";
-      stores.forEach((store, idx) => {
-        const storeName = store.storeName || "-";
-        const storeCode = store.storeCode || "-";
-        const oid = store.oid || "-";
-        const devicePackage = store.devicePackage || "-";
-        const status = (store.status || "Unassigned").trim();
-        const storeAddress = store.storeAddress || "-";
-        const dtName = store.dtName || "-";
-        const dtCode = store.dtCode || "-";
-        const dtAddress = store.dtAddress || "-";
-        const asmName = store.asmName || "-";
-        const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
-        const slaImplementation = store.slaImplementation || "-";
-        const slaStatus = store.slaStatus || "-";
+      stores.forEach((store, index) => {
+        // Class Badge Status Travel
+        let tsClass = "ts-none";
+        const ts = store.travelStatus.toLowerCase();
+        if (ts.includes("approved") || ts.includes("acc")) tsClass = "ts-approved";
+        else if (ts.includes("pending")) tsClass = "ts-pending";
+        else if (ts.includes("reject") || ts.includes("tidak")) tsClass = "ts-rejected";
 
-        const stUpper = status.toUpperCase();
+        const card = document.createElement('div');
+        card.className = 'store-card';
+        card.innerHTML = `
+          <div class="store-header">
+            <div class="store-name">${index + 1}. ${store.storeName}</div>
+            <span class="status-badge">${store.status}</span>
+          </div>
+          <div class="store-detail"><strong>OID:</strong> ${store.oid}</div>
+          <div class="store-detail"><strong>Kode Toko:</strong> ${store.storeCode}</div>
+          <div class="store-detail"><strong>Alamat:</strong> ${store.storeAddress}</div>
+          <div class="store-detail"><strong>Distributor:</strong> ${store.dtName}</div>
+          <div class="store-detail"><strong>Project Lead:</strong> ${store.projectLead}</div>
+          <div class="store-detail" style="margin-top: 6px;">
+            <strong>Status Travel Fee:</strong> 
+            <span class="travel-status-badge ${tsClass}">${store.travelStatus}</span>
+          </div>
+          
+          <div class="sku-badge">
+            📦 Implementation SKU Completed #: ${store.skuCompleted}
+          </div>
 
-        let extraFieldsHtml = "";
-
-        if (stUpper === "GO LIVE - STORE" || stUpper === "IN PROGRESS" || stUpper === "SCHEDULED") {
-          extraFieldsHtml += `<div>Go Live Planned Date: <b class="text-slate-700">${formatDateNice(store.glPlannedDate)}</b></div>`;
-        }
-
-        if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
-          extraFieldsHtml += `<div>Go Live Date (Store BAST): <b class="text-slate-700">${formatDateNice(store.glStoreBAST)}</b></div>`;
-        }
-
-        if (stUpper === "GO LIVE - ULI") {
-          extraFieldsHtml += `<div>Go Live Date (Complete BAST): <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
-        }
-
-        const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
-        const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
-
-        html += `
-          <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-            <div class="flex justify-between items-start gap-2">
-              <div>
-                <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage}</p>
-              </div>
-              <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
-                ${status}
-              </span>
-            </div>
-
-            <div class="text-xs text-slate-600 space-y-1">
-              <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
-                <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps Toko</a>
-              </p>
-              <p>🚚 <b>Distributor:</b> ${dtName} (${dtCode})</p>
-              <p>🏢 <b>Alamat DT:</b> ${dtAddress} 
-                ${dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 hover:underline">🗺️ Maps DT</a>` : ''}
-              </p>
-              <p>👤 <b>ASM / AASM:</b> ${asmName} ${asmPhone}</p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500">
-              <div>Implementation Planned Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
-              <div>Implementation Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
-              <div>SLA Imp: <b class="text-slate-700">${slaImplementation}</b></div>
-              <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
-              ${extraFieldsHtml}
-            </div>
-
-            <div class="flex gap-2 pt-1">
-              <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
-                📷 Absen / Visit
-              </button>
-              <button onclick="openBastModal('${storeCode}')" class="flex-1 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
-                📝 Form BAST
-              </button>
-            </div>
+          <div class="action-bar">
+            <button class="btn-action" onclick="openVisitModal('${store.storeCode}', '${store.storeName}')">📍 Absen & Visit</button>
+            <button class="btn-action bast" onclick="openBastModal('${store.storeCode}', '${store.storeName}')">📄 Upload BAST</button>
+            <button class="btn-action travel" onclick='openTravelModal(${JSON.stringify(store)})'>🚗 Travel Fee</button>
           </div>
         `;
+        container.appendChild(card);
       });
-
-      container.innerHTML = html;
     }
 
-    function openVisitModal(code) {
-      document.getElementById("visitStoreCode").value = code || "";
-      document.getElementById("visitModal").classList.remove("hidden");
+    function filterStores() {
+      const keyword = document.getElementById('searchStoreInput').value.toLowerCase().trim();
+      const filtered = allStoresData.filter(s => 
+        s.storeName.toLowerCase().includes(keyword) || 
+        s.storeCode.toLowerCase().includes(keyword) || 
+        s.oid.toLowerCase().includes(keyword)
+      );
+      renderStoreCards(filtered);
     }
 
-    function openBastModal(code) {
-      document.getElementById("bastStoreCode").value = code || "";
-      document.getElementById("bastModal").classList.remove("hidden");
+    // LOGIKA MODAL TRAVEL FEE
+    function openTravelModal(store) {
+      activeStore = store;
+      document.getElementById('modalTravelTitle').innerText = `Travel Fee: ${store.storeName}`;
+      document.getElementById('travelModal').style.display = "flex";
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.add("hidden");
+    function checkDistanceLogic() {
+      const dist = parseFloat(document.getElementById('travelDistance').value) || 0;
+      const budgetGroup = document.getElementById('budgetGroup');
+      const budgetInput = document.getElementById('travelBudget');
+
+      if (dist > 50) {
+        budgetGroup.style.display = "block";
+        budgetInput.required = true;
+      } else {
+        budgetGroup.style.display = "none";
+        budgetInput.required = false;
+        budgetInput.value = "";
+      }
     }
 
-    function handleLogout() {
-      localStorage.clear();
-      location.reload();
+    document.getElementById('travelForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const dist = parseFloat(document.getElementById('travelDistance').value) || 0;
+      const budget = document.getElementById('travelBudget').value.trim();
+
+      if (dist > 50 && !budget) {
+        return alert("Jarak lebih dari 50 Km wajib menyertakan Proposal Budget!");
+      }
+
+      const btn = document.getElementById('btnSubmitTravel');
+      btn.disabled = true;
+      btn.innerText = "Mengirim Pengajuan...";
+
+      try {
+        const payload = {
+          action: "submitTravelFee",
+          implId: currentImplId,
+          storeCode: activeStore.storeCode,
+          storeName: activeStore.storeName,
+          storeAddress: activeStore.storeAddress,
+          implAddress: document.getElementById('implAddress').value.trim(),
+          implCity: document.getElementById('implCity').value.trim(),
+          distance: dist,
+          budget: budget
+        };
+
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+
+        alert(result.message);
+        closeModal('travelModal');
+        // Refresh status di UI
+        activeStore.travelStatus = "Pending";
+        renderStoreCards(allStoresData);
+      } catch (err) {
+        alert("Gagal kirim pengajuan travel: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit Travel Fee";
+      }
+    });
+
+    // MODAL VISITING & BAST HELPER
+    function openVisitModal(code, name) {
+      activeStore = { storeCode: code };
+      document.getElementById('modalVisitTitle').innerText = `Absen Visit: ${name}`;
+      document.getElementById('visitModal').style.display = "flex";
     }
 
-    function fileToBase64(file) {
+    function openBastModal(code, name) {
+      activeStore = { storeCode: code };
+      document.getElementById('modalBastTitle').innerText = `Upload BAST: ${name}`;
+      document.getElementById('bastModal').style.display = "flex";
+    }
+
+    document.getElementById('visitForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitVisit');
+      btn.disabled = true;
+      btn.innerText = "Mengirim...";
+
+      try {
+        const fileInput = document.getElementById('selfieFile');
+        const base64 = await convertFileToBase64(fileInput.files[0]);
+
+        const payload = {
+          action: "saveVisitLog",
+          implId: currentImplId,
+          storeCode: activeStore.storeCode,
+          activityType: document.getElementById('activityType').value,
+          notes: document.getElementById('visitNotes').value,
+          selfieBase64: base64
+        };
+
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+
+        alert(result.message);
+        closeModal('visitModal');
+      } catch (err) {
+        alert("Gagal kirim visit: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Kirim Absen & Visit";
+      }
+    });
+
+    document.getElementById('bastForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitBast');
+      btn.disabled = true;
+      btn.innerText = "Mengupload File...";
+
+      try {
+        const fileInput = document.getElementById('bastFile');
+        const base64 = await convertFileToBase64(fileInput.files[0]);
+
+        const payload = {
+          action: "saveBAST",
+          implId: currentImplId,
+          storeCode: activeStore.storeCode,
+          notes: document.getElementById('bastNotes').value,
+          bastBase64: base64
+        };
+
+        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+
+        alert(result.message);
+        closeModal('bastModal');
+      } catch (err) {
+        alert("Gagal upload BAST: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Upload File BAST";
+      }
+    });
+
+    function convertFileToBase64(file) {
       return new Promise((resolve, reject) => {
-        if (!file) return resolve("");
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
@@ -481,109 +521,25 @@
       });
     }
 
-    async function submitVisitLog(e) {
-      e.preventDefault();
-      const btn = document.getElementById("btnSubmitVisit");
-      btn.innerText = "Menyimpan...";
-      btn.disabled = true;
-
-      try {
-        const storeCode = document.getElementById("visitStoreCode").value;
-        const store = allStoresData.find(s => s.storeCode === storeCode) || {};
-        const fileInput = document.getElementById("visitSelfie").files[0];
-        const selfieBase64 = await fileToBase64(fileInput);
-
-        const payload = {
-          action: "submitAbsen",
-          email: currentUser.email,
-          implId: currentUser.implId,
-          storeCode: storeCode,
-          storeName: store.storeName || "",
-          oid: store.oid || "",
-          activity: document.getElementById("visitActivityType").value,
-          notes: document.getElementById("visitNotes").value,
-          photoIn: selfieBase64,
-          workingDate: new Date().toISOString().split('T')[0]
-        };
-
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
-
-        btn.innerText = "Simpan Visit";
-        btn.disabled = false;
-
-        if (res && res.status === "success") {
-          showAlert(res.message || "Data visit berhasil disimpan.", false);
-          closeModal("visitModal");
-          document.getElementById("visitForm").reset();
-        } else {
-          showAlert(res ? res.message : "Gagal menyimpan data visit.", true);
-        }
-      } catch (err) {
-        btn.innerText = "Simpan Visit";
-        btn.disabled = false;
-        showAlert("Gagal simpan visit: " + (err.message || err), true);
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+      if (modalId === 'visitModal') document.getElementById('visitForm').reset();
+      else if (modalId === 'bastModal') document.getElementById('bastForm').reset();
+      else if (modalId === 'travelModal') {
+        document.getElementById('travelForm').reset();
+        document.getElementById('budgetGroup').style.display = "none";
       }
     }
 
-    async function submitBAST(e) {
-      e.preventDefault();
-      const btn = document.getElementById("btnSubmitBAST");
-      btn.innerText = "Mengirim...";
-      btn.disabled = true;
+    function logout() {
+      sessionStorage.removeItem("userSession");
+      dashboardView.style.display = "none";
+      loginView.style.display = "block";
+    }
 
-      try {
-        const storeCode = document.getElementById("bastStoreCode").value;
-        const store = allStoresData.find(s => s.storeCode === storeCode) || {};
-
-        const storeFrontFile = document.getElementById("storeFrontPhoto").files[0];
-        const bastDocFile = document.getElementById("bastDocument").files[0];
-
-        const storeFrontBase64 = await fileToBase64(storeFrontFile);
-        const bastDocBase64 = await fileToBase64(bastDocFile);
-
-        const payload = {
-          action: "submitBAST",
-          email: currentUser.email,
-          implId: currentUser.implId,
-          storeCode: storeCode,
-          storeName: store.storeName || "",
-          oid: store.oid || "",
-          merchantName: document.getElementById("ownerName").value,
-          merchantPhone: document.getElementById("ownerPhone").value,
-          merchantEmail: document.getElementById("ownerEmail").value,
-          merchantGender: document.getElementById("ownerGender").value,
-          merchantAge: document.getElementById("ownerAge").value,
-          imei: document.getElementById("imeiTab").value,
-          scannerSn: document.getElementById("snScanner").value,
-          printerSn: document.getElementById("snPrinter").value,
-          photoStore: storeFrontBase64,
-          bastFile: bastDocBase64,
-          visitDate: new Date().toISOString().split('T')[0]
-        };
-
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
-
-        btn.innerText = "Kirim BAST";
-        btn.disabled = false;
-
-        if (res && res.status === "success") {
-          showAlert(res.message || "BAST berhasil dikirim.", false);
-          closeModal("bastModal");
-          document.getElementById("bastForm").reset();
-        } else {
-          showAlert(res ? res.message : "Gagal mengirim BAST.", true);
-        }
-      } catch (err) {
-        btn.innerText = "Kirim BAST";
-        btn.disabled = false;
-        showAlert("Gagal simpan BAST: " + (err.message || err), true);
-      }
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      btnText.innerHTML = isLoading ? '<div class="spinner"></div> Memuat Data...' : 'Masuk & Lihat Dashboard';
     }
   </script>
 </body>
