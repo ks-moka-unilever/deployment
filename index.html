@@ -46,21 +46,15 @@
     <!-- DASHBOARD -->
     <div id="dashboardSection" class="hidden space-y-6">
 
-      <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+      <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center">
         <div>
           <h2 class="text-xl font-bold text-slate-900">Dashboard Implementor</h2>
           <p class="text-xs text-slate-500 font-medium mt-0.5">
             ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span> 
             <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
-          <div class="mt-2">
-            <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
-               class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-xs font-bold transition-all">
-              📚 Pusat Edukasi & Materi Implementation ↗
-            </a>
-          </div>
         </div>
-        <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all self-end sm:self-auto">
+        <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
           Keluar
         </button>
       </div>
@@ -204,61 +198,41 @@
   <!-- MODAL TRAVEL FEE -->
   <div id="travelModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto">
-      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Pengajuan Travel Fee Visit</h3>
+      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Pengajuan Travel Fee</h3>
       <form id="travelForm" onsubmit="submitTravelFee(event)" class="space-y-3 text-xs">
         <input type="hidden" id="travelStoreCode">
-        <input type="hidden" id="travelStoreName">
-        <input type="hidden" id="travelStoreAddress">
-
-        <div>
-          <label class="font-semibold text-slate-600">Nama Implementor <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelImplName" required class="w-full p-2.5 border rounded-xl mt-1 bg-slate-50 font-semibold text-slate-700" readonly>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="font-semibold text-slate-600">Kode Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelDisplayStoreCode" required class="w-full p-2.5 border rounded-xl mt-1 font-mono bg-slate-50" readonly>
-          </div>
-          <div>
-            <label class="font-semibold text-slate-600">Nama Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelDisplayStoreName" required class="w-full p-2.5 border rounded-xl mt-1 bg-slate-50 font-semibold" readonly>
-          </div>
-        </div>
-
+        
         <div>
           <label class="font-semibold text-slate-600">Alamat Lengkap Implementor <span class="text-rose-500">*</span></label>
-          <textarea id="travelImplAddress" rows="2" placeholder="Masukkan alamat lengkap domisili Anda..." required class="w-full p-2.5 border rounded-xl mt-1"></textarea>
+          <textarea id="travelImplAddress" required rows="2" placeholder="Contoh: Jl. Sudirman No 10..." class="w-full p-2 border rounded-lg mt-1"></textarea>
         </div>
-
-        <div>
-          <label class="font-semibold text-slate-600">Kabupaten/Kota Domisili Implementor <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelImplCity" placeholder="Contoh: Jakarta Selatan" required class="w-full p-2.5 border rounded-xl mt-1">
-        </div>
-
-        <div>
-          <label class="font-semibold text-slate-600">Jarak Domisili ke Toko <span class="text-rose-500">*</span></label>
-          <div class="flex items-center gap-2 mt-1">
-            <input type="number" id="travelDistance" required min="1" step="0.1" oninput="handleDistanceChange()" placeholder="Contoh: 15" class="w-full p-2.5 border rounded-xl">
-            <span class="font-bold text-slate-600 bg-slate-100 px-3 py-2.5 rounded-xl border">Km</span>
+        
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="font-semibold text-slate-600">Kota Domisili <span class="text-rose-500">*</span></label>
+            <input type="text" id="travelCity" required placeholder="Contoh: Jakarta" class="w-full p-2 border rounded-lg mt-1">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-600">Jarak (Km) <span class="text-rose-500">*</span></label>
+            <input type="number" step="0.1" id="travelDistance" required placeholder="Contoh: 15.5" class="w-full p-2 border rounded-lg mt-1">
           </div>
         </div>
 
-        <div id="proposalBudgetWrapper" class="hidden space-y-1">
-          <label class="font-semibold text-slate-600">Proposal Budget (Rupiah) <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelProposalBudget" pattern="[0-9]+" title="Hanya angka tanpa titik/koma" placeholder="Contoh: 500000" class="w-full p-2.5 border rounded-xl font-mono">
-          <p class="text-[10px] text-amber-600 font-medium">⚠️ Diisi tanpa titik atau koma (khusus jarak > 50 Km).</p>
+        <div>
+          <label class="font-semibold text-slate-600">Proposal Budget (Rp) <span class="text-rose-500">*</span></label>
+          <input type="number" id="travelBudget" required placeholder="Contoh: 50000" class="w-full p-2 border rounded-lg mt-1">
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t">
           <button type="button" onclick="closeModal('travelModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitTravel" class="px-4 py-2 bg-purple-600 text-white text-xs font-bold rounded-xl shadow-md hover:bg-purple-700">Kirim Pengajuan</button>
+          <button type="submit" id="btnSubmitTravel" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow-md">Ajukan Travel</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
+    // GANTI DENGAN URL DEPLOY TERBARU ANDA
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -283,7 +257,9 @@
       if (isNaN(d.getTime())) return str; 
       const day = String(d.getDate()).padStart(2, '0');
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return `${day}-${months[d.getMonth()]}-${d.getFullYear()}`;
+      const month = months[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day}-${month}-${year}`;
     }
 
     function showAlert(msg, isError = true) {
@@ -308,17 +284,14 @@
       const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
 
       fetch(targetUrl)
-        .then(async res => {
-          const text = await res.text();
-          if (text.trim().startsWith("<") || text.includes("<!DOCTYPE")) {
-            throw new Error("Respon HTML dari server. Pastikan Apps Script di-deploy versi baru.");
-          }
-          return JSON.parse(text);
+        .then(res => {
+          if (!res.ok) throw new Error("Respon server HTTP Error: " + res.status);
+          return res.json();
         })
         .then(res => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
           if (res && res.status === "success") {
-            const userName = res.userName || implId;
+            const userName = res.userName || "";
             currentUser = { implId, email, name: userName };
             localStorage.setItem("implId", implId);
             localStorage.setItem("email", email);
@@ -330,12 +303,15 @@
             if (userName) {
               document.getElementById("userDisplayName").innerText = userName;
               document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
+            } else {
+              document.getElementById("userDisplayNameWrapper").classList.add("hidden");
             }
 
             allStoresData = res.data || [];
             selectedStatuses = [];
             
             document.getElementById("totalStoresBadge").innerText = allStoresData.length;
+            
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
           } else {
@@ -344,7 +320,7 @@
         })
         .catch(err => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          showAlert(err.message, true);
+          showAlert("Gagal terhubung ke Google Apps Script. Detail: " + err.message, true);
         });
     }
 
@@ -402,8 +378,13 @@
         const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
         
         const targetText = [
-          store.storeName, store.storeCode, store.oid, store.devicePackage,
-          store.dtName, store.dtAddress, store.asmName, store.projectLead
+          store.storeName,
+          store.storeCode,
+          store.oid,
+          store.devicePackage,
+          store.dtName,
+          store.dtAddress,
+          store.asmName
         ].filter(Boolean).join(" ").toLowerCase();
 
         const matchesSearch = !searchInput || targetText.includes(searchInput);
@@ -429,23 +410,33 @@
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
         const devicePackage = store.devicePackage || "-";
-        const projectLead = store.projectLead || "-";
         const status = (store.status || "Unassigned").trim();
-        const travelStatus = store.travelStatus || "Belum Mengajukan";
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
         const dtCode = store.dtCode || "-";
         const dtAddress = store.dtAddress || "-";
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
+        const slaImplementation = store.slaImplementation || "-";
+        const slaStatus = store.slaStatus || "-";
+        
+        // Setup warna label Travel Fee
+        const travelStatus = store.travelStatus || "Belum Mengajukan";
+        let travelBadgeClass = "bg-amber-100 text-amber-700 border-amber-200"; // default pending/belum
+        if(travelStatus.toUpperCase() === "APPROVED" || travelStatus.toUpperCase() === "ACC") travelBadgeClass = "bg-emerald-100 text-emerald-700 border-emerald-200";
+        if(travelStatus.toUpperCase() === "REJECTED" || travelStatus.toUpperCase() === "TOLAK") travelBadgeClass = "bg-rose-100 text-rose-700 border-rose-200";
 
-        let travelBadgeClass = "bg-slate-100 text-slate-600 border-slate-200";
-        if (travelStatus.toLowerCase().includes("approved") || travelStatus.toLowerCase().includes("acc")) {
-          travelBadgeClass = "bg-emerald-100 text-emerald-700 border-emerald-300";
-        } else if (travelStatus.toLowerCase().includes("pending")) {
-          travelBadgeClass = "bg-amber-100 text-amber-700 border-amber-300";
-        } else if (travelStatus.toLowerCase().includes("reject") || travelStatus.toLowerCase().includes("tolak")) {
-          travelBadgeClass = "bg-rose-100 text-rose-700 border-rose-300";
+        const stUpper = status.toUpperCase();
+        let extraFieldsHtml = "";
+
+        if (stUpper === "GO LIVE - STORE" || stUpper === "IN PROGRESS" || stUpper === "SCHEDULED") {
+          extraFieldsHtml += `<div>Go Live Planned Date: <b class="text-slate-700">${formatDateNice(store.glPlannedDate)}</b></div>`;
+        }
+        if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
+          extraFieldsHtml += `<div>Go Live Date (Store BAST): <b class="text-slate-700">${formatDateNice(store.glStoreBAST)}</b></div>`;
+        }
+        if (stUpper === "GO LIVE - ULI") {
+          extraFieldsHtml += `<div>Go Live Date (Complete BAST): <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
         }
 
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
@@ -456,18 +447,11 @@
             <div class="flex justify-between items-start gap-2">
               <div>
                 <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <p class="text-xs text-slate-500 font-mono mt-0.5">
-                  Kode Toko: ${storeCode} | OID: ${oid} | Package: <b class="text-slate-700">${devicePackage}</b> | <span class="font-bold text-indigo-600">Project Lead: ${projectLead}</span>
-                </p>
+                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage}</p>
               </div>
-              <div class="flex flex-col items-end gap-1">
-                <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
-                  ${status}
-                </span>
-                <span class="px-2 py-0.5 text-[9px] font-bold rounded-md border ${travelBadgeClass}">
-                  Travel: ${travelStatus}
-                </span>
-              </div>
+              <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
+                ${status}
+              </span>
             </div>
 
             <div class="text-xs text-slate-600 space-y-1">
@@ -484,19 +468,21 @@
             <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500">
               <div>Implementation Planned Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
               <div>Implementation Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
-              <div>SLA Imp: <b class="text-slate-700">${store.slaImplementation || '-'}</b></div>
-              <div>SLA Status: <b class="text-slate-700">${store.slaStatus || '-'}</b></div>
+              <div>SLA Imp: <b class="text-slate-700">${slaImplementation}</b></div>
+              <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
+              <div>Status Travel: <b class="px-1.5 py-0.5 rounded text-[10px] border ${travelBadgeClass}">${travelStatus}</b></div>
+              ${extraFieldsHtml}
             </div>
 
-            <div class="flex flex-wrap sm:flex-nowrap gap-2 pt-1">
+            <div class="flex flex-wrap md:flex-nowrap gap-2 pt-1">
               <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
                 📷 Absen / Visit
               </button>
               <button onclick="openBastModal('${storeCode}')" class="flex-1 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
                 📝 Form BAST
               </button>
-              <button onclick="openTravelModal('${storeCode}', '${escapeQuotes(storeName)}', '${escapeQuotes(storeAddress)}')" class="flex-1 py-2 bg-purple-50 text-purple-700 hover:bg-purple-100 font-bold text-xs rounded-xl border border-purple-200 transition-all">
-                🚀 Travel Fee
+              <button onclick="openTravelModal('${storeCode}')" class="flex-1 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold text-xs rounded-xl border border-amber-200 transition-all">
+                🚗 Travel Fee
               </button>
             </div>
           </div>
@@ -516,29 +502,9 @@
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
-    function openTravelModal(code, name, address) {
-      document.getElementById("travelStoreCode").value = code;
-      document.getElementById("travelDisplayStoreCode").value = code;
-      document.getElementById("travelStoreName").value = name;
-      document.getElementById("travelDisplayStoreName").value = name;
-      document.getElementById("travelStoreAddress").value = address;
-      document.getElementById("travelImplName").value = currentUser.name || currentUser.implId;
+    function openTravelModal(code) {
+      document.getElementById("travelStoreCode").value = code || "";
       document.getElementById("travelModal").classList.remove("hidden");
-    }
-
-    function handleDistanceChange() {
-      const dist = parseFloat(document.getElementById("travelDistance").value) || 0;
-      const budgetWrapper = document.getElementById("proposalBudgetWrapper");
-      const budgetInput = document.getElementById("travelProposalBudget");
-
-      if (dist > 50) {
-        budgetWrapper.classList.remove("hidden");
-        budgetInput.required = true;
-      } else {
-        budgetWrapper.classList.add("hidden");
-        budgetInput.required = false;
-        budgetInput.value = "";
-      }
     }
 
     function closeModal(id) {
@@ -550,10 +516,6 @@
       location.reload();
     }
 
-    function escapeQuotes(str) {
-      return String(str || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
-
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         if (!file) return resolve("");
@@ -562,18 +524,6 @@
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
       });
-    }
-
-    async function sendPostRequest(payload) {
-      const response = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-      const text = await response.text();
-      if (text.trim().startsWith("<") || text.includes("<!DOCTYPE")) {
-        throw new Error("Respon HTML dari server. Pastikan Apps Script di-deploy versi baru.");
-      }
-      return JSON.parse(text);
     }
 
     async function submitVisitLog(e) {
@@ -601,7 +551,11 @@
           workingDate: new Date().toISOString().split('T')[0]
         };
 
-        const res = await sendPostRequest(payload);
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
 
@@ -628,6 +582,7 @@
       try {
         const storeCode = document.getElementById("bastStoreCode").value;
         const store = allStoresData.find(s => s.storeCode === storeCode) || {};
+
         const storeFrontFile = document.getElementById("storeFrontPhoto").files[0];
         const bastDocFile = document.getElementById("bastDocument").files[0];
 
@@ -654,7 +609,11 @@
           visitDate: new Date().toISOString().split('T')[0]
         };
 
-        const res = await sendPostRequest(payload);
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
 
@@ -679,33 +638,43 @@
       btn.disabled = true;
 
       try {
+        const storeCode = document.getElementById("travelStoreCode").value;
+        const store = allStoresData.find(s => s.storeCode === storeCode) || {};
+
         const payload = {
           action: "submitTravelFee",
           implId: currentUser.implId,
-          implName: document.getElementById("travelImplName").value,
-          storeCode: document.getElementById("travelStoreCode").value,
-          storeName: document.getElementById("travelStoreName").value,
-          storeAddress: document.getElementById("travelStoreAddress").value,
+          implName: currentUser.name,
+          storeCode: storeCode,
+          storeName: store.storeName || "",
+          storeAddress: store.storeAddress || "",
           implAddress: document.getElementById("travelImplAddress").value,
-          implCity: document.getElementById("travelImplCity").value,
+          implCity: document.getElementById("travelCity").value,
           distance: document.getElementById("travelDistance").value,
-          proposalBudget: document.getElementById("travelProposalBudget").value || "0"
+          proposalBudget: document.getElementById("travelBudget").value
         };
 
-        const res = await sendPostRequest(payload);
-        btn.innerText = "Kirim Pengajuan";
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        btn.innerText = "Ajukan Travel";
         btn.disabled = false;
 
         if (res && res.status === "success") {
-          showAlert(res.message || "Pengajuan Travel Fee Berhasil Disimpan!", false);
+          showAlert(res.message || "Pengajuan Travel Fee berhasil dikirim.", false);
           closeModal("travelModal");
           document.getElementById("travelForm").reset();
-          fetchAssignedStores(currentUser.implId, currentUser.email);
+          // Update status lokal sementara sebelum refresh penuh
+          const idx = allStoresData.findIndex(s => s.storeCode === storeCode);
+          if(idx > -1) allStoresData[idx].travelStatus = "Pending";
+          filterAndRenderStores();
         } else {
-          showAlert(res ? res.message : "Gagal mengirim Travel Fee.", true);
+          showAlert(res ? res.message : "Gagal mengajukan Travel Fee.", true);
         }
       } catch (err) {
-        btn.innerText = "Kirim Pengajuan";
+        btn.innerText = "Ajukan Travel";
         btn.disabled = false;
         showAlert("Gagal simpan Travel Fee: " + (err.message || err), true);
       }
