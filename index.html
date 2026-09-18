@@ -217,8 +217,8 @@
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="font-semibold text-slate-600">Kode Toko (18 Digit) <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelDisplayStoreCode" required pattern="\d{18}" title="Kode Toko harus 18 digit angka" maxlength="18" class="w-full p-2.5 border rounded-xl mt-1 font-mono bg-slate-50" readonly>
+            <label class="font-semibold text-slate-600">Kode Toko <span class="text-rose-500">*</span></label>
+            <input type="text" id="travelDisplayStoreCode" required class="w-full p-2.5 border rounded-xl mt-1 font-mono bg-slate-50" readonly>
           </div>
           <div>
             <label class="font-semibold text-slate-600">Nama Toko <span class="text-rose-500">*</span></label>
@@ -428,10 +428,10 @@
         const storeName = store.storeName || "-";
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
-        const devicePackage = store.devicePackage || "-"; // FIX REVISI 1: Tipe Package (Kolom BP)
+        const devicePackage = store.devicePackage || "-";
         const projectLead = store.projectLead || "-";
         const status = (store.status || "Unassigned").trim();
-        const travelStatus = store.travelStatus || "Belum Mengajukan"; // FIX REVISI 2: Status Realtime
+        const travelStatus = store.travelStatus || "Belum Mengajukan";
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
         const dtCode = store.dtCode || "-";
