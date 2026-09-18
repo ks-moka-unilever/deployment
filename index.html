@@ -24,8 +24,8 @@
         <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
           <i class="fa-solid fa-user-gear"></i>
         </div>
-        <h1 class="text-2xl font-bold text-slate-900">Portal Implementor Lapangan</h1>
-        <p class="text-slate-500 text-sm mt-1">Silakan login menggunakan kredensial terdaftar Anda</p>
+        <h1 class="text-2xl font-bold text-slate-900">Portal Implementor</h1>
+        <p class="text-slate-500 text-sm mt-1">Masuk dengan ID & Email terdaftar Anda</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
@@ -47,7 +47,6 @@
 
   <!-- DASHBOARD SECTION -->
   <div id="dashboardSection" class="hidden min-h-screen pb-12">
-    <!-- Navbar -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center gap-3">
@@ -66,12 +65,11 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 mt-6">
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <h1 class="text-xl md:text-2xl font-bold text-slate-900">Daftar Toko Penugasan</h1>
-          <p class="text-xs md:text-sm text-slate-500">Kelola kunjungan, pengisian BAST, dan klaim Travel Fee</p>
+          <h1 class="text-xl md:text-2xl font-bold text-slate-900">Daftar Penugasan Toko</h1>
+          <p class="text-xs md:text-sm text-slate-500">Kunjungan, BAST, dan Klaim Travel Fee</p>
         </div>
         <input type="text" id="searchInput" oninput="renderStoreList()" placeholder="🔍 Cari toko / kode toko..." class="w-full md:w-72 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
       </div>
@@ -105,10 +103,10 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">Catatan Visit</label>
-          <textarea id="absenNotes" rows="2" placeholder="Tuliskan ringkasan kendala atau progres..." class="w-full px-3 py-2 border rounded-xl text-sm"></textarea>
+          <textarea id="absenNotes" rows="2" placeholder="Tuliskan kendala atau progres..." class="w-full px-3 py-2 border rounded-xl text-sm"></textarea>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">Foto Bukti Visit (Camera/Upload)</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Foto Bukti Visit</label>
           <input type="file" id="absenPhoto" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
         </div>
         <button type="submit" id="btnSubmitAbsen" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-all">Kirim Absen</button>
@@ -169,11 +167,11 @@
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">Foto Tampak Depan Toko</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Foto Depan Toko</label>
             <input type="file" id="bastPhotoStore" accept="image/*" required class="w-full text-xs">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">Dokumen BAST TTD (PDF/Foto)</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Dokumen BAST TTD</label>
             <input type="file" id="bastFile" required class="w-full text-xs">
           </div>
         </div>
@@ -181,7 +179,7 @@
           <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal Visit BAST</label>
           <input type="date" id="bastVisitDate" required class="w-full px-3 py-2 border rounded-xl text-sm">
         </div>
-        <button type="submit" id="btnSubmitBAST" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition-all">Simpan Data BAST</button>
+        <button type="submit" id="btnSubmitBAST" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition-all">Simpan BAST</button>
       </form>
     </div>
   </div>
@@ -190,13 +188,13 @@
   <div id="modalTravel" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
       <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
-        <h3 class="font-bold"><i class="fa-solid fa-car text-amber-400 mr-2"></i>Pengajuan Klaim Travel Fee</h3>
+        <h3 class="font-bold"><i class="fa-solid fa-car text-amber-400 mr-2"></i>Klaim Travel Fee</h3>
         <button onclick="closeModal('modalTravel')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
       <form id="formTravel" onsubmit="submitTravelFee(event)" class="p-6 space-y-4 overflow-y-auto">
         <input type="hidden" id="travelStoreCode"><input type="hidden" id="travelStoreName"><input type="hidden" id="travelStoreAddress">
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">Alamat / Titik Domisili Implementor</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Alamat Domisili Implementor</label>
           <input type="text" id="travelImplAddress" required placeholder="Jln. Kebon Jeruk No. 12..." class="w-full px-3 py-2 border rounded-xl text-sm">
         </div>
         <div>
@@ -205,7 +203,7 @@
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">Perkiraan Jarak (Km)</label>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Jarak (Km)</label>
             <input type="number" step="0.1" id="travelDistance" required placeholder="15" class="w-full px-3 py-2 border rounded-xl text-sm">
           </div>
           <div>
@@ -219,31 +217,20 @@
   </div>
 
   <script>
-    // URL WEBAPP APPSCRIPT ANDA
+    // URL WEBAPP APPSCRIPT TERBARU
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec";
 
-    let state = {
-      implId: "",
-      email: "",
-      userName: "",
-      stores: []
-    };
+    let state = { implId: "", email: "", userName: "", stores: [] };
 
-    // --- HELPER ALERT ---
     function showAlert(msg, isSuccess = true) {
       const box = document.getElementById("alertBox");
-      const icon = document.getElementById("alertIcon");
-      const text = document.getElementById("alertMessage");
-
+      document.getElementById("alertIcon").className = isSuccess ? "fa-solid fa-circle-check text-xl" : "fa-solid fa-triangle-exclamation text-xl";
+      document.getElementById("alertMessage").innerText = msg;
       box.className = `fixed top-4 right-4 left-4 md:left-auto md:w-96 z-50 p-4 rounded-xl shadow-lg transition-all duration-300 ${isSuccess ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`;
-      icon.className = isSuccess ? "fa-solid fa-circle-check text-xl" : "fa-solid fa-triangle-exclamation text-xl";
-      text.innerText = msg;
-
       box.classList.remove("hidden");
       setTimeout(() => box.classList.add("hidden"), 4000);
     }
 
-    // --- CONVERT FILE TO BASE64 ---
     const toBase64 = file => new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -251,7 +238,7 @@
       reader.onerror = error => reject(error);
     });
 
-    // --- LOGIN HANDLER ---
+    // LOGIN CEPAT (1-2 DETIK)
     async function handleLogin(e) {
       e.preventDefault();
       const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
@@ -279,10 +266,10 @@
           renderStoreList();
           showAlert(`Selamat datang, ${state.userName}!`);
         } else {
-          showAlert(result.message || "Gagal masuk. Periksa kembali ID & Email.", false);
+          showAlert(result.message || "Login gagal.", false);
         }
       } catch (err) {
-        showAlert("Terjadi kesalahan koneksi ke server Apps Script.", false);
+        showAlert("Gagal terhubung ke Apps Script. Pastikan Deploy sudah 'Anyone'.", false);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<span>Masuk Portal</span><i class="fa-solid fa-arrow-right"></i>`;
@@ -296,52 +283,64 @@
       document.getElementById("loginForm").reset();
     }
 
-    // --- RENDER DAFTAR TOKO ---
     function renderStoreList() {
       const grid = document.getElementById("storeListGrid");
       const filter = document.getElementById("searchInput").value.toLowerCase();
       grid.innerHTML = "";
 
-      const filteredStores = state.stores.filter(s => 
+      const filtered = state.stores.filter(s => 
         s.storeName.toLowerCase().includes(filter) || 
         s.storeCode.toLowerCase().includes(filter) ||
         s.oid.toLowerCase().includes(filter)
       );
 
-      if (filteredStores.length === 0) {
+      if (filtered.length === 0) {
         grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 font-medium">Tidak ada toko penugasan yang ditemukan.</div>`;
         return;
       }
 
-      filteredStores.forEach(s => {
-        const travelBadgeColor = s.travelStatus === "Pending" ? "bg-amber-100 text-amber-700" : (s.travelStatus === "Approved" ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600");
-        
+      filtered.forEach(s => {
+        const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([s.dtName, s.dtAddress].filter(v => v !== "-").join(" "))}`;
+        const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([s.storeName, s.storeAddress].filter(v => v !== "-").join(" "))}`;
+
         const card = document.createElement("div");
-        card.className = "bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between";
+        card.className = "bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-3";
         card.innerHTML = `
           <div>
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">${s.storeCode}</span>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded-full ${travelBadgeColor}">Travel Fee: ${s.travelStatus || 'Belum'}</span>
+            <div class="flex justify-between items-start gap-2 mb-2">
+              <div>
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">${s.storeCode}</span>
+                <span class="text-xs font-mono text-slate-400 ml-1">OID: ${s.oid}</span>
+              </div>
+              <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border">
+                ${s.status}
+              </span>
             </div>
-            <h3 class="font-bold text-slate-900 text-base mb-1 line-clamp-1">${s.storeName}</h3>
-            <p class="text-xs text-slate-500 mb-3 line-clamp-2"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>${s.storeAddress}</p>
             
-            <div class="bg-slate-50 p-3 rounded-xl space-y-1 text-xs mb-4">
-              <div class="flex justify-between"><span class="text-slate-400">OID:</span><span class="font-semibold text-slate-700">${s.oid}</span></div>
-              <div class="flex justify-between"><span class="text-slate-400">DT:</span><span class="font-semibold text-slate-700">${s.dtName}</span></div>
-              <div class="flex justify-between"><span class="text-slate-400">Package:</span><span class="font-semibold text-slate-700">${s.devicePackage}</span></div>
+            <h3 class="font-bold text-slate-900 text-base line-clamp-1">${s.storeName}</h3>
+            
+            <div class="text-xs text-slate-600 space-y-1 mt-2">
+              <p>📍 <b>Alamat Toko:</b> ${s.storeAddress} <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps Toko</a></p>
+              <p>🚚 <b>Distributor:</b> ${s.dtName} (${s.dtCode})</p>
+              <p>🏢 <b>Alamat DT:</b> ${s.dtAddress} ${s.dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 hover:underline">🗺️ Maps DT</a>` : ''}</p>
+              <p>👤 <b>ASM:</b> ${s.asmName} ${s.asmPhone ? `(${s.asmPhone})` : ''}</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
-            <button onclick="openModalAbsen('${s.storeCode}', '${escapeHtml(s.storeName)}', '${s.oid}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-2 px-1 rounded-xl text-xs flex flex-col items-center gap-1 transition-all">
+          <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-[11px] text-slate-500 space-y-1">
+            <div class="flex justify-between"><span>Package:</span><b class="text-slate-700">${s.devicePackage}</b></div>
+            <div class="flex justify-between"><span>SLA Imp:</span><b class="text-slate-700">${s.slaImplementation}</b></div>
+            <div class="flex justify-between"><span>Travel Fee:</span><b class="text-amber-600">${s.travelStatus}</b></div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100">
+            <button onclick="openModalAbsen('${s.storeCode}', '${escapeHtml(s.storeName)}', '${s.oid}')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-2 rounded-xl text-xs flex flex-col items-center gap-1">
               <i class="fa-solid fa-location-dot"></i> Absen
             </button>
-            <button onclick="openModalBAST('${s.storeCode}', '${escapeHtml(s.storeName)}', '${s.oid}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-2 px-1 rounded-xl text-xs flex flex-col items-center gap-1 transition-all">
+            <button onclick="openModalBAST('${s.storeCode}', '${escapeHtml(s.storeName)}', '${s.oid}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-2 rounded-xl text-xs flex flex-col items-center gap-1">
               <i class="fa-solid fa-file-contract"></i> BAST
             </button>
-            <button onclick="openModalTravel('${s.storeCode}', '${escapeHtml(s.storeName)}', '${escapeHtml(s.storeAddress)}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-2 px-1 rounded-xl text-xs flex flex-col items-center gap-1 transition-all">
+            <button onclick="openModalTravel('${s.storeCode}', '${escapeHtml(s.storeName)}', '${escapeHtml(s.storeAddress)}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold py-2 rounded-xl text-xs flex flex-col items-center gap-1">
               <i class="fa-solid fa-car"></i> Travel Fee
             </button>
           </div>
@@ -354,7 +353,6 @@
       return (text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    // --- MODAL CONTROLLERS ---
     function openModalAbsen(code, name, oid) {
       document.getElementById("absenStoreCode").value = code;
       document.getElementById("absenStoreName").value = name;
@@ -376,21 +374,24 @@
       document.getElementById("modalTravel").classList.remove("hidden");
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.add("hidden");
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+    // SINKRON POST HANDLER
+    async function postData(payload) {
+      return fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      }).then(res => res.json());
     }
 
-    // --- SUBMIT ABSEN ---
     async function submitAbsen(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitAbsen");
       btn.disabled = true; btn.innerText = "Mengirim...";
 
       try {
-        const fileInput = document.getElementById("absenPhoto").files[0];
-        let photoBase64 = "";
-        if (fileInput) photoBase64 = await toBase64(fileInput);
-
+        const photoFile = document.getElementById("absenPhoto").files[0];
         const payload = {
           action: "submitAbsen",
           email: state.email,
@@ -401,12 +402,10 @@
           activity: document.getElementById("absenActivity").value,
           notes: document.getElementById("absenNotes").value,
           workingDate: document.getElementById("absenWorkingDate").value,
-          photoIn: photoBase64
+          photoIn: photoFile ? await toBase64(photoFile) : ""
         };
 
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const result = await res.json();
-
+        const result = await postData(payload);
         if (result.status === "success") {
           showAlert("Absen Visit berhasil tersimpan!");
           closeModal("modalAbsen");
@@ -415,13 +414,12 @@
           showAlert(result.message, false);
         }
       } catch (err) {
-        showAlert("Gagal menyimpan data Absen.", false);
+        showAlert("Gagal mengirim data Absen.", false);
       } finally {
         btn.disabled = false; btn.innerText = "Kirim Absen";
       }
     }
 
-    // --- SUBMIT BAST ---
     async function submitBAST(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitBAST");
@@ -451,9 +449,7 @@
           bastFile: bastDocFile ? await toBase64(bastDocFile) : ""
         };
 
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const result = await res.json();
-
+        const result = await postData(payload);
         if (result.status === "success") {
           showAlert("Data BAST berhasil tersimpan!");
           closeModal("modalBAST");
@@ -462,13 +458,12 @@
           showAlert(result.message, false);
         }
       } catch (err) {
-        showAlert("Gagal menyimpan data BAST.", false);
+        showAlert("Gagal mengirim data BAST.", false);
       } finally {
-        btn.disabled = false; btn.innerText = "Simpan Data BAST";
+        btn.disabled = false; btn.innerText = "Simpan BAST";
       }
     }
 
-    // --- SUBMIT TRAVEL FEE ---
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
@@ -488,17 +483,12 @@
           proposalBudget: document.getElementById("travelBudget").value
         };
 
-        const res = await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-        const result = await res.json();
-
+        const result = await postData(payload);
         if (result.status === "success") {
           showAlert("Pengajuan Travel Fee berhasil terkirim!");
-          
-          // Update status lokal
-          const storeIndex = state.stores.findIndex(s => s.storeCode === payload.storeCode);
-          if (storeIndex !== -1) state.stores[storeIndex].travelStatus = "Pending";
+          const idx = state.stores.findIndex(s => s.storeCode === payload.storeCode);
+          if (idx !== -1) state.stores[idx].travelStatus = "Pending";
           renderStoreList();
-
           closeModal("modalTravel");
           document.getElementById("formTravel").reset();
         } else {
