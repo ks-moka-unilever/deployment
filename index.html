@@ -17,7 +17,6 @@
     .animate-spin-custom {
       animation: spin-fast 0.8s linear infinite;
     }
-    /* Hide scrollbar for Horizontal Carousel on Mobile */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -93,7 +92,7 @@
         <span id="totalStoresBadge" class="text-2xl font-black">0</span>
       </div>
 
-      <!-- REVISI 2: KARTU KLASIFIKASI KECIL TO-SIDE SCROLL PADA MOBILE -->
+      <!-- KARTU KLASIFIKASI RINGKAS (SCROLL SAMPING) -->
       <div>
         <div class="flex justify-between items-center mb-1.5">
           <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation:</h3>
@@ -153,15 +152,13 @@
           <textarea id="visitNotes" rows="2" placeholder="Hasil kunjungan..." required class="w-full p-2 border rounded-xl text-xs"></textarea>
         </div>
         
-        <!-- REVISI 1: UPLOAD ABSEN SAMA DENGAN BAST (KAMERA & GALERI) -->
+        <!-- POIN 6: UPLOAD ABSEN DISAMAKAN PERSIS FORMAT BAST -->
         <div>
           <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <div onclick="document.getElementById('visitSelfie').click()" class="border-2 border-dashed border-blue-300 bg-blue-50/50 hover:bg-blue-50 p-3 rounded-xl text-center cursor-pointer">
-            <span class="text-xl">📸</span>
-            <p id="labelVisitSelfie" class="text-[11px] font-semibold text-blue-600 mt-0.5">Upload Foto Selfie</p>
-            <p class="text-[9px] text-slate-400">Kamera atau Galeri</p>
+          <div onclick="document.getElementById('visitSelfie').click()" class="border-2 border-dashed border-blue-300 bg-blue-50/50 hover:bg-blue-50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
+            <span class="text-lg">📸</span>
+            <p id="labelVisitSelfie" class="text-[10px] font-semibold text-blue-600">Upload Foto Selfie Lapangan</p>
           </div>
-          <!-- capture dihilangkan agar bisa pilih galeri / kamera -->
           <input type="file" id="visitSelfie" accept="image/*" required class="hidden" onchange="updateFileLabel(this, 'labelVisitSelfie')">
         </div>
 
@@ -228,10 +225,10 @@
           </div>
         </div>
 
-        <!-- REVISI 1: UPLOAD FOTO DEPAN TOKO BISA DARI KAMERA / GALERI -->
+        <!-- POIN 6: FOTO DEPAN TOKO BISA DARI KAMERA ATAU GALERI -->
         <div class="pt-1">
           <label class="font-semibold text-slate-600">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <div onclick="document.getElementById('storeFrontPhoto').click()" class="border-2 border-dashed border-emerald-300 bg-emerald-50/50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
+          <div onclick="document.getElementById('storeFrontPhoto').click()" class="border-2 border-dashed border-emerald-300 bg-emerald-50/50 hover:bg-emerald-50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
             <span class="text-lg">🏪</span>
             <p id="labelStoreFrontPhoto" class="text-[10px] font-semibold text-emerald-600">Upload Foto Depan Toko</p>
           </div>
@@ -240,7 +237,7 @@
 
         <div>
           <label class="font-semibold text-slate-600">Dokumen BAST (PDF/Image) <span class="text-rose-500">*</span></label>
-          <div onclick="document.getElementById('bastDocument').click()" class="border-2 border-dashed border-indigo-300 bg-indigo-50/50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
+          <div onclick="document.getElementById('bastDocument').click()" class="border-2 border-dashed border-indigo-300 bg-indigo-50/50 hover:bg-indigo-50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
             <span class="text-lg">📄</span>
             <p id="labelBastDocument" class="text-[10px] font-semibold text-indigo-600">Upload File BAST</p>
           </div>
@@ -266,7 +263,6 @@
           <input type="text" id="travelImplName" readonly class="w-full p-1.5 border rounded-lg mt-0.5 bg-slate-100 font-bold text-slate-700 text-xs">
         </div>
 
-        <!-- REVISI 3: KODE TOKO READ-ONLY / AUTO-FILL SEPERTI NAMA TOKO -->
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="font-semibold text-slate-600">Kode Toko</label>
@@ -437,7 +433,6 @@
         });
     }
 
-    // REVISI 2: COMPACT SLIDER CARDS UNTUK MOBILE
     function renderSummaryCards(stores) {
       const container = document.getElementById("summaryCardsContainer");
       if (!container) return;
@@ -518,7 +513,6 @@
       return `<span class="px-2 py-0.5 text-[9px] font-bold rounded-full border ${badgeClass}">${statusText}</span>`;
     }
 
-    // TOGGLE EXPAND/COLLAPSE INFO TOKO UNTUK TAMPILAN MOBILE PRESISI
     function toggleStoreDetail(idx) {
       const detailElem = document.getElementById(`storeDetail_${idx}`);
       const btnElem = document.getElementById(`btnToggle_${idx}`);
@@ -555,12 +549,17 @@
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
         const visitCount = store.visitCount || 0;
+        
+        // POIN 1: INFORMASI STATUS TRAVEL FEE
+        const travelStatus = store.travelFeeStatus || "Belum Pengajuan";
 
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
+        // POIN 2: MAPS UNTUK DT ADDRESS
+        const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
 
         html += `
           <div class="glass-card p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
-            <!-- HEADER TOKO (SELALU TAMPIL) -->
+            <!-- HEADER TOKO -->
             <div class="flex justify-between items-start gap-2">
               <div>
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900">${idx + 1}. ${storeName}</h4>
@@ -574,28 +573,44 @@
               </div>
             </div>
 
-            <!-- TOMBOL ACCORDION (EXPAND/COLLAPSE UNTUK HP) -->
+            <!-- ACCORDION BUTTON FOR MOBILE -->
             <button id="btnToggle_${idx}" onclick="toggleStoreDetail(${idx})" 
                     class="w-full text-center py-1 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-[10px] rounded-lg border border-slate-200 transition-all">
               Lihat Detail Toko 🔽
             </button>
 
-            <!-- DETAIL TOKO (RAPI / COLLAPSIBLE) -->
+            <!-- DETAIL TOKO (COLLAPSIBLE) -->
             <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
               <div class="text-[11px] text-slate-600 space-y-1">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
                   <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps</a>
                 </p>
-                <p>📦 <b>Package:</b> ${devicePackage} | Lead: <b>${projectLeadName}</b></p>
-                <p>🚚 <b>Distributor:</b> ${dtName} (${dtCode})</p>
+                
+                <!-- POIN 4: DIPISAH DAN BOLD KONSISTEN -->
+                <p>📦 <b>Device Package:</b> ${devicePackage}</p>
+                <p>👔 <b>Project Lead Name:</b> ${projectLeadName}</p>
+
+                <!-- POIN 2: ALAMAT DT + MAPS -->
+                <p>🚚 <b>Distributor (DT):</b> ${dtName} (${dtCode})</p>
+                <p>🏬 <b>Alamat DT:</b> ${dtAddress} 
+                  <a href="${dtMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps DT</a>
+                </p>
+
                 <p>👤 <b>ASM:</b> ${asmName} ${asmPhone}</p>
+                
+                <!-- POIN 1: INFORMASI STATUS TRAVEL FEE -->
+                <p>🚗 <b>Status Travel Fee:</b> <span class="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">${travelStatus}</span></p>
               </div>
 
+              <!-- POIN 3 & 5: NAMA ISTILAH TANGGAL SESUAI KETENTUAN DAN GO-LIVE LENGKAP -->
               <div class="grid grid-cols-2 gap-1.5 text-[10px] bg-slate-50 p-2 rounded-xl border border-slate-100 text-slate-500">
-                <div>Planned: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
-                <div>Actual: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
-                <div>SKU Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
-                <div>SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
+                <div>Imp. Planned Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
+                <div>Imp. Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
+                <div>Go Live Planned Date: <b class="text-slate-700">${formatDateNice(store.goLivePlannedDate)}</b></div>
+                <div>Go Live Completed Date: <b class="text-slate-700">${formatDateNice(store.goLiveCompletedDate)}</b></div>
+                <div>Go Live Store: <b class="text-slate-700">${store.goLiveStore || "-"}</b></div>
+                <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
+                <div class="col-span-2">SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
               </div>
             </div>
 
@@ -632,7 +647,6 @@
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
-    // REVISI 3: KODE TOKO DI TRAVEL FEE OTOMATIS TERISI & READONLY
     function openTravelModal(code) {
       const store = allStoresData.find(s => s.storeCode === code) || {};
       
@@ -719,7 +733,7 @@
         if (res && res.status === "success") {
           closeModal("visitModal");
           document.getElementById("visitForm").reset();
-          document.getElementById("labelVisitSelfie").innerText = "Upload Foto Selfie";
+          document.getElementById("labelVisitSelfie").innerText = "Upload Foto Selfie Lapangan";
           showResultModal("Berhasil!", res.message || "Absen tersimpan.", true);
           fetchAssignedStores(currentUser.implId, currentUser.email);
         } else {
