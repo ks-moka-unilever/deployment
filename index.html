@@ -17,105 +17,112 @@
     .animate-spin-custom {
       animation: spin-fast 0.8s linear infinite;
     }
+    /* Hide scrollbar for Horizontal Carousel on Mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased">
+<body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased text-xs">
 
-  <div class="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+  <div class="max-w-4xl mx-auto p-3 sm:p-5 space-y-4">
 
     <!-- ALERT BANNER NOTIFICATION -->
-    <div id="alertBox" class="hidden p-4 rounded-xl text-sm font-medium transition-all"></div>
+    <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-medium transition-all"></div>
 
     <!-- FORM LOGIN -->
-    <div id="loginSection" class="glass-card p-6 sm:p-8 rounded-2xl shadow-xl border border-white max-w-md mx-auto mt-12">
-      <div class="text-center space-y-2 mb-6">
-        <h1 class="text-2xl font-bold text-slate-900">Portal Implementor Lapangan</h1>
-        <p class="text-sm text-slate-500">Silakan login menggunakan kredensial terdaftar Anda</p>
+    <div id="loginSection" class="glass-card p-5 sm:p-6 rounded-2xl shadow-xl border border-white max-w-sm mx-auto mt-8">
+      <div class="text-center space-y-1 mb-5">
+        <h1 class="text-xl font-bold text-slate-900">Portal Implementor</h1>
+        <p class="text-[11px] text-slate-500">Masuk dengan akun terdaftar Anda</p>
       </div>
 
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Implementor ID</label>
+          <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Implementor ID</label>
           <input type="text" id="loginImplId" required placeholder="Contoh: MTI0888" 
-                 class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-semibold">
+                 class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-semibold text-xs">
         </div>
         <div>
-          <label class="block text-xs font-semibold uppercase text-slate-600 mb-1">Email Terdaftar</label>
+          <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Email Terdaftar</label>
           <input type="email" id="loginEmail" required placeholder="nama@email.com" 
-                 class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                 class="w-full px-3 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs">
         </div>
         <button type="submit" id="btnLogin" 
-                class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex justify-center items-center gap-2">
+                class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all flex justify-center items-center gap-2 text-xs">
           <span>Masuk Portal</span>
         </button>
       </form>
     </div>
 
     <!-- DASHBOARD -->
-    <div id="dashboardSection" class="hidden space-y-6">
+    <div id="dashboardSection" class="hidden space-y-4">
 
-      <div class="glass-card p-5 rounded-2xl shadow-md border border-white flex justify-between items-center flex-wrap gap-3">
+      <div class="glass-card p-4 rounded-2xl shadow-sm border border-white flex justify-between items-center flex-wrap gap-2">
         <div>
-          <h2 class="text-xl font-bold text-slate-900">Dashboard Implementor</h2>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">
+          <h2 class="text-base font-bold text-slate-900">Dashboard Implementor</h2>
+          <p class="text-[11px] text-slate-500 font-medium">
             ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span> 
-            <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
+            <span id="userDisplayNameWrapper" class="hidden"> | <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
         </div>
-        <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-          <!-- TOMBOL REFRESH + ANIMASI SPIN -->
+        <div class="flex items-center gap-1.5">
           <button id="btnRefresh" onclick="refreshDashboardData()" 
-                  class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
-            <span id="refreshIcon" class="inline-block transition-transform">🔄</span>
+                  class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-[11px] font-bold rounded-lg shadow transition-all flex items-center gap-1">
+            <span id="refreshIcon">🔄</span>
             <span id="refreshText">Refresh</span>
           </button>
 
-          <!-- LINKTREE HEADER -->
           <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
-             class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
-            <span>📚 Pusat Panduan</span>
+             class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-lg shadow transition-all flex items-center gap-1">
+            <span>📚 Panduan</span>
           </a>
 
-          <button onclick="handleLogout()" class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+          <button onclick="handleLogout()" class="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-bold rounded-lg shadow transition-all">
             Keluar
           </button>
         </div>
       </div>
 
-      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-2xl shadow-lg flex justify-between items-center">
-        <span class="font-semibold text-sm">Total Toko Di-Assign Ke Anda</span>
-        <span id="totalStoresBadge" class="text-3xl font-black">0</span>
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 rounded-2xl shadow flex justify-between items-center">
+        <span class="font-semibold text-xs">Total Toko Di-Assign</span>
+        <span id="totalStoresBadge" class="text-2xl font-black">0</span>
       </div>
 
+      <!-- REVISI 2: KARTU KLASIFIKASI KECIL TO-SIDE SCROLL PADA MOBILE -->
       <div>
-        <div class="flex justify-between items-center mb-2">
-          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ringkasan Klasifikasi Status:</h3>
-          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk memfilter</span>
+        <div class="flex justify-between items-center mb-1.5">
+          <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation:</h3>
+          <span class="text-[9px] text-blue-600 font-semibold">*Klik filter</span>
         </div>
-        <div id="summaryCardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+        <div id="summaryCardsContainer" class="flex sm:grid sm:grid-cols-3 gap-2 overflow-x-auto no-scrollbar pb-1"></div>
       </div>
 
       <div class="relative">
         <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Ketik Nama Toko / Kode / OID / Distributor / ASM / Lead..." 
-               class="w-full pl-4 pr-4 py-3.5 rounded-xl border border-blue-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
+               placeholder="🔍 Cari Toko / Kode / OID / Distributor / ASM..." 
+               class="w-full px-3.5 py-2.5 rounded-xl border border-blue-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-xs">
       </div>
 
-      <div id="storeListContainer" class="space-y-4"></div>
+      <div id="storeListContainer" class="space-y-3"></div>
 
     </div>
 
   </div>
 
-  <!-- MODAL POPUP RESULT NOTIFICATION -->
+  <!-- MODAL NOTIFIKASI -->
   <div id="resultModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-white max-w-sm w-full rounded-2xl p-6 shadow-2xl text-center space-y-4 animate-in fade-in zoom-in duration-200">
-      <div id="resultModalIcon" class="text-5xl mx-auto"></div>
+    <div class="bg-white max-w-xs w-full rounded-2xl p-5 shadow-2xl text-center space-y-3">
+      <div id="resultModalIcon" class="text-4xl mx-auto"></div>
       <div>
-        <h3 id="resultModalTitle" class="text-lg font-bold text-slate-900"></h3>
-        <p id="resultModalMessage" class="text-xs text-slate-600 mt-2 leading-relaxed"></p>
+        <h3 id="resultModalTitle" class="text-sm font-bold text-slate-900"></h3>
+        <p id="resultModalMessage" class="text-[11px] text-slate-600 mt-1 leading-relaxed"></p>
       </div>
-      <button onclick="closeModal('resultModal')" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+      <button onclick="closeModal('resultModal')" class="w-full py-2 bg-slate-900 text-white text-xs font-bold rounded-xl">
         Tutup
       </button>
     </div>
@@ -123,17 +130,17 @@
 
   <!-- MODAL VISIT LOG (ABSEN) -->
   <div id="visitModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8">
+    <div class="bg-white max-w-md w-full rounded-2xl p-5 shadow-2xl space-y-3 my-6">
       <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="text-lg font-bold text-slate-900">Catat Absen & Visit Lapangan</h3>
-        <span id="visitModalBadge" class="text-xs"></span>
+        <h3 class="text-sm font-bold text-slate-900">Absen & Visit Lapangan</h3>
+        <span id="visitModalBadge"></span>
       </div>
       
-      <form id="visitForm" onsubmit="submitVisitLog(event)" class="space-y-3">
+      <form id="visitForm" onsubmit="submitVisitLog(event)" class="space-y-2.5">
         <input type="hidden" id="visitStoreCode">
         <div>
-          <label class="block text-xs font-semibold text-slate-600">Tipe Aktivitas <span class="text-rose-500">*</span></label>
-          <select id="visitActivityType" required class="w-full p-2.5 border rounded-xl text-sm mt-1 bg-white font-medium">
+          <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Aktivitas <span class="text-rose-500">*</span></label>
+          <select id="visitActivityType" required class="w-full p-2 border rounded-xl text-xs bg-white font-medium">
             <option value="" disabled selected>-- Pilih Aktivitas --</option>
             <option value="Check In - Visit ke Toko">Check In - Visit ke Toko</option>
             <option value="Check Out - SKU Management">Check Out - SKU Management</option>
@@ -142,24 +149,25 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600">Catatan Ringkas <span class="text-rose-500">*</span></label>
-          <textarea id="visitNotes" rows="2" placeholder="Tuliskan hasil kunjungan / progres aktivitas..." required class="w-full p-2.5 border rounded-xl text-sm mt-1"></textarea>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Catatan <span class="text-rose-500">*</span></label>
+          <textarea id="visitNotes" rows="2" placeholder="Hasil kunjungan..." required class="w-full p-2 border rounded-xl text-xs"></textarea>
         </div>
         
-        <!-- REVISI: INPUT FILE ABSEN DISERAGAMKAN SEPERTI BAST -->
+        <!-- REVISI 1: UPLOAD ABSEN SAMA DENGAN BAST (KAMERA & GALERI) -->
         <div>
-          <label class="block text-xs font-semibold text-slate-600">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <div onclick="document.getElementById('visitSelfie').click()" class="mt-1 border-2 border-dashed border-blue-300 bg-blue-50/50 hover:bg-blue-50 p-4 rounded-xl text-center cursor-pointer transition-all">
-            <span class="text-2xl">📸</span>
-            <p id="labelVisitSelfie" class="text-xs font-semibold text-blue-600 mt-1">Klik di sini untuk upload foto selfie</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Format JPG / PNG</p>
+          <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
+          <div onclick="document.getElementById('visitSelfie').click()" class="border-2 border-dashed border-blue-300 bg-blue-50/50 hover:bg-blue-50 p-3 rounded-xl text-center cursor-pointer">
+            <span class="text-xl">📸</span>
+            <p id="labelVisitSelfie" class="text-[11px] font-semibold text-blue-600 mt-0.5">Upload Foto Selfie</p>
+            <p class="text-[9px] text-slate-400">Kamera atau Galeri</p>
           </div>
-          <input type="file" id="visitSelfie" accept="image/*" capture="camera" required class="hidden" onchange="updateFileLabel(this, 'labelVisitSelfie')">
+          <!-- capture dihilangkan agar bisa pilih galeri / kamera -->
+          <input type="file" id="visitSelfie" accept="image/*" required class="hidden" onchange="updateFileLabel(this, 'labelVisitSelfie')">
         </div>
 
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal('visitModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitVisit" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md">Simpan Visit</button>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('visitModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-lg">Batal</button>
+          <button type="submit" id="btnSubmitVisit" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg shadow">Simpan</button>
         </div>
       </form>
     </div>
@@ -167,30 +175,30 @@
 
   <!-- MODAL BAST -->
   <div id="bastModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto">
-      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Formulir Digital BAST</h3>
-      <form id="bastForm" onsubmit="submitBAST(event)" class="space-y-3 text-xs">
+    <div class="bg-white max-w-md w-full rounded-2xl p-5 shadow-2xl space-y-3 my-6 max-h-[90vh] overflow-y-auto">
+      <h3 class="text-sm font-bold text-slate-900 border-b pb-2">Formulir BAST</h3>
+      <form id="bastForm" onsubmit="submitBAST(event)" class="space-y-2 text-[11px]">
         <input type="hidden" id="bastStoreCode">
         
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="font-semibold text-slate-600">Nama Tuan Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="ownerName" required class="w-full p-2 border rounded-lg mt-1">
+            <label class="font-semibold text-slate-600">Nama Toko/PIC <span class="text-rose-500">*</span></label>
+            <input type="text" id="ownerName" required class="w-full p-1.5 border rounded-lg mt-0.5 text-xs">
           </div>
           <div>
             <label class="font-semibold text-slate-600">No HP PIC <span class="text-rose-500">*</span></label>
-            <input type="tel" id="ownerPhone" required pattern="[0-9]{9,15}" title="Masukkan nomor HP yang valid (9-15 digit angka)" placeholder="08xxxxxxxxxx" class="w-full p-2 border rounded-lg mt-1">
+            <input type="tel" id="ownerPhone" required pattern="[0-9]{9,15}" placeholder="08xxx" class="w-full p-1.5 border rounded-lg mt-0.5 text-xs">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="font-semibold text-slate-600">Email PIC <span class="text-rose-500">*</span></label>
-            <input type="email" id="ownerEmail" required placeholder="email@toko.com" class="w-full p-2 border rounded-lg mt-1">
+            <input type="email" id="ownerEmail" required placeholder="email@toko.com" class="w-full p-1.5 border rounded-lg mt-0.5 text-xs">
           </div>
           <div>
             <label class="font-semibold text-slate-600">Gender <span class="text-rose-500">*</span></label>
-            <select id="ownerGender" required class="w-full p-2 border rounded-lg mt-1 bg-white">
+            <select id="ownerGender" required class="w-full p-1.5 border rounded-lg mt-0.5 bg-white text-xs">
               <option value="" disabled selected>-- Pilih --</option>
               <option value="Laki-laki">Laki-laki</option>
               <option value="Perempuan">Perempuan</option>
@@ -200,58 +208,48 @@
 
         <div>
           <label class="font-semibold text-slate-600">Umur <span class="text-rose-500">*</span></label>
-          <input type="number" id="ownerAge" required min="17" max="99" placeholder="Contoh: 30" class="w-full p-2 border rounded-lg mt-1">
+          <input type="number" id="ownerAge" required min="17" max="99" placeholder="Usia" class="w-full p-1.5 border rounded-lg mt-0.5 text-xs">
         </div>
 
-        <hr class="my-2">
-        <p class="font-bold text-slate-700">Serial Number & Hardware</p>
-        <p class="text-[10px] text-amber-600 font-medium bg-amber-50 p-2 rounded-lg border border-amber-200">
-          💡 <b>Info:</b> Jika toko menggunakan <b>Moka PC</b>, isi IMEI TAB dengan angka 0 sebanyak 15 digit (<code>000000000000000</code>).
-        </p>
+        <p class="font-bold text-slate-700 pt-1">Serial Number & Hardware</p>
 
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-3 gap-1.5">
           <div>
             <label class="font-semibold text-slate-600">IMEI Tab <span class="text-rose-500">*</span></label>
-            <input type="text" id="imeiTab" required pattern="\d{15}" title="IMEI wajib tepat 15 digit angka" maxlength="15" placeholder="15 digit angka" class="w-full p-2 border rounded-lg mt-1 font-mono">
+            <input type="text" id="imeiTab" required pattern="\d{15}" maxlength="15" placeholder="15 digit" class="w-full p-1.5 border rounded-lg mt-0.5 font-mono text-[10px]">
           </div>
           <div>
             <label class="font-semibold text-slate-600">SN Scanner <span class="text-rose-500">*</span></label>
-            <input type="text" id="snScanner" required pattern="[a-zA-Z0-9]{9,16}" title="SN Scanner harus 9 - 16 digit alfanumerik" maxlength="16" placeholder="9-16 digit" class="w-full p-2 border rounded-lg mt-1 font-mono">
+            <input type="text" id="snScanner" required pattern="[a-zA-Z0-9]{9,16}" maxlength="16" placeholder="SN Scanner" class="w-full p-1.5 border rounded-lg mt-0.5 font-mono text-[10px]">
           </div>
           <div>
             <label class="font-semibold text-slate-600">SN Printer <span class="text-rose-500">*</span></label>
-            <input type="text" id="snPrinter" required pattern="[a-zA-Z0-9]{9,16}" title="SN Printer harus 9 - 16 digit alfanumerik" maxlength="16" placeholder="9-16 digit" class="w-full p-2 border rounded-lg mt-1 font-mono">
+            <input type="text" id="snPrinter" required pattern="[a-zA-Z0-9]{9,16}" maxlength="16" placeholder="SN Printer" class="w-full p-1.5 border rounded-lg mt-0.5 font-mono text-[10px]">
           </div>
         </div>
 
-        <hr class="my-2">
-        <p class="font-bold text-slate-700">Upload Lampiran Dokumen</p>
-
-        <!-- REVISI: INPUT FILE FOTO DEPAN TOKO DISERAGAMKAN SEPERTI BAST -->
-        <div>
+        <!-- REVISI 1: UPLOAD FOTO DEPAN TOKO BISA DARI KAMERA / GALERI -->
+        <div class="pt-1">
           <label class="font-semibold text-slate-600">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <div onclick="document.getElementById('storeFrontPhoto').click()" class="mt-1 border-2 border-dashed border-emerald-300 bg-emerald-50/50 hover:bg-emerald-50 p-4 rounded-xl text-center cursor-pointer transition-all">
-            <span class="text-2xl">🏪</span>
-            <p id="labelStoreFrontPhoto" class="text-xs font-semibold text-emerald-600 mt-1">Klik di sini untuk upload foto depan toko</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Format JPG / PNG</p>
+          <div onclick="document.getElementById('storeFrontPhoto').click()" class="border-2 border-dashed border-emerald-300 bg-emerald-50/50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
+            <span class="text-lg">🏪</span>
+            <p id="labelStoreFrontPhoto" class="text-[10px] font-semibold text-emerald-600">Upload Foto Depan Toko</p>
           </div>
-          <input type="file" id="storeFrontPhoto" accept="image/*" capture="camera" required class="hidden" onchange="updateFileLabel(this, 'labelStoreFrontPhoto')">
+          <input type="file" id="storeFrontPhoto" accept="image/*" required class="hidden" onchange="updateFileLabel(this, 'labelStoreFrontPhoto')">
         </div>
 
-        <!-- UPLOAD DOKUMEN BAST -->
-        <div class="mt-2">
-          <label class="font-semibold text-slate-600">Upload Dokumen BAST (PDF/Image) <span class="text-rose-500">*</span></label>
-          <div onclick="document.getElementById('bastDocument').click()" class="mt-1 border-2 border-dashed border-indigo-300 bg-indigo-50/50 hover:bg-indigo-50 p-4 rounded-xl text-center cursor-pointer transition-all">
-            <span class="text-2xl">📄</span>
-            <p id="labelBastDocument" class="text-xs font-semibold text-indigo-600 mt-1">Klik di sini untuk upload file BAST</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Format PDF / Gambar</p>
+        <div>
+          <label class="font-semibold text-slate-600">Dokumen BAST (PDF/Image) <span class="text-rose-500">*</span></label>
+          <div onclick="document.getElementById('bastDocument').click()" class="border-2 border-dashed border-indigo-300 bg-indigo-50/50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
+            <span class="text-lg">📄</span>
+            <p id="labelBastDocument" class="text-[10px] font-semibold text-indigo-600">Upload File BAST</p>
           </div>
           <input type="file" id="bastDocument" accept="image/*,application/pdf" required class="hidden" onchange="updateFileLabel(this, 'labelBastDocument')">
         </div>
 
-        <div class="flex justify-end gap-2 pt-3 border-t">
-          <button type="button" onclick="closeModal('bastModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitBAST" class="px-4 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim BAST</button>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('bastModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-lg">Batal</button>
+          <button type="submit" id="btnSubmitBAST" class="px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg shadow">Kirim BAST</button>
         </div>
       </form>
     </div>
@@ -259,69 +257,68 @@
 
   <!-- MODAL TRAVEL FEE -->
   <div id="travelModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white max-w-lg w-full rounded-2xl p-6 shadow-2xl space-y-4 my-8 max-h-[90vh] overflow-y-auto text-xs">
-      <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Pengajuan Travel Visit Fee</h3>
-      <form id="travelForm" onsubmit="submitTravelFee(event)" class="space-y-3">
-        <input type="hidden" id="travelStoreCodeHidden">
-
+    <div class="bg-white max-w-md w-full rounded-2xl p-5 shadow-2xl space-y-3 my-6 max-h-[90vh] overflow-y-auto text-[11px]">
+      <h3 class="text-sm font-bold text-slate-900 border-b pb-2">Pengajuan Travel Fee</h3>
+      <form id="travelForm" onsubmit="submitTravelFee(event)" class="space-y-2">
+        
         <div>
-          <label class="font-semibold text-slate-600">Nama Implementor <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelImplName" readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold text-slate-700">
+          <label class="font-semibold text-slate-600">Nama Implementor</label>
+          <input type="text" id="travelImplName" readonly class="w-full p-1.5 border rounded-lg mt-0.5 bg-slate-100 font-bold text-slate-700 text-xs">
         </div>
 
+        <!-- REVISI 3: KODE TOKO READ-ONLY / AUTO-FILL SEPERTI NAMA TOKO -->
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="font-semibold text-slate-600">Kode Toko (18 Digit) <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelStoreCode" required pattern="\d{18}" title="Kode Toko harus tepat 18 digit angka" maxlength="18" placeholder="Contoh: 123456789012345678" class="w-full p-2 border rounded-lg mt-1 font-mono">
+            <label class="font-semibold text-slate-600">Kode Toko</label>
+            <input type="text" id="travelStoreCode" readonly class="w-full p-1.5 border rounded-lg mt-0.5 bg-slate-100 font-mono font-bold text-slate-700 text-xs">
           </div>
           <div>
-            <label class="font-semibold text-slate-600">Nama Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelStoreName" required readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold text-slate-700">
+            <label class="font-semibold text-slate-600">Nama Toko</label>
+            <input type="text" id="travelStoreName" readonly class="w-full p-1.5 border rounded-lg mt-0.5 bg-slate-100 font-bold text-slate-700 text-xs">
           </div>
         </div>
 
         <div>
-          <label class="font-semibold text-slate-600">Alamat Lengkap Toko <span class="text-rose-500">*</span></label>
-          <textarea id="travelStoreAddress" required readonly rows="2" class="w-full p-2 border rounded-lg mt-1 bg-slate-100 text-slate-700"></textarea>
+          <label class="font-semibold text-slate-600">Alamat Toko</label>
+          <textarea id="travelStoreAddress" readonly rows="2" class="w-full p-1.5 border rounded-lg mt-0.5 bg-slate-100 text-slate-700 text-xs"></textarea>
         </div>
 
         <div>
-          <label class="font-semibold text-slate-600">Alamat Lengkap Implementor <span class="text-rose-500">*</span></label>
-          <textarea id="travelImplAddress" required placeholder="Masukkan alamat lengkap domisili Anda..." rows="2" class="w-full p-2 border rounded-lg mt-1"></textarea>
+          <label class="font-semibold text-slate-600">Alamat Domisili Anda <span class="text-rose-500">*</span></label>
+          <textarea id="travelImplAddress" required placeholder="Alamat lengkap..." rows="2" class="w-full p-1.5 border rounded-lg mt-0.5 text-xs"></textarea>
         </div>
 
         <div>
-          <label class="font-semibold text-slate-600">Kabupaten/Kota Domisili Implementor <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelImplCity" required placeholder="Contoh: Jakarta Selatan" class="w-full p-2 border rounded-lg mt-1">
+          <label class="font-semibold text-slate-600">Kota Domisili <span class="text-rose-500">*</span></label>
+          <input type="text" id="travelImplCity" required placeholder="Contoh: Jakarta Selatan" class="w-full p-1.5 border rounded-lg mt-0.5 text-xs">
         </div>
 
         <div>
           <label class="font-semibold text-slate-600">Jarak Domisili ke Toko (Km) <span class="text-rose-500">*</span></label>
-          <div class="relative flex items-center mt-1">
-            <input type="number" id="travelDistance" required min="1" step="any" placeholder="Masukkan angka jarak, misal: 15" oninput="handleDistanceChange(this.value)" class="w-full p-2 pr-12 border rounded-lg font-bold">
+          <div class="relative flex items-center mt-0.5">
+            <input type="number" id="travelDistance" required min="1" step="any" placeholder="Angka jarak" oninput="handleDistanceChange(this.value)" class="w-full p-1.5 pr-10 border rounded-lg font-bold text-xs">
             <span class="absolute right-3 font-bold text-slate-400 select-none">Km</span>
           </div>
         </div>
 
         <div id="proposalBudgetWrapper" class="hidden">
           <label class="font-semibold text-slate-600">Proposal Budget Rupiah <span class="text-rose-500">*</span></label>
-          <div class="relative flex items-center mt-1">
-            <span class="absolute left-3 font-bold text-slate-400 select-none">Rp</span>
-            <input type="text" id="travelProposalBudget" pattern="[0-9]+" title="Angka saja tanpa titik atau koma" placeholder="Contoh: 500000" class="w-full p-2 pl-10 border rounded-lg font-mono">
+          <div class="relative flex items-center mt-0.5">
+            <span class="absolute left-2.5 font-bold text-slate-400 select-none">Rp</span>
+            <input type="text" id="travelProposalBudget" pattern="[0-9]+" placeholder="Contoh: 500000" class="w-full p-1.5 pl-8 border rounded-lg font-mono text-xs">
           </div>
-          <p class="text-[10px] text-amber-600 mt-1">⚠️ Jarak melebihi 50 Km. Harap isi proposal budget dalam angka tanpa titik/koma (Contoh: 500000).</p>
+          <p class="text-[9px] text-amber-600 mt-0.5">⚠️ Jarak > 50 Km. Isi proposal budget angka tanpa titik/koma.</p>
         </div>
 
-        <div class="flex justify-end gap-2 pt-3 border-t">
-          <button type="button" onclick="closeModal('travelModal')" class="px-4 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitTravel" class="px-4 py-2 bg-amber-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim Pengajuan</button>
+        <div class="flex justify-end gap-2 pt-2 border-t">
+          <button type="button" onclick="closeModal('travelModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-lg">Batal</button>
+          <button type="submit" id="btnSubmitTravel" class="px-3 py-1.5 bg-amber-600 text-white text-xs font-bold rounded-lg shadow">Kirim</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -346,7 +343,7 @@
     }
 
     function formatDateNice(dateVal) {
-      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
+      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined") return "-";
       const str = String(dateVal).trim();
       if (!str || str === "-") return "-";
       const d = new Date(str);
@@ -358,16 +355,16 @@
 
     function showAlert(msg, isError = true) {
       const alertBox = document.getElementById("alertBox");
-      alertBox.className = `p-4 rounded-xl text-sm font-medium ${isError ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`;
-      alertBox.innerText = msg || (isError ? "Terjadi kesalahan sistem." : "Berhasil.");
+      alertBox.className = `p-3 rounded-xl text-xs font-medium ${isError ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}`;
+      alertBox.innerText = msg || (isError ? "Terjadi kesalahan." : "Berhasil.");
       alertBox.classList.remove("hidden");
-      setTimeout(() => alertBox.classList.add("hidden"), 6000);
+      setTimeout(() => alertBox.classList.add("hidden"), 5000);
     }
 
     function showResultModal(title, message, isSuccess = true) {
       document.getElementById("resultModalIcon").innerText = isSuccess ? "✅" : "❌";
       document.getElementById("resultModalTitle").innerText = title;
-      document.getElementById("resultModalTitle").className = `text-lg font-bold ${isSuccess ? 'text-emerald-700' : 'text-rose-700'}`;
+      document.getElementById("resultModalTitle").className = `text-sm font-bold ${isSuccess ? 'text-emerald-700' : 'text-rose-700'}`;
       document.getElementById("resultModalMessage").innerText = message;
       document.getElementById("resultModal").classList.remove("hidden");
     }
@@ -390,15 +387,12 @@
 
     function fetchAssignedStores(implId, email, isRefresh = false) {
       const btnLogin = document.getElementById("btnLogin");
-      if (btnLogin && !isRefresh) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
+      if (btnLogin && !isRefresh) btnLogin.innerHTML = `<span>Memuat...</span>`;
 
       const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
 
       fetch(targetUrl)
-        .then(res => {
-          if (!res.ok) throw new Error("HTTP Error: " + res.status);
-          return res.json();
-        })
+        .then(res => res.json())
         .then(res => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
           
@@ -420,8 +414,6 @@
             if (userName) {
               document.getElementById("userDisplayName").innerText = userName;
               document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
-            } else {
-              document.getElementById("userDisplayNameWrapper").classList.add("hidden");
             }
 
             allStoresData = res.data || [];
@@ -430,25 +422,22 @@
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
 
-            if (isRefresh) {
-              showAlert("Data dashboard berhasil diperbarui!", false);
-            }
+            if (isRefresh) showAlert("Data berhasil diperbarui!", false);
           } else {
-            showAlert(res ? res.message : "Gagal memuat data dari server.", true);
+            showAlert(res ? res.message : "Gagal memuat data.", true);
           }
         })
         .catch(err => {
           if (btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          
           const refreshIcon = document.getElementById("refreshIcon");
           const refreshText = document.getElementById("refreshText");
           if (refreshIcon) refreshIcon.classList.remove("animate-spin-custom");
           if (refreshText) refreshText.innerText = "Refresh";
-
-          showAlert("Gagal terhubung ke Apps Script: " + err.message, true);
+          showAlert("Gagal terhubung: " + err.message, true);
         });
     }
 
+    // REVISI 2: COMPACT SLIDER CARDS UNTUK MOBILE
     function renderSummaryCards(stores) {
       const container = document.getElementById("summaryCardsContainer");
       if (!container) return;
@@ -463,20 +452,14 @@
       Object.keys(counts).forEach(status => {
         const isSelected = selectedStatuses.includes(status);
         const cardStyle = isSelected 
-          ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
-          : "bg-white border border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100";
-        
-        const badge = isSelected ? `<span class="ml-1.5 text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">✓ Aktif</span>` : "";
+          ? "bg-blue-600 text-white shadow-md scale-105" 
+          : "bg-white text-slate-800 border border-slate-200 hover:border-slate-300";
 
         html += `
           <div onclick="toggleStatusFilter('${status}')" 
-               class="cursor-pointer p-4 rounded-xl transition-all duration-200 select-none flex justify-between items-center ${cardStyle}">
-            <div>
-              <div class="text-2xl font-black text-slate-800">${counts[status]}</div>
-              <div class="text-xs font-bold text-slate-600 uppercase tracking-wider mt-1 flex items-center">
-                ${status} ${badge}
-              </div>
-            </div>
+               class="cursor-pointer p-2.5 rounded-xl transition-all duration-200 flex-shrink-0 min-w-[110px] sm:min-w-0 select-none flex flex-col justify-between ${cardStyle}">
+            <div class="text-xs font-extrabold uppercase tracking-tight opacity-80 truncate">${status}</div>
+            <div class="text-lg font-black mt-1">${counts[status]} <span class="text-[9px] font-normal">Toko</span></div>
           </div>
         `;
       });
@@ -486,11 +469,8 @@
 
     function toggleStatusFilter(status) {
       const index = selectedStatuses.indexOf(status);
-      if (index > -1) {
-        selectedStatuses.splice(index, 1);
-      } else {
-        selectedStatuses.push(status);
-      }
+      if (index > -1) selectedStatuses.splice(index, 1);
+      else selectedStatuses.push(status);
       renderSummaryCards(allStoresData);
       filterAndRenderStores();
     }
@@ -503,19 +483,11 @@
         const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
         
         const targetText = [
-          store.storeName,
-          store.storeCode,
-          store.oid,
-          store.devicePackage,
-          store.dtName,
-          store.dtAddress,
-          store.asmName,
-          store.projectLeadName
+          store.storeName, store.storeCode, store.oid,
+          store.devicePackage, store.dtName, store.asmName
         ].filter(Boolean).join(" ").toLowerCase();
 
-        const matchesSearch = !searchInput || targetText.includes(searchInput);
-
-        return matchesStatus && matchesSearch;
+        return matchesStatus && (!searchInput || targetText.includes(searchInput));
       });
 
       renderStoreList(filtered);
@@ -527,25 +499,36 @@
       let statusText = "";
 
       if (count === 0) {
-        badgeClass = "bg-slate-100 text-slate-700 border-slate-300";
-        statusText = `🟢 Kunjungan Hari ke-0 (Belum Ada Visit)`;
-      } else if (count >= 1 && count <= 9) {
-        badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-300";
-        statusText = `🟢 Kunjungan Hari ke-${count} (On Track)`;
-      } else if (count >= 10 && count <= 11) {
-        badgeClass = "bg-amber-100 text-amber-800 border-amber-300";
-        statusText = `🟡 Kunjungan Hari ke-${count} (Warning SLA)`;
+        badgeClass = "bg-slate-100 text-slate-600 border-slate-200";
+        statusText = `🟢 Hari ke-0`;
+      } else if (count <= 9) {
+        badgeClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+        statusText = `🟢 Visit Ke-${count}`;
+      } else if (count <= 11) {
+        badgeClass = "bg-amber-100 text-amber-800 border-amber-200";
+        statusText = `🟡 Visit Ke-${count}`;
       } else if (count === 12) {
-        badgeClass = "bg-orange-100 text-orange-800 border-orange-300";
-        statusText = `🟠 Kunjungan Hari ke-12 (Limit SLA)`;
+        badgeClass = "bg-orange-100 text-orange-800 border-orange-200";
+        statusText = `🟠 Visit Ke-12 (Limit)`;
       } else {
-        badgeClass = "bg-rose-100 text-rose-800 border-rose-300 font-bold";
-        statusText = `🔴 Kunjungan Hari ke-${count} (Over SLA ${count - 12} Hari)`;
+        badgeClass = "bg-rose-100 text-rose-800 border-rose-200 font-bold";
+        statusText = `🔴 Over SLA (${count})`;
       }
 
-      return `<span class="px-2.5 py-1 text-[10px] font-bold rounded-full border ${badgeClass}">
-                ${statusText}
-              </span>`;
+      return `<span class="px-2 py-0.5 text-[9px] font-bold rounded-full border ${badgeClass}">${statusText}</span>`;
+    }
+
+    // TOGGLE EXPAND/COLLAPSE INFO TOKO UNTUK TAMPILAN MOBILE PRESISI
+    function toggleStoreDetail(idx) {
+      const detailElem = document.getElementById(`storeDetail_${idx}`);
+      const btnElem = document.getElementById(`btnToggle_${idx}`);
+      if (detailElem.classList.contains("hidden")) {
+        detailElem.classList.remove("hidden");
+        btnElem.innerText = "Sembunyikan Detail 🔼";
+      } else {
+        detailElem.classList.add("hidden");
+        btnElem.innerText = "Lihat Detail Toko 🔽";
+      }
     }
 
     function renderStoreList(stores) {
@@ -553,7 +536,7 @@
       if (!container) return;
 
       if (stores.length === 0) {
-        container.innerHTML = `<div class="text-center py-10 text-slate-400 font-medium">Tidak ada data toko yang cocok dengan filter.</div>`;
+        container.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-xs">Tidak ada toko yang sesuai.</div>`;
         return;
       }
 
@@ -571,86 +554,61 @@
         const dtAddress = store.dtAddress || "-";
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
-        const skuCompleted = store.skuCompleted || "-"; 
-        const slaImplementation = store.slaImplementation || "-";
-        const slaStatus = store.slaStatus || "-";
-        const travelStatus = store.travelStatus || "Belum Diajukan";
         const visitCount = store.visitCount || 0;
 
-        const stUpper = status.toUpperCase();
-        let extraFieldsHtml = "";
-
-        if (stUpper === "GO LIVE - STORE" || stUpper === "IN PROGRESS" || stUpper === "SCHEDULED") {
-          extraFieldsHtml += `<div>Go Live Planned Date: <b class="text-slate-700">${formatDateNice(store.glPlannedDate)}</b></div>`;
-        }
-        if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
-          extraFieldsHtml += `<div>Go Live Date (Store BAST): <b class="text-slate-700">${formatDateNice(store.glStoreBAST)}</b></div>`;
-        }
-        if (stUpper === "GO LIVE - ULI") {
-          extraFieldsHtml += `<div>Go Live Date (Complete BAST): <b class="text-slate-700">${formatDateNice(store.glCompleteBAST)}</b></div>`;
-        }
-
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
-        const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
-
-        let travelBadgeHtml = "";
-        const trLower = travelStatus.toLowerCase();
-        if (trLower.includes("approved") || trLower.includes("disetujui")) {
-          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">🟢 Travel Fee: Disetujui</span>`;
-        } else if (trLower.includes("pending") || trLower.includes("menunggu")) {
-          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-amber-100 text-amber-800 border border-amber-200">🟡 Travel Fee: Menunggu Persetujuan</span>`;
-        } else if (trLower.includes("reject") || trLower.includes("ditolak")) {
-          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-rose-100 text-rose-800 border border-rose-200">🔴 Travel Fee: Ditolak</span>`;
-        } else {
-          travelBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-600 border border-slate-200">⚪ Travel Fee: Belum Diajukan</span>`;
-        }
 
         html += `
-          <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-            <div class="flex justify-between items-start gap-2 flex-wrap sm:flex-nowrap">
+          <div class="glass-card p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
+            <!-- HEADER TOKO (SELALU TAMPIL) -->
+            <div class="flex justify-between items-start gap-2">
               <div>
-                <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage} | Lead: <b class="text-slate-700">${projectLeadName}</b></p>
-                <div class="mt-1.5">${travelBadgeHtml}</div>
+                <h4 class="font-bold text-xs sm:text-sm text-slate-900">${idx + 1}. ${storeName}</h4>
+                <p class="text-[10px] text-slate-500 font-mono mt-0.5">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b></p>
               </div>
-              
               <div class="flex flex-col items-end gap-1">
-                <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
+                <span class="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border">
                   ${status}
                 </span>
                 ${renderSLABadge(visitCount)}
               </div>
             </div>
 
-            <div class="text-xs text-slate-600 space-y-1">
-              <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
-                <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps Toko</a>
-              </p>
-              <p>🚚 <b>Distributor:</b> ${dtName} (${dtCode})</p>
-              <p>🏢 <b>Alamat DT:</b> ${dtAddress} 
-                ${dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 hover:underline">🗺️ Maps DT</a>` : ''}
-              </p>
-              <p>👤 <b>ASM / AASM:</b> ${asmName} ${asmPhone}</p>
+            <!-- TOMBOL ACCORDION (EXPAND/COLLAPSE UNTUK HP) -->
+            <button id="btnToggle_${idx}" onclick="toggleStoreDetail(${idx})" 
+                    class="w-full text-center py-1 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-[10px] rounded-lg border border-slate-200 transition-all">
+              Lihat Detail Toko 🔽
+            </button>
+
+            <!-- DETAIL TOKO (RAPI / COLLAPSIBLE) -->
+            <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
+              <div class="text-[11px] text-slate-600 space-y-1">
+                <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
+                  <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps</a>
+                </p>
+                <p>📦 <b>Package:</b> ${devicePackage} | Lead: <b>${projectLeadName}</b></p>
+                <p>🚚 <b>Distributor:</b> ${dtName} (${dtCode})</p>
+                <p>👤 <b>ASM:</b> ${asmName} ${asmPhone}</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-1.5 text-[10px] bg-slate-50 p-2 rounded-xl border border-slate-100 text-slate-500">
+                <div>Planned: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
+                <div>Actual: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
+                <div>SKU Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
+                <div>SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
+              </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 text-slate-500">
-              <div>Implementation Planned Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>
-              <div>Implementation Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
-              <div>Implementation SKU Completed: <b class="text-blue-700 font-bold">${skuCompleted}</b></div>
-              <div>SLA Implementation: <b class="text-slate-700">${slaImplementation}</b></div>
-              <div>SLA Status: <b class="text-slate-700">${slaStatus}</b></div>
-              ${extraFieldsHtml}
-            </div>
-
-            <div class="flex gap-2 pt-1 flex-wrap sm:flex-nowrap">
-              <button onclick="openVisitModal('${storeCode}')" class="flex-1 min-w-[120px] py-2 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold text-xs rounded-xl border border-blue-200 transition-all">
-                📷 Absen / Visit
+            <!-- ACTION BUTTONS -->
+            <div class="flex gap-1.5 pt-1">
+              <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-1.5 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg border border-blue-200 hover:bg-blue-100">
+                📷 Absen
               </button>
-              <button onclick="openBastModal('${storeCode}')" class="flex-1 min-w-[120px] py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-bold text-xs rounded-xl border border-emerald-200 transition-all">
-                📝 Form BAST
+              <button onclick="openBastModal('${storeCode}')" class="flex-1 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-[11px] rounded-lg border border-emerald-200 hover:bg-emerald-100">
+                📝 BAST
               </button>
-              <button onclick="openTravelModal('${storeCode}')" class="flex-1 min-w-[120px] py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 font-bold text-xs rounded-xl border border-amber-200 transition-all">
-                🚗 Travel Fee
+              <button onclick="openTravelModal('${storeCode}')" class="flex-1 py-1.5 bg-amber-50 text-amber-700 font-bold text-[11px] rounded-lg border border-amber-200 hover:bg-amber-100">
+                🚗 Travel
               </button>
             </div>
           </div>
@@ -665,7 +623,7 @@
       const nextVisitNum = (store.visitCount || 0) + 1;
       
       document.getElementById("visitStoreCode").value = code || "";
-      document.getElementById("visitModalBadge").innerHTML = `<span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2.5 py-1 rounded-full border border-blue-200">Form Absen Kunjungan Hari ke-${nextVisitNum}</span>`;
+      document.getElementById("visitModalBadge").innerHTML = `<span class="bg-blue-100 text-blue-800 text-[9px] font-bold px-2 py-0.5 rounded-full">Visit Ke-${nextVisitNum}</span>`;
       document.getElementById("visitModal").classList.remove("hidden");
     }
 
@@ -674,10 +632,10 @@
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
+    // REVISI 3: KODE TOKO DI TRAVEL FEE OTOMATIS TERISI & READONLY
     function openTravelModal(code) {
       const store = allStoresData.find(s => s.storeCode === code) || {};
       
-      document.getElementById("travelStoreCodeHidden").value = code || "";
       document.getElementById("travelImplName").value = currentUser.name || currentUser.implId || "";
       document.getElementById("travelStoreCode").value = store.storeCode || "";
       document.getElementById("travelStoreName").value = store.storeName || "";
@@ -728,7 +686,7 @@
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
-      btn.innerText = "Menyimpan...";
+      btn.innerText = "Proses...";
       btn.disabled = true;
 
       try {
@@ -755,30 +713,29 @@
           body: JSON.stringify(payload)
         }).then(r => r.json());
 
-        btn.innerText = "Simpan Visit";
+        btn.innerText = "Simpan";
         btn.disabled = false;
 
         if (res && res.status === "success") {
           closeModal("visitModal");
           document.getElementById("visitForm").reset();
-          document.getElementById("labelVisitSelfie").innerText = "Klik di sini untuk upload foto selfie";
-          
-          showResultModal("Berhasil Diproses!", res.message || "Aktivitas Visit Anda berhasil tersimpan di sistem.", true);
+          document.getElementById("labelVisitSelfie").innerText = "Upload Foto Selfie";
+          showResultModal("Berhasil!", res.message || "Absen tersimpan.", true);
           fetchAssignedStores(currentUser.implId, currentUser.email);
         } else {
-          showResultModal("Gagal Menyimpan!", res ? res.message : "Terjadi kesalahan saat menyimpan visit.", false);
+          showResultModal("Gagal!", res ? res.message : "Terjadi kesalahan.", false);
         }
       } catch (err) {
-        btn.innerText = "Simpan Visit";
+        btn.innerText = "Simpan";
         btn.disabled = false;
-        showResultModal("Error Server!", "Koneksi terputus: " + (err.message || err), false);
+        showResultModal("Error!", err.message || err, false);
       }
     }
 
     async function submitBAST(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitBAST");
-      btn.innerText = "Mengirim...";
+      btn.innerText = "Proses...";
       btn.disabled = true;
 
       try {
@@ -822,24 +779,23 @@
         if (res && res.status === "success") {
           closeModal("bastModal");
           document.getElementById("bastForm").reset();
-          document.getElementById("labelStoreFrontPhoto").innerText = "Klik di sini untuk upload foto depan toko";
-          document.getElementById("labelBastDocument").innerText = "Klik di sini untuk upload file BAST";
-
-          showResultModal("BAST Berhasil Terkirim!", res.message || "Dokumen BAST berhasil tersimpan.", true);
+          document.getElementById("labelStoreFrontPhoto").innerText = "Upload Foto Depan Toko";
+          document.getElementById("labelBastDocument").innerText = "Upload File BAST";
+          showResultModal("Berhasil!", res.message || "BAST tersimpan.", true);
         } else {
-          showResultModal("Gagal Kirim BAST!", res ? res.message : "Terjadi kesalahan saat menyimpan BAST.", false);
+          showResultModal("Gagal!", res ? res.message : "Gagal kirim BAST.", false);
         }
       } catch (err) {
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
-        showResultModal("Error Server!", "Koneksi terputus: " + (err.message || err), false);
+        showResultModal("Error!", err.message || err, false);
       }
     }
 
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
-      btn.innerText = "Mengirim...";
+      btn.innerText = "Proses...";
       btn.disabled = true;
 
       try {
@@ -861,21 +817,21 @@
           body: JSON.stringify(payload)
         }).then(r => r.json());
 
-        btn.innerText = "Kirim Pengajuan";
+        btn.innerText = "Kirim";
         btn.disabled = false;
 
         if (res && res.status === "success") {
           closeModal("travelModal");
           document.getElementById("travelForm").reset();
-          showResultModal("Pengajuan Terkirim!", res.message || "Pengajuan Travel Fee berhasil diajukan.", true);
+          showResultModal("Berhasil!", res.message || "Travel Fee diajukan.", true);
           fetchAssignedStores(currentUser.implId, currentUser.email);
         } else {
-          showResultModal("Pengajuan Gagal!", res ? res.message : "Terjadi kesalahan saat menyimpan Travel Fee.", false);
+          showResultModal("Gagal!", res ? res.message : "Terjadi kesalahan.", false);
         }
       } catch (err) {
-        btn.innerText = "Kirim Pengajuan";
+        btn.innerText = "Kirim";
         btn.disabled = false;
-        showResultModal("Error Server!", "Koneksi terputus: " + (err.message || err), false);
+        showResultModal("Error!", err.message || err, false);
       }
     }
   </script>
