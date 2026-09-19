@@ -300,7 +300,6 @@
   </div>
 
   <script>
-    // MASUKKAN URL HASIL DEPLOYMENT WEB APP ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -393,7 +392,7 @@
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
 
-            if (isRefresh) showAlert("Data berhasil diperbarui secara realtime!", false);
+            if (isRefresh) showAlert("Data berhasil diperbarui!", false);
           } else {
             showAlert(res ? res.message : "Gagal memuat data.", true);
           }
@@ -574,14 +573,14 @@
                 <p>🚗 <b>Status Travel Fee:</b> <span class="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">${travelStatus}</span></p>
               </div>
 
-              <!-- DYNAMIC TANGGAL TERTAMPIL -->
+              <!-- REVISI POINT 3: DYNAMIC TANGGAL TERTAMPIL TANPA TEKS DALAM KURUNG -->
               <div class="grid grid-cols-2 gap-1.5 text-[10px] bg-slate-50 p-2 rounded-xl border border-slate-100 text-slate-500">
                 ${showPlannedDate ? `<div>Imp. Planned Date: <b class="text-slate-700">${store.plannedDate}</b></div>` : ''}
                 <div>Imp. Actual Date: <b class="text-slate-700">${store.actualDate}</b></div>
-                ${showPlannedDate ? `<div>Go Live Planned Date (AP): <b class="text-slate-700">${store.goLivePlannedDate}</b></div>` : ''}
-                ${showGoLiveStore ? `<div>Go Live Store BAST (AS): <b class="text-slate-700">${store.goLiveStoreDate}</b></div>` : ''}
-                ${showGoLiveCompleted ? `<div>Go Live Complete BAST (AT): <b class="text-slate-700">${store.goLiveCompletedDate}</b></div>` : ''}
-                ${showGoLiveDrop ? `<div>Go Live Drop Date (AU): <b class="text-slate-700">${store.goLiveDropDate}</b></div>` : ''}
+                ${showPlannedDate ? `<div>Go Live Planned Date: <b class="text-slate-700">${store.goLivePlannedDate}</b></div>` : ''}
+                ${showGoLiveStore ? `<div>Go Live Store BAST: <b class="text-slate-700">${store.goLiveStoreDate}</b></div>` : ''}
+                ${showGoLiveCompleted ? `<div>Go Live Complete BAST: <b class="text-slate-700">${store.goLiveCompletedDate}</b></div>` : ''}
+                ${showGoLiveDrop ? `<div>Go Live Drop Date: <b class="text-slate-700">${store.goLiveDropDate}</b></div>` : ''}
                 <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted}</b></div>
                 <div class="col-span-2">SLA Status: <b class="text-slate-700">${store.slaStatus}</b></div>
               </div>
