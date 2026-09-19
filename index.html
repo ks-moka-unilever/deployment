@@ -54,10 +54,15 @@
             <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <button id="btnRefresh" onclick="handleRefreshManual()" 
+                  class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+            <span id="refreshIcon">🔄</span>
+            <span id="refreshText">Refresh Status</span>
+          </button>
           <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
              class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
-            <span>📚 Pusat Materi & Panduan</span>
+            <span>📚 Pusat Materi</span>
           </a>
           <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
             Keluar
@@ -73,9 +78,10 @@
       <div>
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Ringkasan Klasifikasi Implementation Status:</h3>
-          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk memfilter</span>
+          <span class="text-[10px] text-blue-600 font-semibold">*Klik kartu untuk filter</span>
         </div>
-        <div id="summaryCardsContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+        <!-- KARTU RINGKASAN DI HP DIBUAT KOTAK 2 KOLOM RAPI -->
+        <div id="summaryCardsContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
       </div>
 
       <div class="relative">
@@ -125,7 +131,7 @@
           <textarea id="visitNotes" rows="2" placeholder="Tuliskan hasil kunjungan..." required class="w-full p-2.5 border rounded-xl text-sm mt-1"></textarea>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600">Foto Selfie Lapangan (Bisa pilih dari Galeri / Timestamp) <span class="text-rose-500">*</span></label>
+          <label class="block text-xs font-semibold text-slate-600">Foto Selfie Lapangan (Kamera / Galeri / Timestamp) <span class="text-rose-500">*</span></label>
           <input type="file" id="visitSelfie" accept="image/*" required class="w-full text-xs mt-1">
         </div>
         <div class="flex justify-end gap-2 pt-2">
@@ -199,7 +205,7 @@
         <p class="font-bold text-slate-700">Upload Lampiran Dokumen</p>
 
         <div>
-          <label class="font-semibold text-slate-600">Foto Depan Toko (Galeri / Timestamp) <span class="text-rose-500">*</span></label>
+          <label class="font-semibold text-slate-600">Foto Depan Toko (Kamera / Galeri / Timestamp) <span class="text-rose-500">*</span></label>
           <input type="file" id="storeFrontPhoto" accept="image/*" required class="w-full mt-1">
         </div>
         <div>
@@ -334,7 +340,21 @@
       fetchAssignedStores(implId, email);
     }
 
-    function fetchAssignedStores(implId, email, isSilent = false) {
+    function handleRefreshManual() {
+      if (currentUser.implId && currentUser.email) {
+        const icon = document.getElementById("refreshIcon");
+        const text = document.getElementById("refreshText");
+        if (icon) icon.classList.add("animate-spin");
+        if (text) text.innerText = "Memperbarui...";
+
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, () => {
+          if (icon) icon.classList.remove("animate-spin");
+          if (text) text.innerText = "Refresh Status";
+        });
+      }
+    }
+
+    function fetchAssignedStores(implId, email, isSilent = false, callback = null) {
       const btnLogin = document.getElementById("btnLogin");
       if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
 
@@ -347,6 +367,8 @@
         })
         .then(res => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
+          if (callback) callback();
+
           if (res && res.status === "success") {
             const userName = res.userName || "";
             currentUser = { implId, email, name: userName };
@@ -376,6 +398,7 @@
         })
         .catch(err => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
+          if (callback) callback();
           if (!isSilent) showAlert("Gagal terhubung ke Google Apps Script. Coba klik 'Masuk Portal' kembali.", true);
         });
     }
@@ -404,18 +427,17 @@
         const isSelected = selectedStatuses.includes(status);
         const cardStyle = isSelected 
           ? "bg-blue-50 border-2 border-blue-600 shadow-md scale-[1.02]" 
-          : "bg-white border border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100";
+          : "bg-white border border-slate-200 hover:border-slate-300 opacity-80 hover:opacity-100";
         
-        const badge = isSelected ? `<span class="ml-1.5 text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">✓ Aktif</span>` : "";
+        const badge = isSelected ? `<span class="block mt-1 text-[9px] bg-blue-600 text-white px-1.5 py-0.5 rounded-md font-bold w-max">✓ Aktif</span>` : "";
 
         html += `
           <div onclick="toggleStatusFilter('${status}')" 
-                class="cursor-pointer p-4 rounded-xl transition-all duration-200 select-none flex justify-between items-center ${cardStyle}">
-            <div>
-              <div class="text-2xl font-black text-slate-800">${counts[status]}</div>
-              <div class="text-xs font-bold text-slate-600 uppercase tracking-wider mt-1 flex items-center">
-                ${status} ${badge}
-              </div>
+                class="cursor-pointer p-3 rounded-xl transition-all duration-200 select-none flex flex-col justify-between ${cardStyle}">
+            <div class="text-xl sm:text-2xl font-black text-slate-800">${counts[status]}</div>
+            <div class="text-[11px] font-bold text-slate-600 uppercase tracking-tight mt-1 leading-tight">
+              ${status}
+              ${badge}
             </div>
           </div>
         `;
@@ -520,7 +542,7 @@
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
 
-        // BADGE SLA 12 HARI VISITS
+        // BADGE SLA VISITS
         let visitBadgeHtml = "";
         if (visitCount < 10) {
           visitBadgeHtml = `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">🟢 Kunjungan Hari ke-${visitCount} (SLA On Track)</span>`;
@@ -548,17 +570,25 @@
         html += `
           <div class="glass-card p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             <div class="flex justify-between items-start gap-2">
-              <div>
+              <div class="space-y-1 w-full">
                 <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage} | Project Lead: <b class="text-slate-700">${projectLeadName}</b></p>
+                
+                <!-- INFORMASI PENDUKUNG TOKO DI-TERAPKAN TIAP BARIS AGAR TIDAK MENYAMBUNG -->
+                <div class="text-xs text-slate-600 font-mono space-y-0.5 pt-1">
+                  <div>Kode Toko: <b class="text-slate-800">${storeCode}</b></div>
+                  <div>OID: <b class="text-slate-800">${oid}</b></div>
+                  <div>Package: <b class="text-slate-800">${devicePackage}</b></div>
+                  <div>PMO Lead: <b class="text-slate-800">${projectLeadName}</b></div>
+                </div>
+
                 <div class="mt-2 flex flex-wrap gap-1.5">${visitBadgeHtml} ${travelBadgeHtml}</div>
               </div>
-              <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center">
+              <span class="px-2.5 py-1 text-[10px] font-extrabold uppercase rounded-full bg-slate-100 text-slate-700 border text-center shrink-0">
                 ${status}
               </span>
             </div>
 
-            <!-- OPSI B: ACCORDION RINGKAS KHUSUS MOBILE / OTOMATIS TAMPIL DI PC -->
+            <!-- ACCORDION RINGKAS KHUSUS MOBILE / OTOMATIS TAMPIL DI PC -->
             <div id="store-detail-${idx}" class="hidden sm:block space-y-3 pt-2 border-t sm:border-t-0 border-slate-100">
               <div class="text-xs text-slate-600 space-y-1">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
@@ -774,6 +804,7 @@
       }
     }
 
+    // DISESUAIKAN PRESISI DENGAN URUTAN KOLOM A-J TABEL TRAVEL LOGS
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
@@ -785,15 +816,15 @@
         
         const payload = {
           action: "submitTravelFee",
-          userName: currentUser.name || currentUser.implId,
+          userName: currentUser.name || currentUser.implId, // Kolom A
           implId: currentUser.implId,
-          storeCode: storeCode,
-          storeName: document.getElementById("travelStoreName").value,
-          storeAddress: document.getElementById("travelStoreAddress").value,
-          implAddress: document.getElementById("travelImplAddress").value,
-          implCity: document.getElementById("travelImplCity").value,
-          distance: document.getElementById("travelDistance").value,
-          proposalBudget: document.getElementById("travelProposalBudget").value || "-"
+          storeCode: storeCode, // Kolom B
+          storeName: document.getElementById("travelStoreName").value, // Kolom C
+          storeAddress: document.getElementById("travelStoreAddress").value, // Kolom D
+          implAddress: document.getElementById("travelImplAddress").value, // Kolom E
+          implCity: document.getElementById("travelImplCity").value, // Kolom F
+          distance: document.getElementById("travelDistance").value, // Kolom G
+          proposalBudget: document.getElementById("travelProposalBudget").value || "-" // Kolom H
         };
 
         const res = await fetch(SCRIPT_URL, {
