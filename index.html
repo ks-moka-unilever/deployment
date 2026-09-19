@@ -63,10 +63,11 @@
           </p>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-          <!-- TOMBOL REFRESH STATUS -->
-          <button onclick="fetchAssignedStores(currentUser.implId, currentUser.email)" 
-                  class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
-            <span>🔄 Refresh Status</span>
+          <!-- TOMBOL REFRESH STATUS DENGAN ANIMASI LOADING -->
+          <button id="btnRefresh" onclick="triggerManualRefresh()" 
+                  class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+            <span id="refreshIcon" class="inline-block transition-transform duration-500">🔄</span>
+            <span id="refreshText">Refresh Status</span>
           </button>
           
           <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
@@ -353,13 +354,37 @@
       fetchAssignedStores(implId, email);
     }
 
+    // FUNGSI UNTUK TRIGGER REFRESH MANUAL DENGAN ANIMASI
+    function triggerManualRefresh() {
+      if (!currentUser.implId || !currentUser.email) return;
+
+      const btnRefresh = document.getElementById("btnRefresh");
+      const refreshIcon = document.getElementById("refreshIcon");
+      const refreshText = document.getElementById("refreshText");
+
+      // Tampilkan state loading
+      btnRefresh.disabled = true;
+      refreshIcon.classList.add("animate-spin");
+      refreshText.innerText = "Memperbarui...";
+
+      fetchAssignedStores(currentUser.implId, currentUser.email, false)
+        .finally(() => {
+          // Kembalikan ke state semula setelah selesai
+          btnRefresh.disabled = false;
+          refreshIcon.classList.remove("animate-spin");
+          refreshText.innerText = "Refresh Status";
+        });
+    }
+
     function fetchAssignedStores(implId, email, isSilent = false) {
       const btnLogin = document.getElementById("btnLogin");
-      if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
+      if (!isSilent && btnLogin && !document.getElementById("loginSection").classList.contains("hidden")) {
+        btnLogin.innerHTML = `<span>Memuat Data...</span>`;
+      }
 
       const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
 
-      fetch(targetUrl)
+      return fetch(targetUrl)
         .then(res => {
           if (!res.ok) throw new Error("Respon server HTTP Error: " + res.status);
           return res.json();
@@ -405,7 +430,7 @@
         if (currentUser.implId && currentUser.email) {
           fetchAssignedStores(currentUser.implId, currentUser.email, true);
         }
-      }, 15000); // Otomatis diperbarui setiap 15 detik
+      }, 15000); // Otomatis diperbarui setiap 15 detik di background
     }
 
     function renderSummaryCards(stores) {
@@ -652,7 +677,7 @@
       });
     }
 
-    // SUBMIT VISIT LOG - PERBAIKAN STUCK
+    // SUBMIT VISIT LOG
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
@@ -702,7 +727,7 @@
       }
     }
 
-    // SUBMIT BAST - PERBAIKAN STUCK
+    // SUBMIT BAST
     async function submitBAST(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitBAST");
@@ -763,7 +788,7 @@
       }
     }
 
-    // SUBMIT TRAVEL FEE - PERBAIKAN STUCK
+    // SUBMIT TRAVEL FEE
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
