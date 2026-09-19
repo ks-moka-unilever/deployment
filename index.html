@@ -6,31 +6,18 @@
   <title>Portal Implementor Lapangan</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-    }
-    @keyframes spin-fast {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .animate-spin-custom {
-      animation: spin-fast 0.8s linear infinite;
-    }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .glass-card { background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(10px); }
+    @keyframes spin-fast { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .animate-spin-custom { animation: spin-fast 0.6s linear infinite; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased text-xs">
 
   <div class="max-w-4xl mx-auto p-3 sm:p-5 space-y-4">
 
-    <!-- ALERT BANNER NOTIFICATION -->
+    <!-- ALERT BANNER -->
     <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-medium transition-all"></div>
 
     <!-- FORM LOGIN -->
@@ -92,7 +79,7 @@
         <span id="totalStoresBadge" class="text-2xl font-black">0</span>
       </div>
 
-      <!-- KARTU KLASIFIKASI RINGKAS -->
+      <!-- KARTU RINGKASAN STATUS TOKO -->
       <div>
         <div class="flex justify-between items-center mb-1.5">
           <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation:</h3>
@@ -313,7 +300,7 @@
   </div>
 
   <script>
-    // PASTIKAN URL SCRIPT SESUAI DENGAN HASIL DEPLOYMENT APPS SCRIPT ANDA
+    // MASUKKAN URL HASIL DEPLOYMENT WEB APP ANDA DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -335,17 +322,6 @@
       if (input.files && input.files[0]) {
         label.innerText = "✓ " + input.files[0].name;
       }
-    }
-
-    function formatDateNice(dateVal) {
-      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined") return "-";
-      const str = String(dateVal).trim();
-      if (!str || str === "-") return "-";
-      const d = new Date(str);
-      if (isNaN(d.getTime())) return str; 
-      const day = String(d.getDate()).padStart(2, '0');
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return `${day}-${months[d.getMonth()]}-${d.getFullYear()}`;
     }
 
     function showAlert(msg, isError = true) {
@@ -417,7 +393,7 @@
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
 
-            if (isRefresh) showAlert("Data berhasil diperbarui!", false);
+            if (isRefresh) showAlert("Data berhasil diperbarui secara realtime!", false);
           } else {
             showAlert(res ? res.message : "Gagal memuat data.", true);
           }
@@ -573,7 +549,7 @@
               </div>
             </div>
 
-            <!-- ACCORDION BUTTON FOR MOBILE -->
+            <!-- TOGGLE ACCORDION -->
             <button id="btnToggle_${idx}" onclick="toggleStoreDetail(${idx})" 
                     class="w-full text-center py-1 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-[10px] rounded-lg border border-slate-200 transition-all">
               Lihat Detail Toko 🔽
@@ -583,7 +559,7 @@
             <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
               <div class="text-[11px] text-slate-600 space-y-1">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
-                  <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps</a>
+                  <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps Toko</a>
                 </p>
                 
                 <p>📦 <b>Device Package:</b> ${devicePackage}</p>
@@ -598,20 +574,20 @@
                 <p>🚗 <b>Status Travel Fee:</b> <span class="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">${travelStatus}</span></p>
               </div>
 
-              <!-- DYNAMIC TANGGAL GO-LIVE -->
+              <!-- DYNAMIC TANGGAL TERTAMPIL -->
               <div class="grid grid-cols-2 gap-1.5 text-[10px] bg-slate-50 p-2 rounded-xl border border-slate-100 text-slate-500">
-                ${showPlannedDate ? `<div>Imp. Planned Date: <b class="text-slate-700">${formatDateNice(store.plannedDate)}</b></div>` : ''}
-                <div>Imp. Actual Date: <b class="text-slate-700">${formatDateNice(store.actualDate)}</b></div>
-                ${showPlannedDate ? `<div>Go Live Planned Date (AP): <b class="text-slate-700">${formatDateNice(store.goLivePlannedDate)}</b></div>` : ''}
-                ${showGoLiveStore ? `<div>Go Live Store BAST (AS): <b class="text-slate-700">${formatDateNice(store.goLiveStoreDate)}</b></div>` : ''}
-                ${showGoLiveCompleted ? `<div>Go Live Complete BAST (AT): <b class="text-slate-700">${formatDateNice(store.goLiveCompletedDate)}</b></div>` : ''}
-                ${showGoLiveDrop ? `<div>Go Live Drop Date (AU): <b class="text-slate-700">${formatDateNice(store.goLiveDropDate)}</b></div>` : ''}
-                <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
-                <div class="col-span-2">SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
+                ${showPlannedDate ? `<div>Imp. Planned Date: <b class="text-slate-700">${store.plannedDate}</b></div>` : ''}
+                <div>Imp. Actual Date: <b class="text-slate-700">${store.actualDate}</b></div>
+                ${showPlannedDate ? `<div>Go Live Planned Date (AP): <b class="text-slate-700">${store.goLivePlannedDate}</b></div>` : ''}
+                ${showGoLiveStore ? `<div>Go Live Store BAST (AS): <b class="text-slate-700">${store.goLiveStoreDate}</b></div>` : ''}
+                ${showGoLiveCompleted ? `<div>Go Live Complete BAST (AT): <b class="text-slate-700">${store.goLiveCompletedDate}</b></div>` : ''}
+                ${showGoLiveDrop ? `<div>Go Live Drop Date (AU): <b class="text-slate-700">${store.goLiveDropDate}</b></div>` : ''}
+                <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted}</b></div>
+                <div class="col-span-2">SLA Status: <b class="text-slate-700">${store.slaStatus}</b></div>
               </div>
             </div>
 
-            <!-- ACTION BUTTONS -->
+            <!-- BUTTON ACTIONS -->
             <div class="flex gap-1.5 pt-1">
               <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-1.5 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg border border-blue-200 hover:bg-blue-100">
                 📷 Absen
