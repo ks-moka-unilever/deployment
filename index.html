@@ -244,7 +244,6 @@
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="font-semibold text-slate-600">Kode Toko <span class="text-rose-500">*</span></label>
-            <!-- REVISI POIN 4: LOCK TOTAL KODE TOKO KEMBALI KAN DI READONLY -->
             <input type="text" id="travelStoreCode" readonly class="w-full p-2 border rounded-lg mt-1 font-mono font-bold bg-slate-100 text-slate-700 select-none">
           </div>
           <div>
@@ -311,9 +310,9 @@
     };
 
     function formatDateNice(dateVal) {
-      if (!dateVal || dateVal === "-" || dateVal === "null") return "-";
+      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "") return "-";
       const d = new Date(dateVal);
-      if (isNaN(d.getTime())) return dateVal;
+      if (isNaN(d.getTime())) return String(dateVal);
       const day = String(d.getDate()).padStart(2, '0');
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       return `${day}-${months[d.getMonth()]}-${d.getFullYear()}`;
@@ -527,9 +526,41 @@
             </div>
 
             <div class="text-xs text-slate-600 space-y-1">
-              <p>📍 <b>Alamat Toko:</b> ${store.storeAddress}</p>
-              <p>🚚 <b>Distributor:</b> ${store.dtName} (${store.dtCode})</p>
-              <p>👤 <b>ASM / AASM:</b> ${store.asmName} ${store.asmPhone}</p>
+              <p>📍 <b>Alamat Toko:</b> ${store.storeAddress} 
+                 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.storeAddress)}" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-semibold ml-1 inline-flex items-center">🗺️ Lihat Peta</a>
+              </p>
+              <p>🚚 <b>Distributor:</b> ${store.dtName} (${store.dtCode}) - ${store.dtAddress} 
+                 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(store.dtAddress)}" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-semibold ml-1 inline-flex items-center">🗺️ Lihat Peta DT</a>
+              </p>
+              <p>👤 <b>ASM / AASM:</b> ${store.asmName} (${store.asmPhone}) | <b>Project Lead:</b> ${store.projectLeadName}</p>
+            </div>
+
+            <!-- INFO TANGGAL DAN SKU DIKEMBALIKAN -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2">
+               <div>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase">Plan Impl.</p>
+                 <p class="text-xs font-semibold text-slate-700">${formatDateNice(store.plannedDate)}</p>
+               </div>
+               <div>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase">Actual Impl.</p>
+                 <p class="text-xs font-semibold text-slate-700">${formatDateNice(store.actualDate)}</p>
+               </div>
+               <div>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase">Go Live Plan</p>
+                 <p class="text-xs font-semibold text-slate-700">${formatDateNice(store.glPlannedDate)}</p>
+               </div>
+               <div>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase">Go Live Actual</p>
+                 <p class="text-xs font-semibold text-slate-700">${formatDateNice(store.glCompleteBAST)}</p>
+               </div>
+               <div>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase">Total SKU</p>
+                 <p class="text-xs font-semibold text-blue-600">${store.skuCompleted || "-"}</p>
+               </div>
+               <div>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase">SLA Status</p>
+                 <p class="text-xs font-semibold text-slate-700">${store.slaStatus || "-"}</p>
+               </div>
             </div>
 
             <div class="flex gap-2 pt-1 flex-wrap sm:flex-nowrap">
@@ -558,7 +589,6 @@
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
-    // REVISI POIN 4: MENGUNCI OTO-POPULATE KODE TOKO SECARA OTOMATIS
     function openTravelModal(code) {
       const store = allStoresData.find(s => s.storeCode === code) || {};
       
@@ -598,7 +628,6 @@
       location.reload();
     }
 
-    // OPSI UNTUK MENEKAN UKURAN FOTO SEBELUM UPLOAD KE DRIVE DENGAN COMPRESSION
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         if (!file) return resolve("");
