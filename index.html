@@ -54,20 +54,20 @@
             <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
         </div>
-        <!-- KODE BARU (SUDAH DITAMBAHKAN TOMBOL REFRESH) -->
-<div class="flex items-center gap-2">
-  <button onclick="fetchAssignedStores(currentUser.implId, currentUser.email, true)" 
-          class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
-    <span>🔄 Refresh Status</span>
-  </button>
-  <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
-     class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
-    <span>📚 Pusat Materi & Panduan</span>
-  </a>
-  <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
-    Keluar
-  </button>
-</div>
+        <div class="flex items-center gap-2">
+          <!-- TOMBOL REFRESH STATUS DENGAN INDIKATOR LOADING -->
+          <button id="btnRefreshStatus" onclick="fetchAssignedStores(currentUser.implId, currentUser.email, true)" 
+                  class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 active:scale-95 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+            <span>🔄 Refresh Status</span>
+          </button>
+          <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
+             class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
+            <span>📚 Pusat Materi & Panduan</span>
+          </a>
+          <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+            Keluar
+          </button>
+        </div>
       </div>
 
       <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-2xl shadow-lg flex justify-between items-center">
@@ -95,7 +95,7 @@
 
   </div>
 
-  <!-- REVISI 4: POPUP NOTIFIKASI SUKSES -->
+  <!-- POPUP NOTIFIKASI SUKSES -->
   <div id="successModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white max-w-sm w-full rounded-2xl p-6 shadow-2xl text-center space-y-4 animate-bounce-short">
       <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl font-bold">
@@ -234,7 +234,6 @@
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <!-- REVISI 2: KODE TOKO DIUBAH MENJADI READONLY & SAMA SEPERTI NAMA TOKO -->
             <label class="font-semibold text-slate-600">Kode Toko <span class="text-rose-500">*</span></label>
             <input type="text" id="travelStoreCode" readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-mono font-bold text-slate-700">
           </div>
@@ -254,7 +253,6 @@
           <textarea id="travelImplAddress" required placeholder="Masukkan alamat lengkap domisili Anda..." rows="2" class="w-full p-2 border rounded-lg mt-1"></textarea>
         </div>
 
-        <!-- REVISI 3: PETUNJUK FORMAT PENULISAN KABUPATEN / KOTA -->
         <div>
           <label class="font-semibold text-slate-600">Kabupaten/Kota Domisili Implementor <span class="text-rose-500">*</span></label>
           <input type="text" id="travelImplCity" required placeholder="Contoh: Kab. Bandung atau Bandung" class="w-full p-2 border rounded-lg mt-1">
@@ -296,7 +294,7 @@
     let allStoresData = [];
     let currentUser = { implId: "", email: "", name: "" };
     let selectedStatuses = [];
-    let autoSyncTimer = null; // Timer polling background
+    let autoSyncTimer = null;
 
     window.onload = function() {
       const savedId = localStorage.getItem("implId");
@@ -333,7 +331,6 @@
       setTimeout(() => alertBox.classList.add("hidden"), 6000);
     }
 
-    // REVISI 4: POPUP MODAL UNTUK BUKTI BERHASIL SUBMIT
     function showSuccessModal(title, message) {
       document.getElementById("successModalTitle").innerText = title || "Berhasil!";
       document.getElementById("successModalMessage").innerText = message || "Data Anda telah tersimpan ke sistem.";
@@ -347,10 +344,16 @@
       fetchAssignedStores(implId, email);
     }
 
-    // REVISI 5: DILENGKAPI PARAMETER SILENT LALU MULAI AUTO SYNC BACKGROUND
     function fetchAssignedStores(implId, email, isSilent = false) {
       const btnLogin = document.getElementById("btnLogin");
+      const btnRefresh = document.getElementById("btnRefreshStatus");
+      
       if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Memuat Data...</span>`;
+      
+      if (btnRefresh) {
+        btnRefresh.disabled = true;
+        btnRefresh.innerHTML = `<span class="animate-spin inline-block">🔄</span> <span>Memuat...</span>`;
+      }
 
       const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
 
@@ -361,6 +364,12 @@
         })
         .then(res => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
+          
+          if (btnRefresh) {
+            btnRefresh.disabled = false;
+            btnRefresh.innerHTML = `<span>🔄 Refresh Status</span>`;
+          }
+
           if (res && res.status === "success") {
             const userName = res.userName || "";
             currentUser = { implId, email, name: userName };
@@ -385,7 +394,6 @@
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
 
-            // REVISI 5: MULAI SYNC OTOMATIS SETIAP 30 DETIK JIKA BELUM JALAN
             startAutoSync();
           } else {
             if (!isSilent) showAlert(res ? res.message : "Gagal memuat data dari server.", true);
@@ -393,18 +401,23 @@
         })
         .catch(err => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
+          
+          if (btnRefresh) {
+            btnRefresh.disabled = false;
+            btnRefresh.innerHTML = `<span>🔄 Refresh Status</span>`;
+          }
+
           if (!isSilent) showAlert("Gagal terhubung ke Google Apps Script. Detail: " + err.message, true);
         });
     }
 
-    // REVISI 5: FUNGSI SYNC BACKGROUND TANPA KEDIP LEWAT POLLING 30 DETIK
     function startAutoSync() {
       if (autoSyncTimer) clearInterval(autoSyncTimer);
       autoSyncTimer = setInterval(() => {
         if (currentUser.implId && currentUser.email) {
           fetchAssignedStores(currentUser.implId, currentUser.email, true);
         }
-      }, 30000); // 30000ms = 30 detik
+      }, 30000);
     }
 
     function renderSummaryCards(stores) {
@@ -525,7 +538,6 @@
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
 
-        // Formatting Badge Travel Fee
         let travelBadgeHtml = "";
         const trLower = travelStatus.toLowerCase();
         if (trLower.includes("approved") || trLower.includes("disetujui")) {
@@ -543,7 +555,6 @@
             <div class="flex justify-between items-start gap-2">
               <div>
                 <h4 class="font-bold text-base text-slate-900">${idx + 1}. ${storeName}</h4>
-                <!-- REVISI 1: TEKS DIUBAH MENJADI "Project Lead" -->
                 <p class="text-xs text-slate-500 font-mono">Kode Toko: ${storeCode} | OID: ${oid} | Package: ${devicePackage} | Project Lead: <b class="text-slate-700">${projectLeadName}</b></p>
                 <div class="mt-1.5">${travelBadgeHtml}</div>
               </div>
@@ -599,7 +610,6 @@
       document.getElementById("bastModal").classList.remove("hidden");
     }
 
-    // REVISI 2: OTOMATIS BACA KODE TOKO SEBAGAI READONLY
     function openTravelModal(code) {
       const store = allStoresData.find(s => s.storeCode === code) || {};
       
@@ -690,7 +700,6 @@
         if (res && res.status === "success") {
           closeModal("visitModal");
           document.getElementById("visitForm").reset();
-          // REVISI 4: POPUP SUCCESS
           showSuccessModal("Absen Visit Berhasil!", res.message || "Absensi visit lapangan Anda berhasil tercatat.");
         } else {
           showAlert(res ? res.message : "Gagal menyimpan data visit.", true);
@@ -749,7 +758,6 @@
         if (res && res.status === "success") {
           closeModal("bastModal");
           document.getElementById("bastForm").reset();
-          // REVISI 4: POPUP SUCCESS
           showSuccessModal("BAST Berhasil Dikirim!", res.message || "Dokumen BAST dan foto toko berhasil diunggah.");
         } else {
           showAlert(res ? res.message : "Gagal mengirim BAST.", true);
@@ -761,7 +769,6 @@
       }
     }
 
-    // REVISI 4 & 5: UPDATE LOKAL LANGSUNG + POPUP SUKSES + SYNC DENGAN APPS SCRIPT
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
@@ -796,17 +803,14 @@
           closeModal("travelModal");
           document.getElementById("travelForm").reset();
 
-          // REVISI 5: LANGSUNG UPDATE STATUS BADGE TERKINI SECARA LOKAL
           const targetStore = allStoresData.find(s => s.storeCode === storeCode);
           if (targetStore) {
             targetStore.travelStatus = "Pending";
             filterAndRenderStores();
           }
 
-          // REVISI 4: BUKA POPUP SUKSES
           showSuccessModal("Pengajuan Travel Fee Berhasil!", res.message || "Pengajuan Anda telah berhasil dikirim dengan status Pending.");
 
-          // REVISI 5: TARIK KEMBALI DATA APPS SCRIPT DIBELAKANG LAYAR
           fetchAssignedStores(currentUser.implId, currentUser.email, true);
         } else {
           showAlert(res ? res.message : "Gagal mengirim pengajuan travel fee.", true);
