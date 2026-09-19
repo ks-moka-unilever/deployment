@@ -54,15 +54,20 @@
             <span id="userDisplayNameWrapper" class="hidden"> | Nama: <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
         </div>
-        <div class="flex items-center gap-2">
-          <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
-             class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
-            <span>📚 Pusat Materi & Panduan</span>
-          </a>
-          <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
-            Keluar
-          </button>
-        </div>
+        <!-- KODE BARU (SUDAH DITAMBAHKAN TOMBOL REFRESH) -->
+<div class="flex items-center gap-2">
+  <button onclick="fetchAssignedStores(currentUser.implId, currentUser.email, true)" 
+          class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+    <span>🔄 Refresh Status</span>
+  </button>
+  <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
+     class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
+    <span>📚 Pusat Materi & Panduan</span>
+  </a>
+  <button onclick="handleLogout()" class="px-4 py-2 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">
+    Keluar
+  </button>
+</div>
       </div>
 
       <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 rounded-2xl shadow-lg flex justify-between items-center">
