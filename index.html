@@ -152,7 +152,6 @@
           <textarea id="visitNotes" rows="2" placeholder="Hasil kunjungan..." required class="w-full p-2 border rounded-xl text-xs"></textarea>
         </div>
         
-        <!-- FIX UPLOAD ABSEN: FORMAT PERSIS SAMA DENGAN DOKUMEN BAST -->
         <div>
           <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
           <div onclick="document.getElementById('visitSelfie').click()" class="border-2 border-dashed border-blue-300 bg-blue-50/50 hover:bg-blue-50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
@@ -225,7 +224,6 @@
           </div>
         </div>
 
-        <!-- FIX UPLOAD FOTO DEPAN TOKO: FORMAT PERSIS SAMA DENGAN DOKUMEN BAST -->
         <div class="pt-1">
           <label class="font-semibold text-slate-600">Foto Depan Toko <span class="text-rose-500">*</span></label>
           <div onclick="document.getElementById('storeFrontPhoto').click()" class="border-2 border-dashed border-emerald-300 bg-emerald-50/50 hover:bg-emerald-50 p-2.5 rounded-xl text-center cursor-pointer mt-0.5">
@@ -315,6 +313,7 @@
   </div>
 
   <script>
+    // PASTIKAN URL SCRIPT SESUAI DENGAN HASIL DEPLOYMENT APPS SCRIPT ANDA
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
@@ -429,7 +428,7 @@
           const refreshText = document.getElementById("refreshText");
           if (refreshIcon) refreshIcon.classList.remove("animate-spin-custom");
           if (refreshText) refreshText.innerText = "Refresh";
-          showAlert("Gagal terhubung: " + err.message, true);
+          showAlert("Gagal terhubung ke server Apps Script: " + err.message, true);
         });
     }
 
@@ -540,7 +539,6 @@
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
         const devicePackage = store.devicePackage || "-";
-        const projectLeadName = store.projectLeadName || "-";
         const status = (store.status || "Unassigned").trim();
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
@@ -549,14 +547,11 @@
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
         const visitCount = store.visitCount || 0;
-        
-        // PEMBACAAN REALTIME TRAVEL FEE (KOLOM I)
-        const travelStatus = store.travelFeeStatus || store.travelStatus || "Belum Pengajuan";
+        const travelStatus = store.travelFeeStatus || "Belum Pengajuan";
 
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
 
-        // LOGIKA KONDISIONAL TANGGAL SESUAI DENGAN KOLOM AG
         const showPlannedDate = ["In Progress", "Scheduled"].includes(status);
         const showGoLiveStore = ["In Progress", "Go Live - ULI", "Go Live - Store"].includes(status);
         const showGoLiveCompleted = ["Go Live - ULI"].includes(status);
@@ -584,7 +579,7 @@
               Lihat Detail Toko 🔽
             </button>
 
-            <!-- DETAIL TOKO (COLLAPSIBLE) -->
+            <!-- DETAIL TOKO -->
             <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
               <div class="text-[11px] text-slate-600 space-y-1">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
@@ -592,7 +587,6 @@
                 </p>
                 
                 <p>📦 <b>Device Package:</b> ${devicePackage}</p>
-                <p>👔 <b>Project Lead Name:</b> ${projectLeadName}</p>
 
                 <p>🚚 <b>Distributor (DT):</b> ${dtName} (${dtCode})</p>
                 <p>🏬 <b>Alamat DT:</b> ${dtAddress} 
