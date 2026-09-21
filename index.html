@@ -389,6 +389,8 @@
             if (userName) {
               document.getElementById("userDisplayName").innerText = userName;
               document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
+            } else {
+              document.getElementById("userDisplayNameWrapper").classList.add("hidden");
             }
 
             allStoresData = res.data || [];
@@ -438,7 +440,7 @@
         `;
       });
 
-      container.innerHTML = html;
+      container.innerHTML = html || `<div class="text-[10px] text-slate-400">Tidak ada status toko</div>`;
     }
 
     function toggleStatusFilter(status) {
@@ -535,32 +537,32 @@
 
       if (statusUpper === "GO LIVE - ULI" || statusUpper === "GO LIVE - STORE") {
         fields = [
-          { label: "Imp. Actual Date", value: store.actualDate }, // AN (39)
-          { label: "SKU Management Done", value: store.skuCompleted, highlight: true }, // AJ (35)
-          { label: "Go Live Store BAST", value: store.goLiveStoreDate }, // AS (44)
-          { label: "Aging - Implementation", value: store.agingImplementation }, // BC (54)
-          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate } // AT (45)
+          { label: "Imp. Actual Date", value: store.actualDate },
+          { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
+          { label: "Go Live Store BAST", value: store.goLiveStoreDate },
+          { label: "Aging - Implementation", value: store.agingImplementation },
+          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate }
         ];
       } else if (statusUpper === "IN PROGRESS") {
         fields = [
-          { label: "Imp. Planned Date", value: store.plannedDate }, // AM (38)
-          { label: "SKU Management Done", value: store.skuCompleted, highlight: true }, // AJ (35)
-          { label: "Imp. Actual Date", value: store.actualDate }, // AN (39)
-          { label: "Aging - Implementation", value: store.agingImplementation }, // BC (54)
-          { label: "Go Live Planned Date", value: store.goLivePlannedDate } // AP (41)
+          { label: "Imp. Planned Date", value: store.plannedDate },
+          { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
+          { label: "Imp. Actual Date", value: store.actualDate },
+          { label: "Aging - Implementation", value: store.agingImplementation },
+          { label: "Go Live Planned Date", value: store.goLivePlannedDate }
         ];
       } else if (["SCHEDULED", "ON HOLD", "NOT STARTED", "CANCELLED", "DUPLICATE"].includes(statusUpper)) {
         fields = [
-          { label: "Imp. Planned Date", value: store.plannedDate }, // AM (38)
-          { label: "Go Live Planned Date", value: store.goLivePlannedDate } // AP (41)
+          { label: "Imp. Planned Date", value: store.plannedDate },
+          { label: "Go Live Planned Date", value: store.goLivePlannedDate }
         ];
       } else if (statusUpper === "DROPPED") {
         fields = [
-          { label: "Imp. Actual Date", value: store.actualDate }, // AN (39)
-          { label: "SKU Management Done", value: store.skuCompleted, highlight: true }, // AJ (35)
-          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate }, // AT (45)
-          { label: "Aging - Implementation", value: store.agingImplementation }, // BC (54)
-          { label: "Go Live Drop Date", value: store.goLiveDropDate } // AU (46)
+          { label: "Imp. Actual Date", value: store.actualDate },
+          { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
+          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate },
+          { label: "Aging - Implementation", value: store.agingImplementation },
+          { label: "Go Live Drop Date", value: store.goLiveDropDate }
         ];
       } else {
         fields = [
@@ -626,7 +628,6 @@
 
         html += `
           <div class="glass-card p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
-            <!-- HEADER TOKO -->
             <div class="flex justify-between items-start gap-2">
               <div class="space-y-0.5">
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900">${idx + 1}. ${storeName}</h4>
@@ -640,13 +641,11 @@
               </div>
             </div>
 
-            <!-- TOGGLE ACCORDION -->
             <button id="btnToggle_${idx}" onclick="toggleStoreDetail(${idx})" 
                     class="w-full text-center py-1 bg-slate-50 hover:bg-slate-100 text-blue-600 font-semibold text-[10px] rounded-lg border border-slate-200 transition-all">
               Lihat Detail Toko 🔽
             </button>
 
-            <!-- DETAIL TOKO -->
             <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
               
               <div class="text-[11px] text-slate-600 space-y-1.5">
@@ -666,7 +665,6 @@
 
             </div>
 
-            <!-- BUTTON ACTIONS -->
             <div class="flex gap-1.5 pt-1">
               <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-1.5 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg border border-blue-200 hover:bg-blue-100">
                 📷 Absen
