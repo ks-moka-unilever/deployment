@@ -90,7 +90,7 @@
 
       <div class="relative">
         <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Cari Toko / Kode / OID / Distributor / ASM / PMO..." 
+               placeholder="🔍 Cari Toko / Kode / OID / PMO / Distributor / ASM..." 
                class="w-full px-3.5 py-2.5 rounded-xl border border-blue-200 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-xs">
       </div>
 
@@ -468,7 +468,6 @@
       renderStoreList(filtered);
     }
 
-    // REVISI POIN 5: WARNA HIGHLIGHT IMPLEMENTATION STATUS BADGE
     function renderStatusBadge(statusStr) {
       const status = (statusStr || "Unassigned").trim();
       const statusUpper = status.toUpperCase();
@@ -499,7 +498,6 @@
       return `<span class="px-2 py-0.5 text-[9px] uppercase tracking-wide rounded-full ${bgClass}">${status}</span>`;
     }
 
-    // REVISI POIN 4: SINKRONISASI HARI KE-(m) DENGAN VISIT_LOGS & ATURAN WARNA
     function renderSLABadge(visitCount) {
       const count = parseInt(visitCount, 10) || 0;
       let badgeClass = "";
@@ -519,7 +517,7 @@
       return `<span class="px-2 py-0.5 text-[9px] rounded-full border shadow-sm ${badgeClass}">${statusText}</span>`;
     }
 
-    // REVISI POIN 3: TAMPILAN BADGE STATUS TRAVEL FEE
+    // REVISI POIN 2: BADGE STATUS TRAVEL FEE DENGAN SINKRONISASI AKTIF
     function renderTravelFeeBadge(status) {
       const st = (status || "").trim().toLowerCase();
       if (st === "approved" || st === "disetujui") {
@@ -533,39 +531,39 @@
       }
     }
 
-    // REVISI POIN 2: BLOK TANGGAL BERDASARKAN STATUS
+    // REVISI POIN 2, 4, 5, 6: MAPPING TANGGAL DAN AGING - IMPLEMENTATION SESUAI KONTRAK STATUS
     function renderDateBlock(store) {
       const statusUpper = (store.status || "").trim().toUpperCase();
       let fields = [];
 
       if (statusUpper === "GO LIVE - ULI" || statusUpper === "GO LIVE - STORE") {
         fields = [
-          { label: "Imp. Actual Date", value: store.actualDate },
-          { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
-          { label: "Go Live Store BAST", value: store.goLiveStoreDate },
-          { label: "SLA Status", value: store.slaStatus },
-          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate }
+          { label: "Imp. Actual Date", value: store.actualDate }, // AN (39)
+          { label: "SKU Management Done", value: store.skuCompleted, highlight: true }, // AJ (35)
+          { label: "Go Live Store BAST", value: store.goLiveStoreDate }, // AS (44)
+          { label: "Aging - Implementation", value: store.agingImplementation }, // BC (54)
+          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate } // AT (45)
         ];
       } else if (statusUpper === "IN PROGRESS") {
         fields = [
-          { label: "Imp. Planned Date", value: store.plannedDate },
-          { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
-          { label: "Imp. Actual Date", value: store.actualDate },
-          { label: "SLA Status", value: store.slaStatus },
-          { label: "Go Live Planned Date", value: store.goLivePlannedDate }
+          { label: "Imp. Planned Date", value: store.plannedDate }, // AM (38)
+          { label: "SKU Management Done", value: store.skuCompleted, highlight: true }, // AJ (35)
+          { label: "Imp. Actual Date", value: store.actualDate }, // AN (39)
+          { label: "Aging - Implementation", value: store.agingImplementation }, // BC (54)
+          { label: "Go Live Planned Date", value: store.goLivePlannedDate } // AP (41)
         ];
       } else if (["SCHEDULED", "ON HOLD", "NOT STARTED", "CANCELLED", "DUPLICATE"].includes(statusUpper)) {
         fields = [
-          { label: "Imp. Planned Date", value: store.plannedDate },
-          { label: "Go Live Planned Date", value: store.goLivePlannedDate }
+          { label: "Imp. Planned Date", value: store.plannedDate }, // AM (38)
+          { label: "Go Live Planned Date", value: store.goLivePlannedDate } // AP (41)
         ];
       } else if (statusUpper === "DROPPED") {
         fields = [
-          { label: "Imp. Actual Date", value: store.actualDate },
-          { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
-          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate },
-          { label: "SLA Status", value: store.slaStatus },
-          { label: "Go Live Drop Date", value: store.goLiveDropDate }
+          { label: "Imp. Actual Date", value: store.actualDate }, // AN (39)
+          { label: "SKU Management Done", value: store.skuCompleted, highlight: true }, // AJ (35)
+          { label: "Go Live Complete BAST", value: store.goLiveCompletedDate }, // AT (45)
+          { label: "Aging - Implementation", value: store.agingImplementation }, // BC (54)
+          { label: "Go Live Drop Date", value: store.goLiveDropDate } // AU (46)
         ];
       } else {
         fields = [
@@ -573,7 +571,7 @@
           { label: "Imp. Actual Date", value: store.actualDate },
           { label: "Go Live Planned Date", value: store.goLivePlannedDate },
           { label: "SKU Management Done", value: store.skuCompleted, highlight: true },
-          { label: "SLA Status", value: store.slaStatus }
+          { label: "Aging - Implementation", value: store.agingImplementation }
         ];
       }
 
@@ -612,15 +610,18 @@
         const storeName = store.storeName || "-";
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
-        const pmo = store.pmo || "-"; // POIN 1: PMO dari Kolom Q
+        const pmo = store.pmo || "-"; // REVISI POIN 1: PMO dari Kolom Q
         const devicePackage = store.devicePackage || "-";
         const status = (store.status || "Unassigned").trim();
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
         const dtCode = store.dtCode || "-";
         const dtAddress = store.dtAddress || "-";
+        
+        // REVISI POIN 1: ASM dari Kolom O dan P
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
+        
         const visitCount = store.visitCount || 0;
         const travelStatus = store.travelFeeStatus || "Belum Diajukan";
 
@@ -633,15 +634,13 @@
             <div class="flex justify-between items-start gap-2">
               <div class="space-y-0.5">
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900">${idx + 1}. ${storeName}</h4>
-                <!-- REVISI POIN 1: TAMPILAN KODE TOKO, OID, DAN PMO -->
+                <!-- REVISI POIN 1: KODE TOKO, OID, DAN PMO (KOLOM Q) -->
                 <p class="text-[10px] text-slate-500 font-mono leading-tight">
                   Kode Toko : <b class="text-slate-800">${storeCode}</b> | OID : <b class="text-slate-800">${oid}</b> | PMO : <b class="text-slate-800">${pmo}</b>
                 </p>
               </div>
               <div class="flex flex-col items-end gap-1 flex-shrink-0">
-                <!-- REVISI POIN 5: HIGHLIGHT WARNA STATUS -->
                 ${renderStatusBadge(status)}
-                <!-- REVISI POIN 4: SLA BADGE HARI KE-(m) -->
                 ${renderSLABadge(visitCount)}
               </div>
             </div>
@@ -655,7 +654,7 @@
             <!-- DETAIL TOKO -->
             <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
               
-              <!-- REVISI POIN 2: URUTAN DETAIL TOKO -->
+              <!-- REVISI POIN 1 & 2: URUTAN DETAIL TOKO DENGAN NAMA & NO HP ASM REAL (KOLOM O & P) -->
               <div class="text-[11px] text-slate-600 space-y-1.5">
                 <p class="leading-relaxed">📍 <b>Alamat Toko:</b> ${storeAddress} 
                   <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline inline-flex items-center">🗺️ Maps Toko</a>
@@ -669,7 +668,7 @@
                 <p class="flex items-center gap-1.5 flex-wrap">🚗 <b>Status Travel Fee:</b> ${renderTravelFeeBadge(travelStatus)}</p>
               </div>
 
-              <!-- REVISI POIN 2: URUTAN BLOK TANGGAL BERDASARKAN STATUS -->
+              <!-- REVISI POIN 2, 4, 5, 6: URUTAN TANGGAL & AGING - IMPLEMENTATION -->
               ${renderDateBlock(store)}
 
             </div>
@@ -693,7 +692,6 @@
       container.innerHTML = html;
     }
 
-    // REVISI POIN 4: VISITING NUMBER MODAL ABSEN DIBUAT Visit Ke-(n+1)
     function openVisitModal(code) {
       const store = allStoresData.find(s => s.storeCode === code) || {};
       const nextVisitNum = (parseInt(store.visitCount, 10) || 0) + 1;
@@ -781,8 +779,7 @@
           oid: store.oid || "",
           activity: document.getElementById("visitActivityType").value,
           notes: document.getElementById("visitNotes").value,
-          photoIn: selfieBase64,
-          workingDate: new Date().toISOString().split('T')[0]
+          photoIn: selfieBase64
         };
 
         const res = await fetch(SCRIPT_URL, {
@@ -841,8 +838,7 @@
           scannerSn: document.getElementById("snScanner").value,
           printerSn: document.getElementById("snPrinter").value,
           photoStore: storeFrontBase64,
-          bastFile: bastDocBase64,
-          visitDate: new Date().toISOString().split('T')[0]
+          bastFile: bastDocBase64
         };
 
         const res = await fetch(SCRIPT_URL, {
