@@ -482,7 +482,7 @@
    return `<span class="px-2 py-0.5 text-[9px] font-bold rounded-full border ${badgeClass}">Visit Ke-${count}</span>`;
  }
 
-    function renderStoreList(stores) {
+   function renderStoreList(stores) {
       const container = document.getElementById("storeListContainer");
       if (!container) return;
 
@@ -505,31 +505,30 @@
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
         const visitCount = store.visitCount || 0;
-        const travelStatus = store.travelFeeStatus || "Belum Pengajuan";
-let travelBadge = "";
-     let tStatusRaw = (store.travelFeeStatus || "").toLowerCase().trim();
-     if (tStatusRaw === "approved") {
-       travelBadge = '<span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">🟢 Travel Fee: Disetujui</span>';
-     } else if (tStatusRaw === "pending") {
-       travelBadge = '<span class="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">🟡 Travel Fee: Menunggu Persetujuan</span>';
-     } else if (tStatusRaw === "rejected") {
-       travelBadge = '<span class="font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">🔴 Travel Fee: Ditolak</span>';
-     } else {
-       travelBadge = '<span class="font-bold text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">⚪ Travel Fee: Belum Diajukan</span>';
-     }
-      let statusBadgeClass = "bg-slate-100 text-slate-700 border-slate-200"; // default
-     if (status === "Go Live - ULI") statusBadgeClass = "bg-green-500 text-white border-green-600 shadow-sm";
-     else if (status === "Go Live - Store") statusBadgeClass = "bg-green-200 text-green-800 border-green-300";
-     else if (status === "In Progress") statusBadgeClass = "bg-yellow-300 text-yellow-900 border-yellow-400";
-     else if (status === "Dropped" || status === "Cancelled") statusBadgeClass = "bg-rose-500 text-white border-rose-600 shadow-sm";
-     else if (status === "Scheduled") statusBadgeClass = "bg-blue-200 text-blue-800 border-blue-300";  
+
+        // Badge Status Travel Fee
+        let travelBadge = "";
+        let tStatusRaw = (store.travelFeeStatus || "").toLowerCase().trim();
+        if (tStatusRaw === "approved") {
+          travelBadge = '<span class="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">🟢 Travel Fee: Disetujui</span>';
+        } else if (tStatusRaw === "pending") {
+          travelBadge = '<span class="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">🟡 Travel Fee: Menunggu Persetujuan</span>';
+        } else if (tStatusRaw === "rejected") {
+          travelBadge = '<span class="font-bold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200">🔴 Travel Fee: Ditolak</span>';
+        } else {
+          travelBadge = '<span class="font-bold text-slate-500 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">⚪ Travel Fee: Belum Diajukan</span>';
+        }
+
+        // Warna Background Implementation Status
+        let statusBadgeClass = "bg-slate-100 text-slate-700 border-slate-200"; // default
+        if (status === "Go Live - ULI") statusBadgeClass = "bg-green-500 text-white border-green-600 shadow-sm";
+        else if (status === "Go Live - Store") statusBadgeClass = "bg-green-200 text-green-800 border-green-300";
+        else if (status === "In Progress") statusBadgeClass = "bg-yellow-300 text-yellow-900 border-yellow-400";
+        else if (status === "Dropped" || status === "Cancelled") statusBadgeClass = "bg-rose-500 text-white border-rose-600 shadow-sm";
+        else if (status === "Scheduled") statusBadgeClass = "bg-blue-200 text-blue-800 border-blue-300";  
+
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
-
-        const showPlannedDate = ["In Progress", "Scheduled"].includes(status);
-        const showGoLiveStore = ["In Progress", "Go Live - ULI", "Go Live - Store"].includes(status);
-        const showGoLiveCompleted = ["Go Live - ULI"].includes(status);
-        const showGoLiveDrop = ["Dropped"].includes(status);
 
         html += `
           <div class="glass-card p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2">
@@ -537,15 +536,84 @@ let travelBadge = "";
             <div class="flex justify-between items-start gap-2">
               <div>
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900">${idx + 1}. ${storeName}</h4>
-               <p class="text-[10px] text-slate-500 font-mono mt-0.5">Kode Toko : <b>${storeCode}</b> | OID : <b>${oid}</b> | PMO : <b>${store.pmo || "-"}</b></p>
+                <p class="text-[10px] text-slate-500 font-mono mt-0.5">Kode Toko : <b>${storeCode}</b> | OID : <b>${oid}</b> | PMO : <b>${store.pmo || "-"}</b></p>
               </div>
               <div class="flex flex-col items-end gap-1">
-              <span class="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded-full border ${statusBadgeClass}">
-               ${status}
-             </span>
+                <span class="px-2 py-0.5 text-[9px] font-extrabold uppercase rounded-full border ${statusBadgeClass}">
+                  ${status}
+                </span>
                 ${renderSLABadge(visitCount)}
               </div>
             </div>
+
+            <!-- TOMBOL LIHAT DETAIL TOKO -->
+            <button onclick="toggleStoreDetail(${idx})" class="w-full text-center py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200/60 rounded-xl text-[11px] font-semibold text-blue-600 mt-2">
+              Lihat Detail Toko 🔽
+            </button>
+
+            <!-- CONTAINER DETAIL TOKO -->
+            <div id="storeDetail_${idx}" class="hidden mt-3 pt-3 border-t border-slate-100 space-y-3">
+              
+              <!-- DETAIL INFORMASI TOKO -->
+              <div class="text-[11px] text-slate-600 space-y-1">
+                <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
+                  <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps Toko</a>
+                </p>
+                <p>🚚 <b>Distributor (DT):</b> ${dtName} (${dtCode})</p>
+                <p>🏬 <b>Alamat DT:</b> ${dtAddress} 
+                  <a href="${dtMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline">🗺️ Maps DT</a>
+                </p>
+                <p>👤 <b>ASM:</b> ${asmName} ${asmPhone}</p>
+                <p>📦 <b>Device Package:</b> ${devicePackage}</p>
+                <p>🚗 <b>Status Travel Fee:</b> ${travelBadge}</p>
+              </div>
+
+              <!-- TANGGAL & STATUS SLA KONDISIONAL -->
+              <div class="grid grid-cols-2 gap-1.5 text-[10px] bg-slate-50 p-2 rounded-xl border border-slate-100 text-slate-500 mt-2">
+                ${(status === "Go Live - ULI" || status === "Go Live - Store") ? `
+                  <div>Imp. Actual Date: <b class="text-slate-700">${store.actualDate || "-"}</b></div>
+                  <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
+                  <div>Go Live Store BAST: <b class="text-slate-700">${store.goLiveStoreDate || "-"}</b></div>
+                  <div>SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
+                  <div class="col-span-2">Go Live Complete BAST: <b class="text-slate-700">${store.goLiveCompletedDate || "-"}</b></div>
+                ` : status === "In Progress" ? `
+                  <div>Imp. Planned Date: <b class="text-slate-700">${store.plannedDate || "-"}</b></div>
+                  <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
+                  <div>Imp. Actual Date: <b class="text-slate-700">${store.actualDate || "-"}</b></div>
+                  <div>SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
+                  <div class="col-span-2">Go Live Planned Date: <b class="text-slate-700">${store.goLivePlannedDate || "-"}</b></div>
+                ` : status === "Dropped" ? `
+                  <div>Imp. Actual Date: <b class="text-slate-700">${store.actualDate || "-"}</b></div>
+                  <div>SKU Management Done: <b class="text-blue-700 font-bold">${store.skuCompleted || "-"}</b></div>
+                  <div>Go Live Complete BAST: <b class="text-slate-700">${store.goLiveCompletedDate || "-"}</b></div>
+                  <div>SLA Status: <b class="text-slate-700">${store.slaStatus || "-"}</b></div>
+                  <div class="col-span-2">Go Live Drop Date: <b class="text-slate-700">${store.goLiveDropDate || "-"}</b></div>
+                ` : `
+                  <div>Imp. Planned Date: <b class="text-slate-700">${store.plannedDate || "-"}</b></div>
+                  <div>Go Live Planned Date: <b class="text-slate-700">${store.goLivePlannedDate || "-"}</b></div>
+                `}
+              </div>
+
+              <!-- 3 TOMBOL AKSI -->
+              <div class="flex gap-2 pt-1">
+                <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-1.5 bg-blue-50 text-blue-700 font-bold text-[11px] rounded-lg border border-blue-200 hover:bg-blue-100">
+                  📍 Absen
+                </button>
+                <button onclick="openBastModal('${storeCode}')" class="flex-1 py-1.5 bg-emerald-50 text-emerald-700 font-bold text-[11px] rounded-lg border border-emerald-200 hover:bg-emerald-100">
+                  📑 BAST
+                </button>
+                <button onclick="openTravelModal('${storeCode}')" class="flex-1 py-1.5 bg-amber-50 text-amber-700 font-bold text-[11px] rounded-lg border border-amber-200 hover:bg-amber-100">
+                  🚗 Travel
+                </button>
+              </div>
+
+            </div> <!-- Penutup #storeDetail_${idx} -->
+          </div>   <!-- Penutup Card Utama Toko -->
+        `;
+      });
+
+      container.innerHTML = html;
+    }
 
             <!-- TOGGLE ACCORDION -->
             <button id="btnToggle_${idx}" onclick="toggleStoreDetail(${idx})" 
