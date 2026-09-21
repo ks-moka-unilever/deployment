@@ -269,7 +269,6 @@
           <textarea id="travelImplAddress" required placeholder="Alamat lengkap domisili..." rows="2" class="w-full p-1.5 border rounded-lg mt-0.5 text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
         </div>
 
-        <!-- REVISI POIN 6: KAB/KOTA DOMISILI -->
         <div>
           <label class="font-semibold text-slate-600 block mb-0.5">Kab/Kota Domisili <span class="text-rose-500">*</span></label>
           <input type="text" id="travelImplCity" required placeholder="Contoh: Kab. Bandung atau Bandung" class="w-full p-2 border rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none">
@@ -347,13 +346,13 @@
 
     function handleLogin(e) {
       e.preventDefault();
-      const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const implId = document.getElementById("loginImplId").value.trim();
+      const email = document.getElementById("loginEmail").value.trim();
       fetchAssignedStores(implId, email);
     }
 
     function refreshDashboardData() {
-      if (!currentUser.implId || !currentUser.email) return;
+      if (!currentUser.implId && !currentUser.email) return;
       const refreshIcon = document.getElementById("refreshIcon");
       const refreshText = document.getElementById("refreshText");
       if (refreshIcon) refreshIcon.classList.add("animate-spin-custom");
@@ -517,7 +516,6 @@
       return `<span class="px-2 py-0.5 text-[9px] rounded-full border shadow-sm ${badgeClass}">${statusText}</span>`;
     }
 
-    // REVISI POIN 2: BADGE STATUS TRAVEL FEE DENGAN SINKRONISASI AKTIF
     function renderTravelFeeBadge(status) {
       const st = (status || "").trim().toLowerCase();
       if (st === "approved" || st === "disetujui") {
@@ -531,7 +529,6 @@
       }
     }
 
-    // REVISI POIN 2, 4, 5, 6: MAPPING TANGGAL DAN AGING - IMPLEMENTATION SESUAI KONTRAK STATUS
     function renderDateBlock(store) {
       const statusUpper = (store.status || "").trim().toUpperCase();
       let fields = [];
@@ -610,7 +607,7 @@
         const storeName = store.storeName || "-";
         const storeCode = store.storeCode || "-";
         const oid = store.oid || "-";
-        const pmo = store.pmo || "-"; // REVISI POIN 1: PMO dari Kolom Q
+        const pmo = store.pmo || "-";
         const devicePackage = store.devicePackage || "-";
         const status = (store.status || "Unassigned").trim();
         const storeAddress = store.storeAddress || "-";
@@ -618,7 +615,6 @@
         const dtCode = store.dtCode || "-";
         const dtAddress = store.dtAddress || "-";
         
-        // REVISI POIN 1: ASM dari Kolom O dan P
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
         
@@ -634,7 +630,6 @@
             <div class="flex justify-between items-start gap-2">
               <div class="space-y-0.5">
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900">${idx + 1}. ${storeName}</h4>
-                <!-- REVISI POIN 1: KODE TOKO, OID, DAN PMO (KOLOM Q) -->
                 <p class="text-[10px] text-slate-500 font-mono leading-tight">
                   Kode Toko : <b class="text-slate-800">${storeCode}</b> | OID : <b class="text-slate-800">${oid}</b> | PMO : <b class="text-slate-800">${pmo}</b>
                 </p>
@@ -654,7 +649,6 @@
             <!-- DETAIL TOKO -->
             <div id="storeDetail_${idx}" class="hidden space-y-2 pt-1 border-t border-slate-100">
               
-              <!-- REVISI POIN 1 & 2: URUTAN DETAIL TOKO DENGAN NAMA & NO HP ASM REAL (KOLOM O & P) -->
               <div class="text-[11px] text-slate-600 space-y-1.5">
                 <p class="leading-relaxed">📍 <b>Alamat Toko:</b> ${storeAddress} 
                   <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 hover:underline inline-flex items-center">🗺️ Maps Toko</a>
@@ -668,7 +662,6 @@
                 <p class="flex items-center gap-1.5 flex-wrap">🚗 <b>Status Travel Fee:</b> ${renderTravelFeeBadge(travelStatus)}</p>
               </div>
 
-              <!-- REVISI POIN 2, 4, 5, 6: URUTAN TANGGAL & AGING - IMPLEMENTATION -->
               ${renderDateBlock(store)}
 
             </div>
