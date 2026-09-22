@@ -87,7 +87,7 @@
         <span id="totalStoresBadge" class="text-xl sm:text-2xl font-black">0</span>
       </div>
 
-      <!-- TRACKER RINGKASAN STATUS (1 BARIS IN MOBILE SCROLLABLE) -->
+      <!-- TRACKER RINGKASAN STATUS -->
       <div>
         <div class="flex justify-between items-center mb-1">
           <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation Tracker:</h3>
@@ -146,7 +146,6 @@
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <!-- FORMAT FILE DIBUAT SAMAPERSIS DENGAN DOKUMEN BAST (TANPA CAPTURE MANDATORI) -->
           <input type="file" id="visitSelfie" accept="image/*" required 
                  class="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
         </div>
@@ -222,7 +221,6 @@
 
         <div>
           <label class="font-bold text-slate-700">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <!-- FORMAT FILE DIBUAT SAMAPERSIS DENGAN DOKUMEN BAST -->
           <input type="file" id="storeFrontPhoto" accept="image/*" required 
                  class="w-full text-xs mt-1 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
         </div>
@@ -382,7 +380,8 @@
       for (let i = 0; i < retries; i++) {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 12000);
+          // Timeout diperpanjang menjadi 35 detik untuk mengantisipasi jaringan lambat
+          const timeoutId = setTimeout(() => controller.abort(), 35000);
           const res = await fetch(url, { ...options, signal: controller.signal });
           clearTimeout(timeoutId);
           if (res.ok) return await res.json();
@@ -442,7 +441,7 @@
         if (currentUser.implId && currentUser.email) {
           fetchAssignedStores(currentUser.implId, currentUser.email, true);
         }
-      }, 20000);
+      }, 30000);
     }
 
     function renderSummaryCards(stores) {
@@ -527,7 +526,6 @@
       return "bg-slate-200 text-slate-700 font-bold";
     }
 
-    // TEKS BADGE HARI KE-N (DITAMPILKAN DI DUA LOKASI: DI ATAS SLA DAN DENGAN RINGKAS)
     function getVisitBadgeStyle(visitCount) {
       const count = parseInt(visitCount) || 0;
       if (count === 0) {
@@ -601,7 +599,6 @@
 
         const stUpper = status.toUpperCase();
         const statusBadgeClass = getStatusBadgeStyle(status);
-
         const isExpanded = expandedStoreCodes.has(storeCode);
 
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
@@ -620,7 +617,6 @@
         }
 
         let datesGridHtml = "";
-
         if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
           datesGridHtml = `
             <div class="grid grid-cols-2 gap-1.5">
@@ -670,7 +666,6 @@
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug truncate">${idx + 1}. ${storeName}</h4>
                 <p class="text-[10px] text-slate-500 font-mono leading-none">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b> | PMO: <b>${projectLeadName}</b></p>
                 
-                <!-- HARI KE-N DIBAWAH KODE TOKO DILENGKAPI SLA (REVISI PERMINTAAN) -->
                 <div class="flex items-center gap-1 flex-wrap pt-0.5">
                   <span class="px-2 py-0.5 text-[9.5px] font-bold rounded border whitespace-nowrap ${visitData.class}">${visitData.text}</span>
                   ${getSlaBadge(slaImplementation)}
@@ -678,7 +673,6 @@
               </div>
 
               <div class="text-right flex flex-col items-end gap-1">
-                <!-- BADGE STATUS TOKO -->
                 <span class="px-2 py-0.5 text-[9px] uppercase rounded-lg whitespace-nowrap shadow-xs ${statusBadgeClass}">
                   ${status}
                 </span>
@@ -688,7 +682,6 @@
               </div>
             </div>
 
-            <!-- EXTENDABLE DETAIL TOKO -->
             <div id="detailCard-${storeCode}" class="${isExpanded ? '' : 'hidden'} space-y-2 pt-2 border-t border-slate-100">
               
               <div class="text-[11px] text-slate-700 space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
