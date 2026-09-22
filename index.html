@@ -301,6 +301,7 @@
     let currentUser = { implId: "", email: "", name: "" };
     let selectedStatuses = [];
     let autoSyncTimer = null;
+    let expandedStoreCodes = new Set(); // MENAMPUNG DETAIL TOKO YANG LAGI DIBUKA SAMA USER
 
     window.onload = function() {
       const savedId = localStorage.getItem("implId");
@@ -507,6 +508,20 @@
       return "bg-slate-200 text-slate-700 font-bold";
     }
 
+    // HELPER PERHITUNGAN WARNA BADGE KUNJUNGAN (POINT REVISI 2)
+    function getVisitBadgeStyle(visitCount) {
+      const count = parseInt(visitCount) || 0;
+      if (count === 0) {
+        return "bg-slate-100 text-slate-600 border-slate-300⚪ Belum Ada Kunjungan";
+      } else if (count >= 1 && count <= 11) {
+        return "bg-emerald-100 text-emerald-800 border-emerald-300🟢 Kunjungan Hari ke-" + count + " (On Track)";
+      } else if (count === 12) {
+        return "bg-amber-100 text-amber-900 border-amber-300🟡 Kunjungan Hari ke-12 (Batas Rata-rata)";
+      } else {
+        return "bg-rose-100 text-rose-800 border-rose-300🔴 Kunjungan Hari ke-" + count + " (Over SLA)";
+      }
+    }
+
     function getSlaBadge(slaVal) {
       const num = parseInt(slaVal);
       if (isNaN(num)) return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-slate-100 text-slate-600">SLA: ${slaVal || '-'}</span>`;
@@ -520,15 +535,18 @@
       }
     }
 
+    // MEMASIKAN DETAIL TOKO TIDAK TERTUTUP OTOMATIS SAAT REFRESH BACKGROUND (POINT REVISI 1)
     function toggleDetail(code) {
       const elem = document.getElementById(`detailCard-${code}`);
       const btn = document.getElementById(`btnToggle-${code}`);
       if (elem) {
         if (elem.classList.contains("hidden")) {
           elem.classList.remove("hidden");
+          expandedStoreCodes.add(code);
           if (btn) btn.innerHTML = "▲ Sembunyikan Detail";
         } else {
           elem.classList.add("hidden");
+          expandedStoreCodes.delete(code);
           if (btn) btn.innerHTML = "▼ Lihat Detail Toko";
         }
       }
@@ -565,6 +583,8 @@
 
         const stUpper = status.toUpperCase();
         const statusBadgeClass = getStatusBadgeStyle(status);
+
+        const isExpanded = expandedStoreCodes.has(storeCode);
 
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
@@ -622,18 +642,20 @@
           `;
         }
 
+        const visitStyle = getVisitBadgeStyle(visitCount);
+
         html += `
           <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             
             <div class="flex justify-between items-start gap-2">
               <div class="space-y-1">
                 <h4 class="font-bold text-sm sm:text-base text-slate-900 leading-snug">${idx + 1}. ${storeName}</h4>
-                <p class="text-[11px] text-slate-500 font-mono">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b></p>
+                <!-- PEMINDAHAN PMO KETEMPAT SEJAJAR KODE & OID (POINT REVISI 3) -->
+                <p class="text-[11px] text-slate-500 font-mono">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b> | PMO: <b>${projectLeadName}</b></p>
                 
                 <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    🗓️ Kunjungan Hari ke-${visitCount}
-                  </span>
+                  <!-- BADGE KUNJUNGAN WARNA KONDISIONAL (POINT REVISI 2) -->
+                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-md border ${visitStyle}"></span>
                   ${getSlaBadge(slaImplementation)}
                 </div>
               </div>
@@ -643,12 +665,12 @@
                   ${status}
                 </span>
                 <button onclick="toggleDetail('${storeCode}')" id="btnToggle-${storeCode}" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 mt-1 focus:outline-none">
-                  ▼ Lihat Detail Toko
+                  ${isExpanded ? '▲ Sembunyikan Detail' : '▼ Lihat Detail Toko'}
                 </button>
               </div>
             </div>
 
-            <div id="detailCard-${storeCode}" class="hidden space-y-3 pt-2 border-t border-slate-100">
+            <div id="detailCard-${storeCode}" class="${isExpanded ? '' : 'hidden'} space-y-3 pt-2 border-t border-slate-100">
               
               <div class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200/60">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
@@ -659,7 +681,8 @@
                   ${dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 underline">🗺️ Maps DT</a>` : ''}
                 </p>
                 <p>👤 <b>ASM / AASM:</b> ${asmName} ${asmPhone}</p>
-                <p>📦 <b>Device Package:</b> ${devicePackage} (PL: <b>${projectLeadName}</b>)</p>
+                <!-- PMO DIHAPUS DARI SINI SEHUBUNGAN POINT REVISI 3 -->
+                <p>📦 <b>Device Package:</b> ${devicePackage}</p>
                 <p>🚗 <b>Status Travel Fee:</b> ${travelBadgeHtml}</p>
               </div>
 
@@ -918,122 +941,6 @@
         fetchAssignedStores(currentUser.implId, currentUser.email, true);
       }
     }
-  </script>
-</body>
-</html>
-// ==========================================
-    // UTILITY & HELPER FUNCTIONS
-    // ==========================================
-
-    function toggleDetail(code) {
-      const card = document.getElementById(`detailCard-${code}`);
-      const btn = document.getElementById(`btnToggle-${code}`);
-      if (!card) return;
-
-      if (card.classList.contains("hidden")) {
-        card.classList.remove("hidden");
-        if (btn) btn.innerText = "▲ Sembunyikan Detail";
-      } else {
-        card.classList.add("hidden");
-        if (btn) btn.innerText = "▼ Lihat Detail Toko";
-      }
-    }
-
-    function getSlaBadge(slaStatus) {
-      if (!slaStatus || slaStatus === "-") {
-        return `<span class="px-2 py-0.5 text-[10px] font-medium rounded-md bg-slate-100 text-slate-600 border border-slate-200">SLA: -</span>`;
-      }
-      
-      const statusUpper = slaStatus.toString().toUpperCase();
-      if (statusUpper.includes("ON TIME") || statusUpper.includes("ON-TIME")) {
-        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">⏱️ ${slaStatus}</span>`;
-      } else if (statusUpper.includes("DELAY") || statusUpper.includes("OVERDUE") || statusUpper.includes("LATE")) {
-        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-rose-50 text-rose-700 border border-rose-200 font-mono">⚠️ ${slaStatus}</span>`;
-      } else {
-        return `<span class="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-amber-50 text-amber-700 border border-amber-200">⏱️ ${slaStatus}</span>`;
-      }
-    }
-
-    function formatDateNice(dateStr) {
-      if (!dateStr || dateStr === "-") return "-";
-      try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString("id-ID", {
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        });
-      } catch (e) {
-        return dateStr;
-      }
-    }
-
-    function showSuccessModal(title, message) {
-      const modal = document.getElementById("successModal");
-      const titleEl = document.getElementById("successModalTitle");
-      const msgEl = document.getElementById("successModalMessage");
-
-      if (titleEl) titleEl.innerText = title || "Berhasil!";
-      if (msgEl) msgEl.innerText = message || "Data telah berhasil diproses.";
-      
-      if (modal) modal.classList.remove("hidden");
-    }
-
-    function closeSuccessModal() {
-      const modal = document.getElementById("successModal");
-      if (modal) modal.classList.add("hidden");
-    }
-
-    // ==========================================
-    // INITIALIZATION & EVENT LISTENERS
-    // ==========================================
-
-    document.addEventListener("DOMContentLoaded", () => {
-      // Restore user session if available
-      const savedUser = localStorage.getItem("currentUser");
-      if (savedUser) {
-        try {
-          currentUser = JSON.parse(savedUser);
-          document.getElementById("loginSection")?.classList.add("hidden");
-          document.getElementById("dashboardSection")?.classList.remove("hidden");
-          
-          if (document.getElementById("userDisplayName")) {
-            document.getElementById("userDisplayName").innerText = currentUser.name || currentUser.implId;
-          }
-          if (document.getElementById("userDisplayEmail")) {
-            document.getElementById("userDisplayEmail").innerText = currentUser.email;
-          }
-
-          fetchAssignedStores(currentUser.implId, currentUser.email);
-        } catch (e) {
-          console.error("Failed to restore session", e);
-          localStorage.clear();
-        }
-      }
-
-      // Attach Form Submissions
-      const visitForm = document.getElementById("visitForm");
-      if (visitForm) visitForm.addEventListener("submit", submitVisitLog);
-
-      const bastForm = document.getElementById("bastForm");
-      if (bastForm) bastForm.addEventListener("submit", submitBAST);
-
-      const travelForm = document.getElementById("travelForm");
-      if (travelForm) travelForm.addEventListener("submit", submitTravelFee);
-
-      // Search input handler
-      const searchInput = document.getElementById("searchInput");
-      if (searchInput) {
-        searchInput.addEventListener("input", filterAndRenderStores);
-      }
-
-      // Status Filter handler
-      const statusFilter = document.getElementById("statusFilter");
-      if (statusFilter) {
-        statusFilter.addEventListener("change", filterAndRenderStores);
-      }
-    });
   </script>
 </body>
 </html>
