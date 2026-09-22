@@ -17,6 +17,13 @@
     .animate-bounce-short {
       animation: bounceShort 0.4s ease-in-out 2;
     }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased text-xs sm:text-sm">
@@ -85,17 +92,18 @@
         <span id="totalStoresBadge" class="text-2xl sm:text-3xl font-black">0</span>
       </div>
 
+      <!-- REVISI POIN 6: Ringkasan Status Rapi & Presisi di Mobile -->
       <div>
         <div class="flex justify-between items-center mb-1.5">
           <h3 class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation Tracker:</h3>
           <span class="text-[10px] text-blue-600 font-semibold">*Klik untuk filter</span>
         </div>
-        <div id="summaryCardsContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+        <div id="summaryCardsContainer" class="flex sm:grid sm:grid-cols-3 gap-2 overflow-x-auto no-scrollbar pb-1"></div>
       </div>
 
       <div class="relative">
         <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Cari Toko / Kode / OID / DT / ASM..." 
+               placeholder="🔍 Cari Toko / Kode / OID / DT / PMO..." 
                class="w-full pl-3.5 pr-3.5 py-2.5 rounded-xl border border-slate-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-xs sm:text-sm">
       </div>
 
@@ -139,11 +147,14 @@
           <label class="block font-semibold text-slate-600 mb-1">Catatan Ringkas <span class="text-rose-500">*</span></label>
           <textarea id="visitNotes" rows="2" placeholder="Tuliskan catatan hasil kunjungan..." required class="w-full p-2.5 border rounded-xl text-xs"></textarea>
         </div>
+        
+        <!-- REVISI POIN 5: Format Upload Disamakan Persis -->
         <div>
-          <label class="block font-semibold text-slate-600 mb-1">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <input type="file" id="visitSelfie" accept="image/*" required class="w-full text-xs">
-          <p class="text-[10px] text-slate-400 mt-0.5">Bisa ambil langsung via kamera HP atau upload dari galeri.</p>
+          <label class="font-semibold text-slate-600">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
+          <input type="file" id="visitSelfie" accept="image/*" required class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
+          <p class="text-[10px] text-slate-400 mt-1">Bisa ambil langsung via kamera HP atau upload dari galeri.</p>
         </div>
+
         <div class="flex justify-end gap-2 pt-2 border-t">
           <button type="button" onclick="closeModal('visitModal')" class="px-3.5 py-2 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
           <button type="submit" id="btnSubmitVisit" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md">Simpan Visit</button>
@@ -214,13 +225,14 @@
         <hr class="my-2">
         <p class="font-bold text-slate-700">Upload Lampiran Dokumen</p>
 
+        <!-- REVISI POIN 5: Format Upload Disamakan Persis -->
         <div>
-          <label class="font-semibold text-slate-600">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <input type="file" id="storeFrontPhoto" accept="image/*" required class="w-full mt-1">
+          <label class="font-semibold text-slate-600">Foto Tampak Depan Toko <span class="text-rose-500">*</span></label>
+          <input type="file" id="storeFrontPhoto" accept="image/*" required class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
         </div>
         <div>
           <label class="font-semibold text-slate-600">Upload Dokumen BAST (PDF/Image) <span class="text-rose-500">*</span></label>
-          <input type="file" id="bastDocument" accept="image/*,application/pdf" required class="w-full mt-1">
+          <input type="file" id="bastDocument" accept="image/*,application/pdf" required class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
         </div>
 
         <div class="flex justify-end gap-2 pt-3 border-t">
@@ -301,6 +313,9 @@
     let currentUser = { implId: "", email: "", name: "" };
     let selectedStatuses = [];
     let autoSyncTimer = null;
+    
+    // REVISI POIN 1: Menyimpan state toko yang sedang dibuka agar tidak tertutup otomatis
+    let openStoreDetails = new Set();
 
     window.onload = function() {
       const savedId = localStorage.getItem("implId");
@@ -425,6 +440,7 @@
       }, 15000);
     }
 
+    // REVISI POIN 6: Tampilan Mobile Ringkas & Presisi
     function renderSummaryCards(stores) {
       const container = document.getElementById("summaryCardsContainer");
       if (!container) return;
@@ -446,10 +462,10 @@
 
         html += `
           <div onclick="toggleStatusFilter('${status}')" 
-                class="cursor-pointer p-2.5 rounded-xl transition-all duration-200 select-none flex justify-between items-center ${cardStyle}">
-            <div>
-              <div class="text-lg font-black text-slate-800">${counts[status]}</div>
-              <div class="text-[10px] font-bold text-slate-600 uppercase tracking-tight flex items-center">
+                class="cursor-pointer p-2 rounded-xl transition-all duration-200 select-none flex-shrink-0 min-w-[100px] sm:min-w-0 ${cardStyle}">
+            <div class="text-center sm:text-left">
+              <div class="text-base sm:text-lg font-black text-slate-800">${counts[status]}</div>
+              <div class="text-[9px] sm:text-[10px] font-bold text-slate-600 uppercase tracking-tight truncate">
                 ${status} ${badge}
               </div>
             </div>
@@ -507,28 +523,41 @@
       return "bg-slate-200 text-slate-700 font-bold";
     }
 
-    function getSlaBadge(slaVal) {
-      const num = parseInt(slaVal);
-      if (isNaN(num)) return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-slate-100 text-slate-600">SLA: ${slaVal || '-'}</span>`;
+    // REVISI POIN 2 & 4: Logika Badge Kunjungan & Penggabungan SLA
+    function getVisitBadgeHtml(visitCount) {
+      const count = parseInt(visitCount) || 0;
       
-      if (num < 10) {
-        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800 border border-emerald-200">🟢 SLA Safe (${num} Hari)</span>`;
-      } else if (num >= 10 && num <= 12) {
-        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-900 border border-amber-300">🟡 Mendekati SLA (${num} Hari)</span>`;
+      if (count === 0) {
+        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-slate-100 text-slate-600 border border-slate-200">
+                  ⚪ Kunjungan Hari ke-0 (Belum Dimulai)
+                </span>`;
+      } else if (count >= 1 && count <= 11) {
+        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  🟢 Kunjungan Hari ke-${count} (On Track)
+                </span>`;
+      } else if (count === 12) {
+        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-amber-100 text-amber-900 border border-amber-300">
+                  🟡 Kunjungan Hari ke-12 (Limit SLA)
+                </span>`;
       } else {
-        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-100 text-rose-800 border border-rose-300 font-black">🔴 Over SLA (${num} Hari)</span>`;
+        return `<span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-rose-100 text-rose-800 border border-rose-300 font-black">
+                  🔴 Kunjungan Hari ke-${count} (Over SLA)
+                </span>`;
       }
     }
 
+    // REVISI POIN 1: Menjaga state buka/tutup detail toko saat auto-refresh
     function toggleDetail(code) {
       const elem = document.getElementById(`detailCard-${code}`);
       const btn = document.getElementById(`btnToggle-${code}`);
       if (elem) {
         if (elem.classList.contains("hidden")) {
           elem.classList.remove("hidden");
+          openStoreDetails.add(code);
           if (btn) btn.innerHTML = "▲ Sembunyikan Detail";
         } else {
           elem.classList.add("hidden");
+          openStoreDetails.delete(code);
           if (btn) btn.innerHTML = "▼ Lihat Detail Toko";
         }
       }
@@ -557,7 +586,6 @@
         const dtAddress = store.dtAddress || "-";
         const asmName = store.asmName || "-";
         const asmPhone = store.asmPhone ? `(${store.asmPhone})` : '';
-        const slaImplementation = store.slaImplementation || "-";
         const slaStatus = store.slaStatus || "-";
         const travelStatus = store.travelStatus || "Belum Diajukan";
         const visitCount = store.visitCount || 0;
@@ -622,19 +650,24 @@
           `;
         }
 
+        // REVISI POIN 1: Cek state apakah detail toko ini sedang dibuka
+        const isDetailOpen = openStoreDetails.has(storeCode);
+        const detailHiddenClass = isDetailOpen ? "" : "hidden";
+        const toggleBtnText = isDetailOpen ? "▲ Sembunyikan Detail" : "▼ Lihat Detail Toko";
+
         html += `
           <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             
             <div class="flex justify-between items-start gap-2">
               <div class="space-y-1">
                 <h4 class="font-bold text-sm sm:text-base text-slate-900 leading-snug">${idx + 1}. ${storeName}</h4>
-                <p class="text-[11px] text-slate-500 font-mono">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b></p>
                 
+                <!-- REVISI POIN 3: Format Header Toko Baru -->
+                <p class="text-[11px] text-slate-500 font-mono">Kode Toko: <b>${storeCode}</b> | OID: <b>${oid}</b> | PMO: <b>${projectLeadName}</b></p>
+                
+                <!-- REVISI POIN 2 & 4: Hanya Menggunakan Badge Kunjungan Baru -->
                 <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                  <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200">
-                    🗓️ Kunjungan Hari ke-${visitCount}
-                  </span>
-                  ${getSlaBadge(slaImplementation)}
+                  ${getVisitBadgeHtml(visitCount)}
                 </div>
               </div>
 
@@ -643,12 +676,12 @@
                   ${status}
                 </span>
                 <button onclick="toggleDetail('${storeCode}')" id="btnToggle-${storeCode}" class="text-[11px] font-bold text-blue-600 hover:text-blue-800 mt-1 focus:outline-none">
-                  ▼ Lihat Detail Toko
+                  ${toggleBtnText}
                 </button>
               </div>
             </div>
 
-            <div id="detailCard-${storeCode}" class="hidden space-y-3 pt-2 border-t border-slate-100">
+            <div id="detailCard-${storeCode}" class="${detailHiddenClass} space-y-3 pt-2 border-t border-slate-100">
               
               <div class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200/60">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
@@ -659,7 +692,9 @@
                   ${dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 underline">🗺️ Maps DT</a>` : ''}
                 </p>
                 <p>👤 <b>ASM / AASM:</b> ${asmName} ${asmPhone}</p>
-                <p>📦 <b>Device Package:</b> ${devicePackage} (PL: <b>${projectLeadName}</b>)</p>
+                
+                <!-- REVISI POIN 3: Menghilangkan PMO dari Device Package -->
+                <p>📦 <b>Device Package:</b> ${devicePackage}</p>
                 <p>🚗 <b>Status Travel Fee:</b> ${travelBadgeHtml}</p>
               </div>
 
