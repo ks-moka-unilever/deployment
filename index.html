@@ -497,7 +497,6 @@
       renderStoreList(filtered);
     }
 
-    // Fungsi pewarnaan background badge status (Poin 8)
     function getStatusBadgeStyle(status) {
       const st = (status || "").toUpperCase().trim();
       if (st === "GO LIVE - ULI") return "bg-emerald-600 text-white font-bold";
@@ -508,7 +507,6 @@
       return "bg-slate-200 text-slate-700 font-bold";
     }
 
-    // Indikator SLA 12 Hari (Poin 8)
     function getSlaBadge(slaVal) {
       const num = parseInt(slaVal);
       if (isNaN(num)) return `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-slate-100 text-slate-600">SLA: ${slaVal || '-'}</span>`;
@@ -568,11 +566,9 @@
         const stUpper = status.toUpperCase();
         const statusBadgeClass = getStatusBadgeStyle(status);
 
-        // MAP MAPS URL
         const storeMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([storeName, storeAddress].filter(v => v !== "-").join(" "))}`;
         const dtMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent([dtName, dtAddress].filter(v => v !== "-").join(" "))}`;
 
-        // TRAVEL STATUS BADGE
         let travelBadgeHtml = "";
         const trLower = travelStatus.toLowerCase();
         if (trLower.includes("approved") || trLower.includes("disetujui")) {
@@ -585,7 +581,6 @@
           travelBadgeHtml = `<span class="text-slate-500 font-medium">Belum Diajukan ⚪</span>`;
         }
 
-        // POKOK INFORMASI TANGGAL SESUAI POIN 7
         let datesGridHtml = "";
 
         if (stUpper === "GO LIVE - ULI" || stUpper === "GO LIVE - STORE") {
@@ -619,7 +614,6 @@
             </div>
           `;
         } else {
-          // Scheduled, On Hold, Not Started, Cancelled, Duplicate
           datesGridHtml = `
             <div class="grid grid-cols-2 gap-2">
               <div>Imp. Planned Date: <b class="text-slate-800 block">${formatDateNice(store.plannedDate)}</b></div>
@@ -631,7 +625,6 @@
         html += `
           <div class="glass-card p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
             
-            <!-- HEADER UTAMA KARTU (SELALU TAMPIL) -->
             <div class="flex justify-between items-start gap-2">
               <div class="space-y-1">
                 <h4 class="font-bold text-sm sm:text-base text-slate-900 leading-snug">${idx + 1}. ${storeName}</h4>
@@ -655,10 +648,8 @@
               </div>
             </div>
 
-            <!-- DETAIL TOKO EXTENDABLE (SEKILAS TERSEMBUNYI UNTUK MOBILITAS RAPI) -->
             <div id="detailCard-${storeCode}" class="hidden space-y-3 pt-2 border-t border-slate-100">
               
-              <!-- URUTAN SESUAI POIN 7 -->
               <div class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3 rounded-xl border border-slate-200/60">
                 <p>📍 <b>Alamat Toko:</b> ${storeAddress} 
                   <a href="${storeMapsUrl}" target="_blank" class="text-blue-600 font-bold ml-1 underline">🗺️ Maps Toko</a>
@@ -672,14 +663,12 @@
                 <p>🚗 <b>Status Travel Fee:</b> ${travelBadgeHtml}</p>
               </div>
 
-              <!-- TANGGAL IMPLEMENTATION SESUAI POIN 7 -->
               <div class="text-[11px] bg-blue-50/50 p-3 rounded-xl border border-blue-100 text-slate-600">
                 ${datesGridHtml}
               </div>
 
             </div>
 
-            <!-- TOMBOL AKSI UTAMA -->
             <div class="flex gap-2 pt-1">
               <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex justify-center items-center gap-1">
                 📷 Absen / Visit
@@ -768,7 +757,6 @@
       });
     }
 
-    // SUBMIT VISIT LOG
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
@@ -804,12 +792,12 @@
         }).then(r => r.json());
 
         clearTimeout(timeoutId);
-        showSuccessModal("Absen Visit Berhasil!", res ? res.message : "Absensi visit Anda berhasil tersimpan.");
+        showSuccessModal("Absen Visit Berhasil!", res ? res.message : "Data absensi visit Anda berhasil tersimpan.");
 
       } catch (err) {
         clearTimeout(timeoutId);
         showSuccessModal("Absen Visit Berhasil!", "Data absensi visit Anda berhasil terkirim ke sistem.");
-      } font-medium {
+      } finally {
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
         closeModal("visitModal");
@@ -818,7 +806,6 @@
       }
     }
 
-    // SUBMIT BAST
     async function submitBAST(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitBAST");
@@ -879,7 +866,6 @@
       }
     }
 
-    // SUBMIT TRAVEL FEE
     async function submitTravelFee(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitTravel");
