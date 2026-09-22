@@ -10,7 +10,6 @@
       background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(8px);
     }
-    /* Scrollbar halus untuk ringkasan tracker horizontal di mobile */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -147,9 +146,9 @@
         </div>
         <div>
           <label class="block font-bold text-slate-700 mb-1">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <input type="file" id="visitSelfie" accept="image/*" capture="environment" required 
+          <!-- FORMAT FILE DIBUAT SAMAPERSIS DENGAN DOKUMEN BAST (TANPA CAPTURE MANDATORI) -->
+          <input type="file" id="visitSelfie" accept="image/*" required 
                  class="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
-          <p class="text-[9px] text-slate-400 mt-1">Dapat mengambil langsung via Kamera HP atau unggah dari Galeri.</p>
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t">
           <button type="button" onclick="closeModal('visitModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
@@ -223,7 +222,8 @@
 
         <div>
           <label class="font-bold text-slate-700">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <input type="file" id="storeFrontPhoto" accept="image/*" capture="environment" required 
+          <!-- FORMAT FILE DIBUAT SAMAPERSIS DENGAN DOKUMEN BAST -->
+          <input type="file" id="storeFrontPhoto" accept="image/*" required 
                  class="w-full text-xs mt-1 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
         </div>
         <div>
@@ -378,7 +378,6 @@
         });
     }
 
-    // MEMPERBAIKI TIMEOUT & RETRY SUPAYA TIDAK SERING ERROR GAGAL CONNECT
     async function fetchWithRetry(url, options = {}, retries = 2) {
       for (let i = 0; i < retries; i++) {
         try {
@@ -518,7 +517,6 @@
       renderStoreList(filtered);
     }
 
-    // WARNA STATUS TOKO SESUAI REQUEST REVISI 4 & UKURAN RINGKAS REVISI 5
     function getStatusBadgeStyle(status) {
       const st = (status || "").toUpperCase().trim();
       if (st === "GO LIVE - ULI") return "bg-emerald-600 text-white font-bold";
@@ -529,17 +527,17 @@
       return "bg-slate-200 text-slate-700 font-bold";
     }
 
-    // HITUNGAN KUNJUNGAN HARI KE-N SESUAI REQUEST REVISI 1
+    // TEKS BADGE HARI KE-N (DITAMPILKAN DI DUA LOKASI: DI ATAS SLA DAN DENGAN RINGKAS)
     function getVisitBadgeStyle(visitCount) {
       const count = parseInt(visitCount) || 0;
       if (count === 0) {
-        return "bg-slate-100 text-slate-600 border-slate-300⚪ Kunjungan Hari ke-0";
+        return { class: "bg-slate-100 text-slate-600 border-slate-300", text: "⚪ Kunjungan Hari ke-0" };
       } else if (count >= 1 && count <= 11) {
-        return "bg-emerald-100 text-emerald-800 border-emerald-300🟢 Kunjungan Hari ke-" + count;
+        return { class: "bg-emerald-100 text-emerald-800 border-emerald-300", text: "🟢 Kunjungan Hari ke-" + count };
       } else if (count === 12) {
-        return "bg-amber-100 text-amber-900 border-amber-300🟡 Kunjungan Hari ke-12";
+        return { class: "bg-amber-100 text-amber-900 border-amber-300", text: "🟡 Kunjungan Hari ke-12" };
       } else {
-        return "bg-rose-100 text-rose-800 border-rose-300🔴 Kunjungan Hari ke-" + count;
+        return { class: "bg-rose-100 text-rose-800 border-rose-300", text: "🔴 Kunjungan Hari ke-" + count };
       }
     }
 
@@ -563,11 +561,11 @@
         if (elem.classList.contains("hidden")) {
           elem.classList.remove("hidden");
           expandedStoreCodes.add(code);
-          if (btn) btn.innerHTML = "▲ Sembunyikan Detail";
+          if (btn) btn.innerHTML = "▲ Sembunyikan";
         } else {
           elem.classList.add("hidden");
           expandedStoreCodes.delete(code);
-          if (btn) btn.innerHTML = "▼ Lihat Detail Toko";
+          if (btn) btn.innerHTML = "▼ Lihat Detail";
         }
       }
     }
@@ -662,35 +660,35 @@
           `;
         }
 
-        const visitStyle = getVisitBadgeStyle(visitCount);
+        const visitData = getVisitBadgeStyle(visitCount);
 
         html += `
           <div class="glass-card p-3 rounded-2xl shadow-sm border border-slate-200 space-y-2">
             
             <div class="flex justify-between items-start gap-1.5">
-              <div class="space-y-0.5 max-w-[70%]">
+              <div class="space-y-1 max-w-[70%]">
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug truncate">${idx + 1}. ${storeName}</h4>
                 <p class="text-[10px] text-slate-500 font-mono leading-none">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b> | PMO: <b>${projectLeadName}</b></p>
                 
-                <div class="flex items-center gap-1 flex-wrap pt-1">
-                  <!-- BADGE KUNJUNGAN PATOKAN HARI KE-N (REVISI 1) -->
-                  <span class="px-1.5 py-0.5 text-[9px] font-bold rounded border whitespace-nowrap ${visitStyle}"></span>
+                <!-- HARI KE-N DIBAWAH KODE TOKO DILENGKAPI SLA (REVISI PERMINTAAN) -->
+                <div class="flex items-center gap-1 flex-wrap pt-0.5">
+                  <span class="px-2 py-0.5 text-[9.5px] font-bold rounded border whitespace-nowrap ${visitData.class}">${visitData.text}</span>
                   ${getSlaBadge(slaImplementation)}
                 </div>
               </div>
 
               <div class="text-right flex flex-col items-end gap-1">
-                <!-- BADGE STATUS WARNA-WARNI 1 BARIS (REVISI 4 & 5) -->
+                <!-- BADGE STATUS TOKO -->
                 <span class="px-2 py-0.5 text-[9px] uppercase rounded-lg whitespace-nowrap shadow-xs ${statusBadgeClass}">
                   ${status}
                 </span>
-                <button onclick="toggleDetail('${storeCode}')" id="btnToggle-${storeCode}" class="text-[10px] font-bold text-blue-600 hover:text-blue-800 mt-0.5 focus:outline-none">
-                  ${isExpanded ? '▲ Sembunyikan' : '▼ Detail Toko'}
+                <button onclick="toggleDetail('${storeCode}')" id="btnToggle-${storeCode}" class="text-[10px] font-bold text-blue-600 hover:text-blue-800 mt-1 focus:outline-none">
+                  ${isExpanded ? '▲ Sembunyikan' : '▼ Lihat Detail'}
                 </button>
               </div>
             </div>
 
-            <!-- EXTENDABLE DETAIL TOKO MOBILE (REVISI 2) -->
+            <!-- EXTENDABLE DETAIL TOKO -->
             <div id="detailCard-${storeCode}" class="${isExpanded ? '' : 'hidden'} space-y-2 pt-2 border-t border-slate-100">
               
               <div class="text-[11px] text-slate-700 space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
@@ -734,8 +732,6 @@
     function openVisitModal(code) {
       const store = allStoresData.find(s => s.storeCode === code) || {};
       const currentVisitCount = parseInt(store.visitCount) || 0;
-      
-      // LOGIKA KUNJUNGAN KE (N + 1) UNTUK FORMULIR ABSEN (REVISI 1)
       const nextVisitNumber = currentVisitCount + 1;
 
       document.getElementById("visitStoreCode").value = code || "";
