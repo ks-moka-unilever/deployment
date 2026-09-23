@@ -2,334 +2,346 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Portal Implementor Lapangan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Implementor - Modern</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+    }
     .glass-card {
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased text-xs select-none">
+<body class="text-slate-800 flex flex-col min-h-screen">
 
-  <div class="max-w-3xl mx-auto p-2.5 sm:p-5 space-y-3 sm:space-y-5">
+  <!-- ALERT NOTIFICATION -->
+  <div id="alertBox" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-[90%] hidden p-3 rounded-xl text-xs font-medium shadow-lg transition-all duration-300"></div>
 
-    <!-- ALERT BANNER -->
-    <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-medium transition-all"></div>
-
-    <!-- FORM LOGIN -->
-    <div id="loginSection" class="glass-card p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-200 max-w-sm mx-auto mt-6 sm:mt-12">
-      <div class="text-center space-y-1 mb-5">
-        <h1 class="text-lg sm:text-xl font-bold text-slate-900">Portal Implementor</h1>
-        <p class="text-[11px] text-slate-500">Masukkan kredensial Anda untuk masuk</p>
+  <!-- LOGIN SECTION -->
+  <section id="loginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50">
+    <div class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-100 space-y-6">
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center text-white font-black text-xl shadow-md shadow-blue-200">
+          P
+        </div>
+        <h2 class="text-xl font-black text-slate-900 tracking-tight">Portal Implementor</h2>
+        <p class="text-xs text-slate-500 font-medium">Masukkan ID Implementor & Email Anda untuk masuk</p>
       </div>
 
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Implementor ID</label>
-          <input type="text" id="loginImplId" required placeholder="Contoh: MTI0888" 
-                 class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-bold text-xs">
+          <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">ID Implementor</label>
+          <input type="text" id="loginImplId" required placeholder="Contoh: IMP-001" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all uppercase">
         </div>
+
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Email Terdaftar</label>
-          <input type="email" id="loginEmail" required placeholder="nama@email.com" 
-                 class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs">
+          <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Email Terdaftar</label>
+          <input type="email" id="loginEmail" required placeholder="nama@email.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all lowercase">
         </div>
-        <button type="submit" id="btnLogin" 
-                class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all flex justify-center items-center gap-2 text-xs">
+
+        <button type="submit" id="btnLogin" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-200 transition-all flex justify-center items-center gap-2">
           <span>Masuk Portal</span>
         </button>
       </form>
     </div>
+  </section>
 
-    <!-- DASHBOARD SECTION -->
-    <div id="dashboardSection" class="hidden space-y-3 sm:space-y-4">
-
-      <!-- HEADER DASHBOARD -->
-      <div class="glass-card p-3 sm:p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center gap-2">
-        <div>
-          <h2 class="text-sm sm:text-base font-bold text-slate-900">Dashboard</h2>
-          <p class="text-[10px] text-slate-500 font-medium">
-            ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span> 
-            <span id="userDisplayNameWrapper" class="hidden"> | <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
-          </p>
+  <!-- DASHBOARD SECTION -->
+  <section id="dashboardSection" class="hidden flex-1 flex flex-col pb-12">
+    <!-- HEADER -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+      <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-sm">P</div>
+          <div>
+            <h1 class="font-bold text-xs text-slate-900 leading-none">Dashboard Toko</h1>
+            <p class="text-[10px] text-slate-500 mt-0.5 leading-none">
+              ID: <span id="userDisplayId" class="font-bold text-slate-700">-</span>
+              <span id="userDisplayNameWrapper" class="hidden"> | <span id="userDisplayName" class="font-bold text-blue-600">-</span></span>
+            </p>
+          </div>
         </div>
-        <div class="flex items-center gap-1.5">
-          <button id="btnRefresh" onclick="triggerManualRefresh()" 
-                  class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-[11px] font-bold rounded-xl transition-all flex items-center gap-1 disabled:opacity-60">
-            <span id="refreshIcon">🔄</span>
-            <span id="refreshText" class="hidden sm:inline">Refresh</span>
+
+        <div class="flex items-center gap-2">
+          <button onclick="triggerManualRefresh()" id="btnRefresh" class="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[10px] rounded-lg transition-all flex items-center gap-1 active:scale-95">
+            <svg id="refreshIcon" class="w-3.5 h-3.5 text-slate-600 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <span id="refreshText">Refresh</span>
           </button>
-          
-          <a href="https://linktr.ee/fsmoka" target="_blank" rel="noopener noreferrer" 
-             class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl shadow-sm transition-all flex items-center gap-1">
-            <span>📚 Materi</span>
-          </a>
-          
-          <button onclick="handleLogout()" class="px-2.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white text-[11px] font-bold rounded-xl shadow-sm transition-all">
+          <button onclick="handleLogout()" class="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-[10px] rounded-lg transition-all active:scale-95">
             Keluar
           </button>
         </div>
       </div>
+    </header>
 
-      <!-- TOTAL TOKO BADGE -->
-      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-3 rounded-2xl shadow-md flex justify-between items-center">
-        <span class="font-semibold text-xs">Total Toko Di-Assign Ke Anda</span>
-        <span id="totalStoresBadge" class="text-xl sm:text-2xl font-black">0</span>
-      </div>
-
-      <!-- TRACKER RINGKASAN STATUS -->
-      <div>
-        <div class="flex justify-between items-center mb-1">
-          <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation Tracker:</h3>
-          <span class="text-[9px] text-blue-600 font-semibold sm:hidden">*Geser ke samping</span>
+    <!-- CONTENT -->
+    <main class="max-w-md mx-auto w-full px-4 pt-4 space-y-4 flex-1">
+      
+      <!-- SEARCH & BADGE -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Daftar Toko Tugas</span>
+          <span id="totalStoresBadge" class="text-[10px] bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">0</span>
         </div>
-        <div id="summaryCardsContainer" class="flex sm:grid sm:grid-cols-3 gap-1.5 overflow-x-auto no-scrollbar pb-1"></div>
+        <div class="relative">
+          <input type="text" id="searchInput" oninput="filterAndRenderStores()" placeholder="Cari nama, kode, OID, atau DT..." class="w-full pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all shadow-xs">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
       </div>
 
-      <!-- SEARCH INPUT -->
-      <div class="relative">
-        <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Cari Toko / Kode / OID / DT / ASM..." 
-               class="w-full px-3 py-2 rounded-xl border border-slate-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-xs">
+      <!-- STATUS SUMMARY CARDS (HORIZONTAL SCROLL) -->
+      <div id="summaryCardsContainer" class="flex gap-2 overflow-x-auto no-scrollbar py-1 -mx-4 px-4">
+        <!-- Dynamic Cards Here -->
       </div>
 
-      <!-- LIST TOKO -->
-      <div id="storeListContainer" class="space-y-2.5"></div>
-
-    </div>
-
-  </div>
-
-  <!-- POPUP MODAL NOTIFIKASI SUKSES -->
-  <div id="successModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
-    <div class="bg-white max-w-xs w-full rounded-2xl p-4 shadow-2xl text-center space-y-2.5">
-      <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
-      <h3 id="successModalTitle" class="text-sm font-bold text-slate-900">Berhasil!</h3>
-      <p id="successModalMessage" class="text-xs text-slate-600 leading-snug"></p>
-      <button onclick="closeModal('successModal')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">Tutup</button>
-    </div>
-  </div>
-
-  <!-- MODAL VISIT LOG (ABSEN) -->
-  <div id="visitModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 overflow-y-auto">
-    <div class="bg-white max-w-sm w-full rounded-2xl p-4 shadow-2xl space-y-3 my-auto text-xs">
-      <div class="border-b pb-2 flex justify-between items-center">
-        <h3 class="text-sm font-bold text-slate-900">Form Absen / Visit</h3>
-        <span id="visitModalTitleBadge" class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full">Visit ke-1</span>
+      <!-- STORE LIST CONTAINER -->
+      <div id="storeListContainer" class="space-y-3">
+        <!-- Dynamic Store Items Here -->
       </div>
 
-      <form id="visitForm" onsubmit="submitVisitLog(event)" class="space-y-2.5">
-        <input type="hidden" id="visitStoreCode">
+    </main>
+  </section>
+
+  <!-- MODAL ABSEN VISIT -->
+  <div id="visitModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Tipe Aktivitas <span class="text-rose-500">*</span></label>
-          <select id="visitActivityType" required class="w-full p-2 border border-slate-300 rounded-xl bg-white text-xs">
-            <option value="" disabled selected>-- Pilih Tipe Aktivitas --</option>
-            <option value="Check In - Visit ke Toko">Check In - Visit ke Toko</option>
-            <option value="Check Out - SKU Management">Check Out - SKU Management</option>
-            <option value="Check Out - Instalasi Perangkat dan Training Tuan Toko">Check Out - Instalasi Perangkat dan Training Tuan Toko</option>
-            <option value="Check Out - Training ULTRAS">Check Out - Training ULTRAS</option>
+          <h3 class="font-bold text-sm text-slate-900">Absen Visit Toko</h3>
+          <p class="text-[10px] text-slate-500">Isi form absensi & ketersediaan toko</p>
+        </div>
+        <span id="visitModalTitleBadge" class="text-[10px] font-bold px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full">Visit Baru</span>
+      </div>
+
+      <form id="visitForm" onsubmit="submitVisitLog(event)" class="space-y-3">
+        <input type="hidden" id="visitStoreCode">
+        
+        <div>
+          <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Aktivitas Visit</label>
+          <select id="visitActivityType" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <option value="Initial Assessment / Sizing">Initial Assessment / Sizing</option>
+            <option value="Pemasangan Device">Pemasangan Device</option>
+            <option value="Pendampingan / Training">Pendampingan / Training</option>
+            <option value="Maintenance / Troubleshooting">Maintenance / Troubleshooting</option>
+            <option value="Kunjungan Rutin">Kunjungan Rutin</option>
           </select>
         </div>
+
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Catatan Ringkas <span class="text-rose-500">*</span></label>
-          <textarea id="visitNotes" rows="2" placeholder="Tuliskan catatan hasil kunjungan..." required class="w-full p-2 border border-slate-300 rounded-xl text-xs"></textarea>
+          <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Catatan / Detail Kegiatan</label>
+          <textarea id="visitNotes" rows="2" required placeholder="Jelaskan aktivitas atau kondisi di lokasi..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
         </div>
+
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Foto Selfie Lapangan <span class="text-rose-500">*</span></label>
-          <input type="file" id="visitSelfie" accept="image/*,application/pdf" required 
-                 class="w-full text-xs file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
+          <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Foto Selfie Di Toko / Lokasi</label>
+          <input type="file" id="visitSelfie" accept="image/*" capture="camera" required class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
         </div>
-        <div class="flex justify-end gap-2 pt-2 border-t">
-          <button type="button" onclick="closeModal('visitModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitVisit" class="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md">Simpan Visit</button>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('visitModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">Batal</button>
+          <button type="submit" id="btnSubmitVisit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-200">Simpan Visit</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL BAST -->
-  <div id="bastModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 overflow-y-auto">
-    <div class="bg-white max-w-md w-full rounded-2xl p-4 shadow-2xl space-y-3 my-auto max-h-[90vh] overflow-y-auto text-xs">
-      <h3 class="text-sm font-bold text-slate-900 border-b pb-2">Formulir Digital BAST</h3>
-      <form id="bastForm" onsubmit="submitBAST(event)" class="space-y-2.5">
+  <div id="bastModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-sm text-slate-900">Upload BAST & Merchant</h3>
+          <p class="text-[10px] text-slate-500">Lengkapi data pemilik toko & BAST fisik</p>
+        </div>
+        <button onclick="closeModal('bastModal')" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <form id="bastForm" onsubmit="submitBAST(event)" class="space-y-3">
         <input type="hidden" id="bastStoreCode">
-        
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="font-bold text-slate-700">Nama Tuan Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="ownerName" required class="w-full p-2 border border-slate-300 rounded-lg mt-1">
-          </div>
-          <div>
-            <label class="font-bold text-slate-700">No HP PIC <span class="text-rose-500">*</span></label>
-            <input type="tel" id="ownerPhone" required pattern="[0-9]{9,15}" placeholder="08xxxxxxxxxx" class="w-full p-2 border border-slate-300 rounded-lg mt-1">
-          </div>
-        </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="font-bold text-slate-700">Email PIC <span class="text-rose-500">*</span></label>
-            <input type="email" id="ownerEmail" required placeholder="email@toko.com" class="w-full p-2 border border-slate-300 rounded-lg mt-1">
+        <div class="space-y-2">
+          <p class="text-[10px] font-black text-blue-600 uppercase tracking-wider">Data Pemilik / PIC Toko</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">Nama PIC</label>
+              <input type="text" id="ownerName" required class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800">
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">No. Telepon / WA</label>
+              <input type="tel" id="ownerPhone" required class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800">
+            </div>
           </div>
-          <div>
-            <label class="font-bold text-slate-700">Gender <span class="text-rose-500">*</span></label>
-            <select id="ownerGender" required class="w-full p-2 border border-slate-300 rounded-lg mt-1 bg-white">
-              <option value="" disabled selected>-- Pilih --</option>
-              <option value="Laki-laki">Laki-laki</option>
-              <option value="Perempuan">Perempuan</option>
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label class="font-bold text-slate-700">Umur <span class="text-rose-500">*</span></label>
-          <input type="number" id="ownerAge" required min="17" max="99" placeholder="Contoh: 30" class="w-full p-2 border border-slate-300 rounded-lg mt-1">
-        </div>
-
-        <hr class="my-1 border-slate-200">
-        <p class="font-bold text-slate-800">Serial Number & Hardware</p>
-        <p class="text-[9.5px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-200 leading-tight">
-          💡 Jika toko menggunakan <b>Moka PC</b>, isi IMEI TAB dengan angka 0 sebanyak 15 digit (<code>000000000000000</code>).
-        </p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <div>
-            <label class="font-bold text-slate-700">IMEI Tab <span class="text-rose-500">*</span></label>
-            <input type="text" id="imeiTab" required pattern="\d{15}" maxlength="15" placeholder="15 digit" class="w-full p-2 border border-slate-300 rounded-lg mt-1 font-mono">
-          </div>
-          <div>
-            <label class="font-bold text-slate-700">SN Scanner <span class="text-rose-500">*</span></label>
-            <input type="text" id="snScanner" required pattern="[a-zA-Z0-9]{9,16}" maxlength="16" placeholder="9-16 digit" class="w-full p-2 border border-slate-300 rounded-lg mt-1 font-mono">
-          </div>
-          <div>
-            <label class="font-bold text-slate-700">SN Printer <span class="text-rose-500">*</span></label>
-            <input type="text" id="snPrinter" required pattern="[a-zA-Z0-9]{9,16}" maxlength="16" placeholder="9-16 digit" class="w-full p-2 border border-slate-300 rounded-lg mt-1 font-mono">
+          <div class="grid grid-cols-3 gap-2">
+            <div class="col-span-1">
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">Gender</label>
+              <select id="ownerGender" required class="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800">
+                <option value="L">Pria</option>
+                <option value="P">Wanita</option>
+              </select>
+            </div>
+            <div class="col-span-1">
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">Usia</label>
+              <input type="number" id="ownerAge" required placeholder="Thn" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800">
+            </div>
+            <div class="col-span-1">
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">Email</label>
+              <input type="email" id="ownerEmail" placeholder="Opt" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800">
+            </div>
           </div>
         </div>
 
-        <hr class="my-1 border-slate-200">
-        <p class="font-bold text-slate-800">Upload Lampiran Dokumen</p>
-
-        <div>
-          <label class="font-bold text-slate-700">Foto Depan Toko <span class="text-rose-500">*</span></label>
-          <input type="file" id="storeFrontPhoto" accept="image/*,application/pdf" required 
-                 class="w-full text-xs mt-1 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
+        <div class="space-y-2 pt-1 border-t border-slate-100">
+          <p class="text-[10px] font-black text-blue-600 uppercase tracking-wider">Serial Number Device</p>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">IMEI Tab</label>
+              <input type="text" id="imeiTab" required class="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">SN Scanner</label>
+              <input type="text" id="snScanner" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono">
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase">SN Printer</label>
+              <input type="text" id="snPrinter" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono">
+            </div>
+          </div>
         </div>
-        <div>
-          <label class="font-bold text-slate-700">Dokumen BAST (PDF/Gambar) <span class="text-rose-500">*</span></label>
-          <input type="file" id="bastDocument" accept="image/*,application/pdf" required 
-                 class="w-full text-xs mt-1 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 border border-slate-200 rounded-xl p-1 bg-slate-50">
+
+        <div class="space-y-2 pt-1 border-t border-slate-100">
+          <p class="text-[10px] font-black text-blue-600 uppercase tracking-wider">Upload Lampiran</p>
+          <div>
+            <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Foto Depan Toko (Luar)</label>
+            <input type="file" id="storeFrontPhoto" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700">
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Dokumen BAST Fisik (PDF / Foto)</label>
+            <input type="file" id="bastDocument" accept="image/*,application/pdf" required class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700">
+          </div>
         </div>
 
-        <div class="flex justify-end gap-2 pt-2 border-t">
-          <button type="button" onclick="closeModal('bastModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitBAST" class="px-4 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim BAST</button>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('bastModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">Batal</button>
+          <button type="submit" id="btnSubmitBAST" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-200">Kirim BAST</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- MODAL TRAVEL FEE -->
-  <div id="travelModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 overflow-y-auto">
-    <div class="bg-white max-w-md w-full rounded-2xl p-4 shadow-2xl space-y-3 my-auto max-h-[90vh] overflow-y-auto text-xs">
-      <h3 class="text-sm font-bold text-slate-900 border-b pb-2">Pengajuan Travel Visit Fee</h3>
-      <form id="travelForm" onsubmit="submitTravelFee(event)" class="space-y-2.5">
+  <div id="travelModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-bold text-sm text-slate-900">Pengajuan Travel Fee</h3>
+          <p class="text-[10px] text-slate-500">Klaim biaya perjalanan dinas luar kota</p>
+        </div>
+        <button onclick="closeModal('travelModal')" class="text-slate-400 hover:text-slate-600 font-bold text-sm">✕</button>
+      </div>
+
+      <form id="travelForm" onsubmit="submitTravelFee(event)" class="space-y-3">
         <input type="hidden" id="travelStoreCodeHidden">
 
         <div>
-          <label class="font-bold text-slate-700">Nama Implementor <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelImplName" readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold text-slate-700">
+          <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Nama Implementor</label>
+          <input type="text" id="travelImplName" readonly class="w-full px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 cursor-not-allowed">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="font-bold text-slate-700">Kode Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelStoreCode" readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-mono font-bold text-slate-700">
+            <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Kode Toko</label>
+            <input type="text" id="travelStoreCode" readonly class="w-full px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-mono text-slate-600 cursor-not-allowed">
           </div>
           <div>
-            <label class="font-bold text-slate-700">Nama Toko <span class="text-rose-500">*</span></label>
-            <input type="text" id="travelStoreName" required readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold text-slate-700">
+            <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Nama Toko Tujuan</label>
+            <input type="text" id="travelStoreName" readonly class="w-full px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 truncate cursor-not-allowed">
           </div>
         </div>
 
         <div>
-          <label class="font-bold text-slate-700">Alamat Lengkap Toko <span class="text-rose-500">*</span></label>
-          <textarea id="travelStoreAddress" required readonly rows="2" class="w-full p-2 border rounded-lg mt-1 bg-slate-100 text-slate-700"></textarea>
+          <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Alamat Toko Tujuan</label>
+          <textarea id="travelStoreAddress" readonly rows="2" class="w-full px-2.5 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-xs text-slate-600 cursor-not-allowed resize-none"></textarea>
         </div>
 
-        <div>
-          <label class="font-bold text-slate-700">Alamat Lengkap Implementor <span class="text-rose-500">*</span></label>
-          <textarea id="travelImplAddress" required placeholder="Masukkan alamat lengkap domisili Anda..." rows="2" class="w-full p-2 border rounded-lg mt-1"></textarea>
-        </div>
-
-        <div>
-          <label class="font-bold text-slate-700">Kabupaten/Kota Domisili Implementor <span class="text-rose-500">*</span></label>
-          <input type="text" id="travelImplCity" required placeholder="Contoh: Kab. Bandung atau Bandung" class="w-full p-2 border rounded-lg mt-1">
-        </div>
-
-        <div>
-          <label class="font-bold text-slate-700">Jarak Domisili ke Toko (Km) <span class="text-rose-500">*</span></label>
-          <div class="relative flex items-center mt-1">
-            <input type="number" id="travelDistance" required min="1" step="any" placeholder="Masukkan jarak" oninput="handleDistanceChange(this.value)" class="w-full p-2 pr-10 border rounded-lg font-bold">
-            <span class="absolute right-3 font-bold text-slate-400 select-none">Km</span>
+        <div class="space-y-2 pt-1 border-t border-slate-100">
+          <p class="text-[10px] font-black text-amber-600 uppercase tracking-wider">Lokasi Asal & Jarak</p>
+          <div>
+            <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Alamat Tempat Tinggal / Domisili Saat Ini</label>
+            <input type="text" id="travelImplAddress" required placeholder="Contoh: Jl. Merdeka No. 12" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Kota Domisili</label>
+              <input type="text" id="travelImplCity" required placeholder="Contoh: Surabaya" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-800">
+            </div>
+            <div>
+              <label class="block text-[9px] font-bold text-slate-500 uppercase mb-0.5">Jarak Tempuh (KM)</label>
+              <input type="number" id="travelDistance" step="0.1" required placeholder="Contoh: 65" oninput="handleDistanceChange(this.value)" class="w-full px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800">
+            </div>
           </div>
         </div>
 
-        <div id="proposalBudgetWrapper" class="hidden">
-          <label class="font-bold text-slate-700">Proposal Budget Rupiah <span class="text-rose-500">*</span></label>
-          <div class="relative flex items-center mt-1">
-            <span class="absolute left-3 font-bold text-slate-400 select-none">Rp</span>
-            <input type="text" id="travelProposalBudget" pattern="[0-9]+" placeholder="Contoh: 500000" class="w-full p-2 pl-9 border rounded-lg font-mono">
-          </div>
-          <p class="text-[9.5px] text-amber-700 mt-1">⚠️ Jarak melebihi 50 Km. Harap isi proposal budget dalam angka tanpa titik/koma.</p>
+        <!-- CONDITIONAL BUDGET FIELD (>50KM) -->
+        <div id="proposalBudgetWrapper" class="hidden p-3 bg-amber-50 rounded-xl border border-amber-200 space-y-1">
+          <label class="block text-[10px] font-black text-amber-800 uppercase">Usulan Biaya (Rupiah)</label>
+          <p class="text-[9px] text-amber-700 leading-tight">Jarak tempuh melebihi 50 KM. Harap cantumkan nominal anggaran biaya perjalanan yang diusulkan.</p>
+          <input type="number" id="travelProposalBudget" placeholder="Contoh: 150000" class="w-full px-2.5 py-1.5 bg-white border border-amber-300 rounded-lg text-xs font-bold text-slate-900 mt-1">
         </div>
 
-        <div class="flex justify-end gap-2 pt-2 border-t">
-          <button type="button" onclick="closeModal('travelModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitTravel" class="px-4 py-1.5 bg-amber-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim Pengajuan</button>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeModal('travelModal')" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl">Batal</button>
+          <button type="submit" id="btnSubmitTravel" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-md shadow-amber-200">Kirim Pengajuan</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL NOTIFIKASI BERHASIL -->
+  <div id="successModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-xs rounded-3xl p-5 text-center space-y-3 shadow-2xl">
+      <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-black">✓</div>
+      <h3 id="successModalTitle" class="font-bold text-sm text-slate-900">Berhasil!</h3>
+      <p id="successModalMessage" class="text-xs text-slate-500 font-medium">Data Anda telah tersimpan ke sistem.</p>
+      <button onclick="closeModal('successModal')" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl">Tutup</button>
+    </div>
+  </div>
+
+  <!-- LOGIC SCRIPT -->
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
+    // MASUKKAN URL APPS SCRIPT ANDA DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwnE4cKSo_wTjH_Qly-Z7N9A4mI-vH3R1oK-6k74u2I/exec";
 
-    let allStoresData = [];
     let currentUser = { implId: "", email: "", name: "" };
+    let allStoresData = [];
     let selectedStatuses = [];
-    let autoSyncTimer = null;
     let expandedStoreCodes = new Set();
+    let autoSyncTimer = null;
 
-    window.onload = function() {
-      const savedId = localStorage.getItem("implId");
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedImplId = localStorage.getItem("implId");
       const savedEmail = localStorage.getItem("email");
-      if (savedId && savedEmail) {
-        document.getElementById("loginImplId").value = savedId;
+
+      if (savedImplId && savedEmail) {
+        document.getElementById("loginImplId").value = savedImplId;
         document.getElementById("loginEmail").value = savedEmail;
-        fetchAssignedStores(savedId, savedEmail);
+        fetchAssignedStores(savedImplId, savedEmail);
       }
-    };
+    });
 
-    function formatDateNice(dateVal) {
-      if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
-      const str = String(dateVal).trim();
-      if (!str || str === "-") return "-";
-
-      const d = new Date(str);
-      if (isNaN(d.getTime())) return str; 
+    function formatDateNice(dateStr) {
+      if (!dateStr || dateStr === "-" || dateStr === "Invalid Date") return "-";
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
 
       const day = String(d.getDate()).padStart(2, '0');
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
       const month = months[d.getMonth()];
       const year = d.getFullYear();
 
