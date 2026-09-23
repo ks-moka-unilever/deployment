@@ -302,7 +302,7 @@
   </div>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; // Ganti dengan URL deployment Web App terbaru
 
     let allStoresData = [];
     let currentUser = { implId: "", email: "", name: "" };
@@ -316,7 +316,7 @@
       if (savedId && savedEmail) {
         document.getElementById("loginImplId").value = savedId;
         document.getElementById("loginEmail").value = savedEmail;
-        fetchAssignedStores(savedId, savedEmail);
+        fetchAssignedStores(savedId, savedEmail, false); // Tarik pertama dengan cache normal
       }
     };
 
@@ -354,7 +354,8 @@
       e.preventDefault();
       const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
       const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      fetchAssignedStores(implId, email);
+      // Saat login manual pertama kali, forceRefresh = true untuk data terbaru
+      fetchAssignedStores(implId, email, false, true); 
     }
 
     function triggerManualRefresh() {
@@ -368,7 +369,8 @@
       refreshIcon.classList.add("animate-spin");
       if (refreshText) refreshText.innerText = "Loading...";
 
-      fetchAssignedStores(currentUser.implId, currentUser.email, false)
+      // forceRefresh = true untuk Bypass Cache Server
+      fetchAssignedStores(currentUser.implId, currentUser.email, false, true)
         .finally(() => {
           btnRefresh.disabled = false;
           refreshIcon.classList.remove("animate-spin");
@@ -380,7 +382,6 @@
       for (let i = 0; i < retries; i++) {
         try {
           const controller = new AbortController();
-          // Timeout diperpanjang menjadi 35 detik untuk mengantisipasi jaringan lambat
           const timeoutId = setTimeout(() => controller.abort(), 35000);
           const res = await fetch(url, { ...options, signal: controller.signal });
           clearTimeout(timeoutId);
@@ -391,13 +392,14 @@
       }
     }
 
-    function fetchAssignedStores(implId, email, isSilent = false) {
+    function fetchAssignedStores(implId, email, isSilent = false, forceRefresh = false) {
       const btnLogin = document.getElementById("btnLogin");
       if (!isSilent && btnLogin && !document.getElementById("loginSection").classList.contains("hidden")) {
         btnLogin.innerHTML = `<span>Memuat Data...</span>`;
       }
 
-      const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}`;
+      // Tambahkan forceRefresh=1 agar backend mengabaikan Cache dan mencegah browser nyangkut (t=timestamp)
+      const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}${forceRefresh ? '&forceRefresh=1' : ''}&t=${new Date().getTime()}`;
 
       return fetchWithRetry(targetUrl)
         .then(res => {
@@ -424,14 +426,14 @@
             
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
-            startAutoSync();
+            startAutoSync(); // Re-init auto-sync
           } else {
             if (!isSilent) showAlert(res ? res.message : "Gagal memuat data dari server.", true);
           }
         })
         .catch(err => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (!isSilent) showAlert("Koneksi Apps Script terputus / lambat. Sila tekan tombol Refresh.", true);
+          if (!isSilent) showAlert("Koneksi lambat/terputus. Sila tekan tombol Refresh.", true);
         });
     }
 
@@ -439,9 +441,9 @@
       if (autoSyncTimer) clearInterval(autoSyncTimer);
       autoSyncTimer = setInterval(() => {
         if (currentUser.implId && currentUser.email) {
-          fetchAssignedStores(currentUser.implId, currentUser.email, true);
+          fetchAssignedStores(currentUser.implId, currentUser.email, true, false); // Background sync pake cache agar server ringan
         }
-      }, 30000);
+      }, 45000); // 45 Detik interval
     }
 
     function renderSummaryCards(stores) {
@@ -791,14 +793,15 @@
       });
     }
 
+    // MODIFIED: Close modal immediately, show loading toast, then refetch
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
       btn.innerText = "Menyimpan...";
       btn.disabled = true;
+      const storeCode = document.getElementById("visitStoreCode").value;
 
       try {
-        const storeCode = document.getElementById("visitStoreCode").value;
         const store = allStoresData.find(s => s.storeCode === storeCode) || {};
         const fileInput = document.getElementById("visitSelfie").files[0];
         const selfieBase64 = await fileToBase64(fileInput);
@@ -816,21 +819,26 @@
           workingDate: new Date().toISOString().split('T')[0]
         };
 
+        // UI Optimistic Update & Close Modal
+        closeModal("visitModal");
+        document.getElementById("visitForm").reset();
+        showAlert("Sedang menyimpan absen... Mohon tunggu", false);
+
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           body: JSON.stringify(payload)
         }).then(r => r.json());
 
+        // Refresh Data Secara Instan Bypass Cache
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
         showSuccessModal("Absen Visit Berhasil!", res ? res.message : "Data absensi visit Anda berhasil tersimpan.");
 
       } catch (err) {
-        showSuccessModal("Absen Visit Berhasil!", "Data absensi visit Anda berhasil terkirim ke sistem.");
+        showSuccessModal("Gagal/Timeout", "Data kemungkinan terkirim, sistem sedang menyinkronkan.");
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
       } finally {
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
-        closeModal("visitModal");
-        document.getElementById("visitForm").reset();
-        fetchAssignedStores(currentUser.implId, currentUser.email, true);
       }
     }
 
@@ -839,11 +847,10 @@
       const btn = document.getElementById("btnSubmitBAST");
       btn.innerText = "Mengirim...";
       btn.disabled = true;
+      const storeCode = document.getElementById("bastStoreCode").value;
 
       try {
-        const storeCode = document.getElementById("bastStoreCode").value;
         const store = allStoresData.find(s => s.storeCode === storeCode) || {};
-
         const storeFrontFile = document.getElementById("storeFrontPhoto").files[0];
         const bastDocFile = document.getElementById("bastDocument").files[0];
 
@@ -870,21 +877,24 @@
           visitDate: new Date().toISOString().split('T')[0]
         };
 
+        closeModal("bastModal");
+        document.getElementById("bastForm").reset();
+        showAlert("Sedang mengunggah BAST... Mohon tunggu", false);
+
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           body: JSON.stringify(payload)
         }).then(r => r.json());
 
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
         showSuccessModal("BAST Berhasil Dikirim!", res ? res.message : "Dokumen BAST berhasil terunggah.");
 
       } catch (err) {
-        showSuccessModal("BAST Berhasil Dikirim!", "Data BAST berhasil terkirim dan diproses.");
+        showSuccessModal("Gagal/Timeout", "Data kemungkinan terkirim, sistem sedang menyinkronkan.");
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
       } finally {
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
-        closeModal("bastModal");
-        document.getElementById("bastForm").reset();
-        fetchAssignedStores(currentUser.implId, currentUser.email, true);
       }
     }
 
@@ -893,7 +903,6 @@
       const btn = document.getElementById("btnSubmitTravel");
       btn.innerText = "Mengirim...";
       btn.disabled = true;
-
       const storeCode = document.getElementById("travelStoreCode").value;
 
       try {
@@ -910,28 +919,31 @@
           proposalBudget: document.getElementById("travelProposalBudget").value || "-"
         };
 
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
-
-        showSuccessModal("Pengajuan Travel Fee Berhasil!", res ? res.message : "Pengajuan Travel Fee Anda berhasil terkirim.");
-
-      } catch (err) {
-        showSuccessModal("Pengajuan Travel Fee Berhasil!", "Pengajuan Anda telah berhasil tersimpan ke sistem.");
-      } finally {
-        btn.innerText = "Kirim Pengajuan";
-        btn.disabled = false;
         closeModal("travelModal");
         document.getElementById("travelForm").reset();
+        showAlert("Menyimpan pengajuan Travel Fee...", false);
 
+        // Optimistic UI Update untuk Travel
         const targetStore = allStoresData.find(s => s.storeCode === storeCode);
         if (targetStore) {
           targetStore.travelStatus = "Pending";
           filterAndRenderStores();
         }
 
-        fetchAssignedStores(currentUser.implId, currentUser.email, true);
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
+        showSuccessModal("Pengajuan Travel Fee Berhasil!", res ? res.message : "Pengajuan Travel Fee Anda berhasil terkirim.");
+
+      } catch (err) {
+        showSuccessModal("Gagal/Timeout", "Pengajuan mungkin sudah terkirim, sistem sedang menyinkronkan.");
+        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
+      } finally {
+        btn.innerText = "Kirim Pengajuan";
+        btn.disabled = false;
       }
     }
   </script>
