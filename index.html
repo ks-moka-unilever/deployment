@@ -407,6 +407,7 @@
         const res = await fetch(url, { ...options, signal: controller.signal });
         clearTimeout(timeoutId);
         if (res.ok) return await res.json();
+        throw new Error("HTTP Status " + res.status);
       } catch (err) {
         throw err;
       }
@@ -471,7 +472,7 @@
         })
         .catch(err => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (!isSilent) showAlert("Koneksi internet lambat/terputus.", true);
+          if (!isSilent) showAlert("Koneksi internet lambat/terputus atau User ID/Email tidak terdaftar.", true);
         });
     }
 
@@ -921,7 +922,7 @@
       } catch (err) {
         alert("Gagal menghubungi server. Data mungkin sudah terkirim, sistem sedang menyinkronkan.");
         closeModal("visitModal");
-      } font-medium {
+      } finally {
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
       }
