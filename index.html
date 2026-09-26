@@ -262,7 +262,7 @@
 
   <script>
     /* ==========================================================================
-       PASTE LINK WEB APP EXEC APPS SCRIPT ANDA DI BAWAH INI
+       PASTE LINK WEB APP EXEC APPS SCRIPT HASIL NEW DEPLOYMENT DI BAWAH INI
        ========================================================================== */
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
@@ -326,56 +326,58 @@
       });
     }
 
-    async function fetchWithRetry(url, options = {}) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        const res = await fetch(url, { ...options, signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (res.ok) return await res.json();
-      } catch (err) {
-        throw err;
-      }
-    }
-
-    function fetchAssignedStores(implId, email, isSilent = false, forceRefresh = false) {
+    async function fetchAssignedStores(implId, email, isSilent = false, forceRefresh = false) {
       const btnLogin = document.getElementById("btnLogin");
       if (!isSilent && btnLogin && !document.getElementById("loginSection").classList.contains("hidden")) {
         btnLogin.innerHTML = `<span>Memuat Data...</span>`;
+        btnLogin.disabled = true;
       }
       
-      const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}${forceRefresh ? '&forceRefresh=1' : ''}&t=${Date.now()}`;
+      const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}&t=${Date.now()}`;
 
-      return fetchWithRetry(targetUrl)
-        .then(res => {
-          if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (res && res.status === "success") {
-            const userName = res.userName || "";
-            currentUser = { implId, email, name: userName };
-            localStorage.setItem("implId", implId);
-            localStorage.setItem("email", email);
-            document.getElementById("loginSection").classList.add("hidden");
-            document.getElementById("dashboardSection").classList.remove("hidden");
-            document.getElementById("userDisplayId").innerText = implId || "-";
-            if (userName) {
-              document.getElementById("userDisplayName").innerText = userName;
-              document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
-            } else {
-              document.getElementById("userDisplayNameWrapper").classList.add("hidden");
-            }
-            allStoresData = res.data || [];
-            document.getElementById("totalStoresBadge").innerText = allStoresData.length;
-            renderSummaryCards(allStoresData);
-            filterAndRenderStores();
-            startAutoSync(); 
-          } else {
-            if (!isSilent) showAlert(res ? res.message : "Gagal memuat data.", true);
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 45000); 
+
+        const response = await fetch(targetUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        const res = await response.json();
+
+        if (!isSilent && btnLogin) {
+          btnLogin.innerHTML = `<span>Masuk Portal</span>`;
+          btnLogin.disabled = false;
+        }
+
+        if (res && res.status === "success") {
+          currentUser = { implId, email, name: res.userName || "" };
+          localStorage.setItem("implId", implId);
+          localStorage.setItem("email", email);
+
+          document.getElementById("loginSection").classList.add("hidden");
+          document.getElementById("dashboardSection").classList.remove("hidden");
+          document.getElementById("userDisplayId").innerText = implId;
+
+          if (res.userName) {
+            document.getElementById("userDisplayName").innerText = res.userName;
+            document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
           }
-        })
-        .catch(err => {
-          if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (!isSilent) showAlert("Koneksi internet lambat/terputus.", true);
-        });
+
+          allStoresData = res.data || [];
+          document.getElementById("totalStoresBadge").innerText = allStoresData.length;
+          renderSummaryCards(allStoresData);
+          filterAndRenderStores();
+          startAutoSync();
+        } else {
+          if (!isSilent) showAlert(res ? res.message : "Kredensial tidak ditemukan.", true);
+        }
+      } catch (err) {
+        if (!isSilent && btnLogin) {
+          btnLogin.innerHTML = `<span>Masuk Portal</span>`;
+          btnLogin.disabled = false;
+        }
+        if (!isSilent) showAlert("Proses memuat data terhenti. Silakan klik tombol 'Masuk Portal' sekali lagi.", true);
+      }
     }
 
     function startAutoSync() {
@@ -680,8 +682,7 @@
           oid: store.oid || "",
           activity: document.getElementById("visitActivityType").value,
           notes: document.getElementById("visitNotes").value,
-          photoIn: selfieBase64,
-          workingDate: new Date().toISOString().split('T')[0]
+          photoIn: selfieBase64
         };
 
         const res = await fetch(SCRIPT_URL, {
@@ -725,7 +726,6 @@
           implId: currentUser.implId,
           storeCode: storeCode,
           storeName: store.storeName || "",
-          oid: store.oid || "",
           merchantName: document.getElementById("ownerName").value,
           merchantPhone: document.getElementById("ownerPhone").value,
           merchantEmail: document.getElementById("ownerEmail").value,
@@ -735,8 +735,7 @@
           scannerSn: document.getElementById("snScanner").value,
           printerSn: document.getElementById("snPrinter").value,
           photoStore: storeFrontBase64,
-          bastFile: bastDocBase64,
-          visitDate: new Date().toISOString().split('T')[0]
+          bastFile: bastDocBase64
         };
 
         const res = await fetch(SCRIPT_URL, {
