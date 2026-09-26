@@ -308,7 +308,6 @@
       e.preventDefault();
       const implId = document.getElementById("loginImplId").value.trim().toUpperCase();
       const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      // Login baru paksakan refresh agar data update 0-2 detik tanpa ambil cache kadaluwarsa
       fetchAssignedStores(implId, email, false, true); 
     }
 
@@ -324,11 +323,10 @@
       });
     }
 
-    // Penurunan timeout ke 12 detik, karena server harusnya melayani sangat cepat
     async function fetchWithRetry(url, options = {}) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         const res = await fetch(url, { ...options, signal: controller.signal });
         clearTimeout(timeoutId);
         if (res.ok) return await res.json();
@@ -343,7 +341,6 @@
         btnLogin.innerHTML = `<span>Memuat Data...</span>`;
       }
       
-      // Menggunakan parameter t (timestamp) untuk mencegah browser nyangkut menyimpan cache lokal
       const targetUrl = `${SCRIPT_URL}?action=getAssignedStores&implId=${encodeURIComponent(implId)}&email=${encodeURIComponent(email)}${forceRefresh ? '&forceRefresh=1' : ''}&t=${Date.now()}`;
 
       return fetchWithRetry(targetUrl)
@@ -369,12 +366,12 @@
             filterAndRenderStores();
             startAutoSync(); 
           } else {
-            if (!isSilent) showAlert(res ? res.message : "Gagal memuat data dari server.", true);
+            if (!isSilent) showAlert(res ? res.message : "Gagal memuat data.", true);
           }
         })
         .catch(err => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (!isSilent) showAlert("Koneksi lambat/terputus. Sila tekan tombol Refresh.", true);
+          if (!isSilent) showAlert("Koneksi internet lambat/terputus.", true);
         });
     }
 
@@ -616,9 +613,43 @@
       location.reload();
     }
 
+    // FUNGSI KOMPRESI GAMBAR BARU - Membuat Submit Super Cepat
+    async function compressImage(file) {
+      if (!file) return "";
+      if (!file.type.match(/image.*/)) return await fileToBase64(file); // Jika PDF dll, jangan dikompres
+      
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800; // Dikompres maksimal 800px lebarnya
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+            } else {
+              if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.6)); // Kualitas 60% agar super ringan (<150KB)
+          };
+          img.onerror = () => reject("Gagal memproses gambar");
+          img.src = e.target.result;
+        };
+        reader.onerror = () => reject("Gagal membaca file");
+        reader.readAsDataURL(file);
+      });
+    }
+
     function fileToBase64(file) {
       return new Promise((resolve, reject) => {
-        if (!file) return resolve("");
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => resolve(reader.result);
@@ -626,17 +657,18 @@
       });
     }
 
+    // MODIFIED: Menggunakan compressImage dan Optimistic UI (Langsung Ubah Tampilan Tanpa Loading Ulang)
     async function submitVisitLog(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitVisit");
-      btn.innerText = "Mengirim..."; // Form JANGAN di close, kasih feedback loading saja!
+      btn.innerText = "Mengirim..."; 
       btn.disabled = true;
 
       try {
         const storeCode = document.getElementById("visitStoreCode").value;
         const store = allStoresData.find(s => s.storeCode === storeCode) || {};
         const fileInput = document.getElementById("visitSelfie").files[0];
-        const selfieBase64 = await fileToBase64(fileInput);
+        const selfieBase64 = await compressImage(fileInput); // KOMPRESI FOTO
 
         const payload = {
           action: "submitAbsen",
@@ -652,23 +684,23 @@
         };
 
         const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" }, // Pencegah konflik CORS GET
+          method: "POST", // Menghapus header agar tidak diblokir CORS pada browser tertentu
           body: JSON.stringify(payload)
         }).then(r => r.json());
 
-        // BERHASIL, BARU TUTUP MODAL 
+        // Optimistic UI: Update angka kunjungan di layar secara instan 0 detik
+        if (store) {
+          store.visitCount = (parseInt(store.visitCount) || 0) + 1;
+          filterAndRenderStores();
+        }
+
         closeModal("visitModal");
         document.getElementById("visitForm").reset();
         showSuccessModal("Absen Visit Berhasil!", res ? res.message : "Data absensi visit Anda berhasil tersimpan.");
         
-        // Kasih waktu 1 detik agar G-Sheet selesai save di background, lalu refresh
-        setTimeout(() => fetchAssignedStores(currentUser.implId, currentUser.email, true, true), 1000);
-
       } catch (err) {
         alert("Gagal menghubungi server. Data mungkin sudah terkirim, sistem sedang menyinkronkan.");
         closeModal("visitModal");
-        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
       } finally {
         btn.innerText = "Simpan Visit";
         btn.disabled = false;
@@ -684,8 +716,8 @@
       try {
         const storeCode = document.getElementById("bastStoreCode").value;
         const store = allStoresData.find(s => s.storeCode === storeCode) || {};
-        const storeFrontBase64 = await fileToBase64(document.getElementById("storeFrontPhoto").files[0]);
-        const bastDocBase64 = await fileToBase64(document.getElementById("bastDocument").files[0]);
+        const storeFrontBase64 = await compressImage(document.getElementById("storeFrontPhoto").files[0]); // KOMPRESI
+        const bastDocBase64 = await compressImage(document.getElementById("bastDocument").files[0]);
 
         const payload = {
           action: "submitBAST",
@@ -709,20 +741,16 @@
 
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         }).then(r => r.json());
 
         closeModal("bastModal");
         document.getElementById("bastForm").reset();
         showSuccessModal("BAST Berhasil Dikirim!", res ? res.message : "Dokumen BAST berhasil terunggah.");
-        
-        setTimeout(() => fetchAssignedStores(currentUser.implId, currentUser.email, true, true), 1000);
 
       } catch (err) {
         alert("Gagal menghubungi server. Data mungkin sudah terkirim, sistem sedang menyinkronkan.");
         closeModal("bastModal");
-        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
       } finally {
         btn.innerText = "Kirim BAST";
         btn.disabled = false;
@@ -752,20 +780,23 @@
 
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload) // Header dihilangkan agar tidak error stuck
         }).then(r => r.json());
+
+        // Optimistic UI: Update UI Travel Status secara Instan
+        const targetStore = allStoresData.find(s => s.storeCode === storeCode);
+        if (targetStore) {
+          targetStore.travelStatus = "Pending";
+          filterAndRenderStores();
+        }
 
         closeModal("travelModal");
         document.getElementById("travelForm").reset();
         showSuccessModal("Pengajuan Travel Fee Berhasil!", res ? res.message : "Pengajuan Travel Fee Anda berhasil terkirim.");
-        
-        setTimeout(() => fetchAssignedStores(currentUser.implId, currentUser.email, true, true), 1000);
 
       } catch (err) {
         alert("Gagal menghubungi server. Data mungkin sudah terkirim, sistem sedang menyinkronkan.");
         closeModal("travelModal");
-        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
       } finally {
         btn.innerText = "Kirim Pengajuan";
         btn.disabled = false;
