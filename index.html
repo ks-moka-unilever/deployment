@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Portal Implementor & PMO Control Tower</title>
+  <title>Portal Implementor Lapangan</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .glass-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(8px); }
@@ -13,20 +13,20 @@
 </head>
 <body class="bg-slate-100 min-h-screen text-slate-800 font-sans antialiased text-xs select-none">
 
-  <div class="max-w-4xl mx-auto p-2.5 sm:p-5 space-y-3 sm:space-y-5">
+  <div class="max-w-3xl mx-auto p-2.5 sm:p-5 space-y-3 sm:space-y-5">
     <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-medium transition-all"></div>
 
-    <!-- LOGIN FORM -->
+    <!-- FORM LOGIN -->
     <div id="loginSection" class="glass-card p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-200 max-w-sm mx-auto mt-6 sm:mt-12">
       <div class="text-center space-y-1 mb-5">
-        <h1 class="text-lg sm:text-xl font-bold text-slate-900">Portal Operasional</h1>
-        <p class="text-[11px] text-slate-500">Silakan login sebagai Implementor / PMO</p>
+        <h1 class="text-lg sm:text-xl font-bold text-slate-900">Portal Implementor</h1>
+        <p class="text-[11px] text-slate-500">Masukkan kredensial Anda untuk masuk</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-3">
         <div>
-          <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">User / Implementor ID</label>
-          <input type="text" id="loginImplId" required placeholder="Contoh: MTI0888 atau PMO01" 
+          <label class="block text-[10px] font-bold uppercase text-slate-600 mb-1">Implementor ID</label>
+          <input type="text" id="loginImplId" required placeholder="Contoh: MTI0888" 
                  class="w-full px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none uppercase font-bold text-xs">
         </div>
         <div>
@@ -41,17 +41,13 @@
       </form>
     </div>
 
-    <!-- DASHBOARD CONTAINER -->
+    <!-- DASHBOARD SECTION -->
     <div id="dashboardSection" class="hidden space-y-3 sm:space-y-4">
-      
-      <!-- HEADER GLOBAL -->
+      <!-- HEADER DASHBOARD -->
       <div class="glass-card p-3 sm:p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center gap-2">
         <div>
-          <div class="flex items-center gap-2">
-            <h2 class="text-sm sm:text-base font-bold text-slate-900">Dashboard</h2>
-            <span id="userRoleBadge" class="px-2 py-0.5 text-[9px] font-bold rounded-full bg-blue-100 text-blue-800 uppercase">IMPLEMENTOR</span>
-          </div>
-          <p class="text-[10px] text-slate-500 font-medium mt-0.5">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900">Dashboard</h2>
+          <p class="text-[10px] text-slate-500 font-medium">
             ID: <span id="userDisplayId" class="font-bold text-blue-600">-</span> 
             <span id="userDisplayNameWrapper" class="hidden"> | <span id="userDisplayName" class="font-bold text-slate-800">-</span></span>
           </p>
@@ -70,108 +66,36 @@
         </div>
       </div>
 
-      <!-- VIEW IMPLEMENTOR METRICS -->
-      <div id="implementorMetricsView" class="space-y-3">
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-3 rounded-2xl shadow-md flex justify-between items-center">
-          <span class="font-semibold text-xs">Total Toko Di-Assign Ke Anda</span>
-          <span id="totalStoresBadge" class="text-xl sm:text-2xl font-black">0</span>
-        </div>
+      <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-3 rounded-2xl shadow-md flex justify-between items-center">
+        <span class="font-semibold text-xs">Total Toko Di-Assign Ke Anda</span>
+        <span id="totalStoresBadge" class="text-xl sm:text-2xl font-black">0</span>
       </div>
 
-      <!-- VIEW PMO COMMAND CENTER METRICS -->
-      <div id="pmoMetricsView" class="hidden space-y-3">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
-            <p class="text-[10px] font-bold text-slate-400 uppercase">Total Seluruh Toko</p>
-            <p id="pmoTotalStores" class="text-lg font-black text-slate-800">0</p>
-          </div>
-          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
-            <p class="text-[10px] font-bold text-emerald-600 uppercase">Go Live / Completed</p>
-            <p id="pmoCompletedStores" class="text-lg font-black text-emerald-600">0</p>
-          </div>
-          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
-            <p class="text-[10px] font-bold text-amber-600 uppercase">In Progress</p>
-            <p id="pmoInProgressStores" class="text-lg font-black text-amber-600">0</p>
-          </div>
-          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
-            <p class="text-[10px] font-bold text-rose-600 uppercase">Travel Fee Pending</p>
-            <p id="pmoPendingTravels" class="text-lg font-black text-rose-600">0</p>
-          </div>
-        </div>
-
-        <!-- PANEL TRAVEL FEE APPROVAL PMO -->
-        <div id="pmoTravelApprovalBox" class="glass-card p-3 rounded-2xl border border-amber-200 bg-amber-50/50 space-y-2">
-          <h3 class="font-bold text-slate-900 text-xs flex items-center justify-between">
-            <span>🚗 Pengajuan Travel Fee Butuh Review PMO</span>
-            <span id="pmoTravelBadgeCount" class="px-2 py-0.5 bg-amber-200 text-amber-900 font-bold rounded-full text-[10px]">0 Pending</span>
-          </h3>
-          <div id="pmoTravelList" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></div>
-        </div>
-      </div>
-
-      <!-- STATUS SUMMARY CARDS -->
       <div>
         <div class="flex justify-between items-center mb-1">
-          <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Filter Status Implementation:</h3>
+          <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Status Implementation Tracker:</h3>
           <span class="text-[9px] text-blue-600 font-semibold sm:hidden">*Geser ke samping</span>
         </div>
         <div id="summaryCardsContainer" class="flex sm:grid sm:grid-cols-3 gap-1.5 overflow-x-auto no-scrollbar pb-1"></div>
       </div>
 
-      <!-- SEARCH INPUT -->
       <div class="relative">
         <input type="text" id="searchInput" oninput="filterAndRenderStores()" 
-               placeholder="🔍 Cari Toko / Kode / OID / DT / ASM / Implementor..." 
+               placeholder="🔍 Cari Toko / Kode / OID / DT / ASM..." 
                class="w-full px-3 py-2 rounded-xl border border-slate-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white text-xs">
       </div>
 
-      <!-- LIST STORE CONTAINER -->
       <div id="storeListContainer" class="space-y-2.5"></div>
-
     </div>
   </div>
 
-  <!-- MODAL SUKSES -->
+  <!-- POPUP SUKSES -->
   <div id="successModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3">
     <div class="bg-white max-w-xs w-full rounded-2xl p-4 shadow-2xl text-center space-y-2.5">
       <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-xl font-bold">✓</div>
       <h3 id="successModalTitle" class="text-sm font-bold text-slate-900">Berhasil!</h3>
       <p id="successModalMessage" class="text-xs text-slate-600 leading-snug"></p>
       <button onclick="closeModal('successModal')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">Tutup</button>
-    </div>
-  </div>
-
-  <!-- MODAL EDIT STORE (PMO ONLY) -->
-  <div id="pmoEditModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 overflow-y-auto">
-    <div class="bg-white max-w-md w-full rounded-2xl p-4 shadow-2xl space-y-3 my-auto text-xs">
-      <h3 class="text-sm font-bold text-slate-900 border-b pb-2">Edit Status Toko (PMO Access)</h3>
-      <form id="pmoEditForm" onsubmit="submitPMOEdit(event)" class="space-y-2.5">
-        <input type="hidden" id="pmoEditRowIndex">
-        <div>
-          <label class="font-bold text-slate-700">Nama Toko</label>
-          <input type="text" id="pmoEditStoreName" readonly class="w-full p-2 border rounded-lg mt-1 bg-slate-100 font-bold">
-        </div>
-        <div>
-          <label class="font-bold text-slate-700">Project Lead Name (PMO)</label>
-          <select id="pmoEditProjectLead" class="w-full p-2 border border-slate-300 rounded-lg mt-1 bg-white">
-            <option value="Rahma Wahyuni">Rahma Wahyuni</option>
-            <option value="Adam Ramadhan Kusnadi">Adam Ramadhan Kusnadi</option>
-            <option value="Luthfi Amirullah">Luthfi Amirullah</option>
-          </select>
-        </div>
-        <div>
-          <label class="font-bold text-slate-700">Implementation Remark (Kolom AO)</label>
-          <input type="text" id="pmoEditRemark" placeholder="Contoh: Scheduled / On Progress" class="w-full p-2 border border-slate-300 rounded-lg mt-1">
-        </div>
-        <div>
-          <label class="font-bold text-slate-700">PMO Note (Kolom AW)</label>
-          <textarea id="pmoEditNote" rows="2" placeholder="Catatan tambahan PMO..." class="w-full p-2 border border-slate-300 rounded-lg mt-1"></textarea>
-        </div>
-        <div class="flex justify-end gap-2 pt-2 border-t">
-          <button type="button" onclick="closeModal('pmoEditModal')" class="px-3 py-1.5 bg-slate-200 font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitPMOEdit" class="px-4 py-1.5 bg-indigo-600 text-white font-bold rounded-xl shadow-md">Update Real-Time</button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -204,7 +128,7 @@
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t">
           <button type="button" onclick="closeModal('visitModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitVisit" class="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md">Simpan Visit</button>
+          <button type="submit" id="btnSubmitVisit" class="px-4 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">Simpan Visit</button>
         </div>
       </form>
     </div>
@@ -275,7 +199,7 @@
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t">
           <button type="button" onclick="closeModal('bastModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitBAST" class="px-4 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim BAST</button>
+          <button type="submit" id="btnSubmitBAST" class="px-4 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">Kirim BAST</button>
         </div>
       </form>
     </div>
@@ -330,18 +254,20 @@
         </div>
         <div class="flex justify-end gap-2 pt-2 border-t">
           <button type="button" onclick="closeModal('travelModal')" class="px-3 py-1.5 bg-slate-200 text-xs font-bold rounded-xl">Batal</button>
-          <button type="submit" id="btnSubmitTravel" class="px-4 py-1.5 bg-amber-600 text-white text-xs font-bold rounded-xl shadow-md">Kirim Pengajuan</button>
+          <button type="submit" id="btnSubmitTravel" class="px-4 py-1.5 bg-amber-600 text-white text-xs font-bold rounded-xl shadow-md transition-all">Kirim Pengajuan</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
+    /* ==========================================================================
+       PASTE LINK WEB APP EXEC APPS SCRIPT ANDA DI BAWAH INI
+       ========================================================================== */
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyUAms-3UdlU4Jv1nbmUXTGNa2vMuR1iVNd8seQLf0x26Wow9NVjnWV6X1jff1wgmzt/exec"; 
 
     let allStoresData = [];
-    let allTravelLogsData = [];
-    let currentUser = { implId: "", email: "", name: "", role: "IMPLEMENTOR" };
+    let currentUser = { implId: "", email: "", name: "" };
     let selectedStatuses = [];
     let autoSyncTimer = null;
     let expandedStoreCodes = new Set();
@@ -407,7 +333,6 @@
         const res = await fetch(url, { ...options, signal: controller.signal });
         clearTimeout(timeoutId);
         if (res.ok) return await res.json();
-        throw new Error("HTTP Status " + res.status);
       } catch (err) {
         throw err;
       }
@@ -426,43 +351,20 @@
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
           if (res && res.status === "success") {
             const userName = res.userName || "";
-            const userRole = (res.userRole || "IMPLEMENTOR").toUpperCase();
-            currentUser = { implId, email, name: userName, role: userRole };
-            
+            currentUser = { implId, email, name: userName };
             localStorage.setItem("implId", implId);
             localStorage.setItem("email", email);
-
             document.getElementById("loginSection").classList.add("hidden");
             document.getElementById("dashboardSection").classList.remove("hidden");
             document.getElementById("userDisplayId").innerText = implId || "-";
-            document.getElementById("userRoleBadge").innerText = userRole;
-
-            if (userRole === "PMO" || userRole === "ADMIN") {
-              document.getElementById("userRoleBadge").className = "px-2 py-0.5 text-[9px] font-bold rounded-full bg-purple-100 text-purple-800 uppercase";
-              document.getElementById("implementorMetricsView").classList.add("hidden");
-              document.getElementById("pmoMetricsView").classList.remove("hidden");
-            } else {
-              document.getElementById("userRoleBadge").className = "px-2 py-0.5 text-[9px] font-bold rounded-full bg-blue-100 text-blue-800 uppercase";
-              document.getElementById("implementorMetricsView").classList.remove("hidden");
-              document.getElementById("pmoMetricsView").classList.add("hidden");
-            }
-
             if (userName) {
               document.getElementById("userDisplayName").innerText = userName;
               document.getElementById("userDisplayNameWrapper").classList.remove("hidden");
             } else {
               document.getElementById("userDisplayNameWrapper").classList.add("hidden");
             }
-
             allStoresData = res.data || [];
-            allTravelLogsData = res.travelLogs || [];
-
             document.getElementById("totalStoresBadge").innerText = allStoresData.length;
-
-            if (userRole === "PMO" || userRole === "ADMIN") {
-              renderPMODashboard();
-            }
-
             renderSummaryCards(allStoresData);
             filterAndRenderStores();
             startAutoSync(); 
@@ -472,122 +374,8 @@
         })
         .catch(err => {
           if (!isSilent && btnLogin) btnLogin.innerHTML = `<span>Masuk Portal</span>`;
-          if (!isSilent) showAlert("Koneksi internet lambat/terputus atau User ID/Email tidak terdaftar.", true);
+          if (!isSilent) showAlert("Koneksi internet lambat/terputus.", true);
         });
-    }
-
-    function renderPMODashboard() {
-      const total = allStoresData.length;
-      let completed = 0, inProgress = 0;
-
-      allStoresData.forEach(s => {
-        const st = (s.status || "").toUpperCase();
-        if (st.includes("GO LIVE") || st.includes("COMPLETED")) completed++;
-        else if (st.includes("PROGRESS")) inProgress++;
-      });
-
-      document.getElementById("pmoTotalStores").innerText = total;
-      document.getElementById("pmoCompletedStores").innerText = completed;
-      document.getElementById("pmoInProgressStores").innerText = inProgress;
-
-      const pendingTravels = allTravelLogsData.filter(t => (t.status || "").toLowerCase().includes("pending"));
-      document.getElementById("pmoPendingTravels").innerText = pendingTravels.length;
-      document.getElementById("pmoTravelBadgeCount").innerText = `${pendingTravels.length} Pending`;
-
-      const pmoTravelList = document.getElementById("pmoTravelList");
-      if (pendingTravels.length === 0) {
-        pmoTravelList.innerHTML = `<p class="text-[10px] text-slate-400 font-medium py-1">Tidak ada pengajuan Travel Fee pending.</p>`;
-      } else {
-        let html = "";
-        pendingTravels.forEach(t => {
-          html += `
-            <div class="bg-white p-2 rounded-xl border border-amber-200 shadow-2xs flex justify-between items-center gap-2">
-              <div>
-                <p class="font-bold text-slate-900">${t.implName} - ${t.storeName} (${t.storeCode})</p>
-                <p class="text-[9.5px] text-slate-500">Jarak: <b>${t.distance}</b> | Budget: <b>Rp ${t.budget}</b> | Tgl: ${t.timestamp}</p>
-              </div>
-              <div class="flex gap-1">
-                <button onclick="pmoApproveTravel('${t.storeCode}', 'Approved')" class="px-2 py-1 bg-emerald-600 text-white font-bold rounded-lg text-[9.5px]">Approve</button>
-                <button onclick="pmoApproveTravel('${t.storeCode}', 'Rejected')" class="px-2 py-1 bg-rose-600 text-white font-bold rounded-lg text-[9.5px]">Reject</button>
-              </div>
-            </div>
-          `;
-        });
-        pmoTravelList.innerHTML = html;
-      }
-    }
-
-    async function pmoApproveTravel(storeCode, statusText) {
-      if (!confirm(`Konfirmasi set Travel Fee Toko ${storeCode} menjadi ${statusText}?`)) return;
-
-      try {
-        const payload = {
-          action: "updateTravelStatusByPMO",
-          storeCode: storeCode,
-          newStatus: statusText,
-          implId: currentUser.implId,
-          email: currentUser.email
-        };
-
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
-
-        showSuccessModal("Status Travel Fee Updated!", res.message);
-        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
-
-      } catch (e) {
-        alert("Gagal update status Travel Fee.");
-      }
-    }
-
-    function openPMOEditModal(rowIndex) {
-      const store = allStoresData.find(s => s.rowIndex === rowIndex);
-      if (!store) return;
-
-      document.getElementById("pmoEditRowIndex").value = rowIndex;
-      document.getElementById("pmoEditStoreName").value = `${store.storeName} (${store.storeCode})`;
-      document.getElementById("pmoEditProjectLead").value = store.projectLeadName !== "-" ? store.projectLeadName : "Rahma Wahyuni";
-      document.getElementById("pmoEditRemark").value = store.implRemark !== "-" ? store.implRemark : "";
-      document.getElementById("pmoEditNote").value = store.pmoNote !== "-" ? store.pmoNote : "";
-
-      document.getElementById("pmoEditModal").classList.remove("hidden");
-    }
-
-    async function submitPMOEdit(e) {
-      e.preventDefault();
-      const btn = document.getElementById("btnSubmitPMOEdit");
-      btn.innerText = "Updating...";
-      btn.disabled = true;
-
-      try {
-        const rowIndex = document.getElementById("pmoEditRowIndex").value;
-        const payload = {
-          action: "updateStoreStatusByPMO",
-          rowIndex: rowIndex,
-          projectLeadName: document.getElementById("pmoEditProjectLead").value,
-          implRemark: document.getElementById("pmoEditRemark").value,
-          pmoNote: document.getElementById("pmoEditNote").value,
-          implId: currentUser.implId,
-          email: currentUser.email
-        };
-
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        }).then(r => r.json());
-
-        closeModal("pmoEditModal");
-        showSuccessModal("Status Berhasil Diperbarui!", res.message);
-        fetchAssignedStores(currentUser.implId, currentUser.email, true, true);
-
-      } catch (err) {
-        alert("Gagal update data.");
-      } finally {
-        btn.innerText = "Update Real-Time";
-        btn.disabled = false;
-      }
     }
 
     function startAutoSync() {
@@ -637,7 +425,7 @@
       const filtered = allStoresData.filter(store => {
         const storeStatus = (store && store.status ? String(store.status) : "Unassigned").trim();
         const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(storeStatus);
-        const targetText = [store.storeName, store.storeCode, store.oid, store.devicePackage, store.dtName, store.dtAddress, store.asmName, store.projectLeadName, store.implName].filter(Boolean).join(" ").toLowerCase();
+        const targetText = [store.storeName, store.storeCode, store.oid, store.devicePackage, store.dtName, store.dtAddress, store.asmName, store.projectLeadName].filter(Boolean).join(" ").toLowerCase();
         const matchesSearch = !searchInput || targetText.includes(searchInput);
         return matchesStatus && matchesSearch;
       });
@@ -700,7 +488,6 @@
         const oid = store.oid || "-";
         const devicePackage = store.devicePackage || "-";
         const projectLeadName = store.projectLeadName || "-";
-        const implName = store.implName || "-";
         const status = (store.status || "Unassigned").trim();
         const storeAddress = store.storeAddress || "-";
         const dtName = store.dtName || "-";
@@ -738,14 +525,12 @@
         }
 
         const visitData = getVisitBadgeStyle(visitCount);
-        const isPMO = currentUser.role === "PMO" || currentUser.role === "ADMIN";
-
         html += `
           <div class="glass-card p-3 rounded-2xl shadow-sm border border-slate-200 space-y-2">
             <div class="flex justify-between items-start gap-1.5">
               <div class="space-y-1 max-w-[70%]">
                 <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug truncate">${idx + 1}. ${storeName}</h4>
-                <p class="text-[10px] text-slate-500 font-mono leading-none">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b> ${isPMO ? `| Impl: <b>${implName} (${store.implId})</b>` : ''}</p>
+                <p class="text-[10px] text-slate-500 font-mono leading-none">Kode: <b>${storeCode}</b> | OID: <b>${oid}</b> | PMO: <b>${projectLeadName}</b></p>
                 <div class="flex items-center gap-1 flex-wrap pt-0.5">
                   <span class="px-2 py-0.5 text-[9.5px] font-bold rounded border whitespace-nowrap ${visitData.class}">${visitData.text}</span>
                   ${getSlaBadge(slaImplementation)}
@@ -762,22 +547,15 @@
                 <p>🚚 <b>Distributor (DT):</b> ${dtName} (${dtCode})</p>
                 <p>🏬 <b>Alamat DT:</b> ${dtAddress} ${dtAddress !== "-" ? `<a href="${dtMapsUrl}" target="_blank" class="text-indigo-600 font-bold ml-1 underline">🗺️ Maps DT</a>` : ''}</p>
                 <p>👤 <b>ASM:</b> ${asmName} ${asmPhone}</p>
-                <p>👔 <b>PMO Lead:</b> ${projectLeadName}</p>
                 <p>📦 <b>Device Package:</b> ${devicePackage}</p>
                 <p>🚗 <b>Status Travel Fee:</b> ${travelBadgeHtml}</p>
-                ${store.pmoNote && store.pmoNote !== "-" ? `<p class="text-purple-700 font-bold bg-purple-50 p-1.5 rounded-lg border border-purple-200 mt-1">📝 PMO Note: ${store.pmoNote}</p>` : ''}
               </div>
               <div class="text-[10px] bg-blue-50/50 p-2 rounded-xl border border-blue-100 text-slate-600">${datesGridHtml}</div>
             </div>
-
             <div class="flex gap-1.5 pt-1">
-              ${isPMO ? `
-                <button onclick="openPMOEditModal(${store.rowIndex})" class="flex-1 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">✏️ Edit Status (PMO)</button>
-              ` : `
-                <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">📷 Absen</button>
-                <button onclick="openBastModal('${storeCode}')" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">📝 BAST</button>
-                <button onclick="openTravelModal('${storeCode}')" class="flex-1 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">🚗 Travel</button>
-              `}
+              <button onclick="openVisitModal('${storeCode}')" class="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">📷 Absen</button>
+              <button onclick="openBastModal('${storeCode}')" class="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">📝 BAST</button>
+              <button onclick="openTravelModal('${storeCode}')" class="flex-1 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-[10px] sm:text-xs rounded-xl shadow-xs transition-all flex justify-center items-center gap-0.5">🚗 Travel</button>
             </div>
           </div>
         `;
@@ -890,7 +668,8 @@
       try {
         const storeCode = document.getElementById("visitStoreCode").value;
         const store = allStoresData.find(s => s.storeCode === storeCode) || {};
-        const selfieBase64 = await compressImage(document.getElementById("visitSelfie").files[0]);
+        const fileInput = document.getElementById("visitSelfie").files[0];
+        const selfieBase64 = await compressImage(fileInput);
 
         const payload = {
           action: "submitAbsen",
