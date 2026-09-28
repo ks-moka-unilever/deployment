@@ -408,15 +408,30 @@
       }
     };
 
+    // FUNGSI FORMAT TANGGAL TANPA JAM/MENIT/DETIK
     function formatDateNice(dateVal) {
       if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
       const str = String(dateVal).trim();
       if (!str || str === "-") return "-";
-      const d = new Date(str);
-      if (isNaN(d.getTime())) return str; 
+      
+      // Jika string berisi jam (seperti '26/9/2026, 19.55.52' atau '2026-09-26T19:55:52'), potong hanya bagian tanggal
+      const cleanDateStr = str.split(',')[0].split('T')[0].trim();
+      
+      const d = new Date(cleanDateStr);
+      if (isNaN(d.getTime())) {
+        return cleanDateStr; // Kembali ke string tanggal murni tanpa jam
+      } 
       const day = String(d.getDate()).padStart(2, '0');
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return `${day}-${months[d.getMonth()]}-${d.getFullYear()}`;
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      return `${day}/${month}/${d.getFullYear()}`;
+    }
+
+    // FUNGSI EKSTRAKSI MURNI URL DRIVESDK/DOCS UNTUK LINK BAST VALID
+    function extractValidUrl(rawVal) {
+      if (!rawVal || rawVal === "-" || rawVal === "null" || rawVal === "undefined") return "";
+      const str = String(rawVal);
+      const urlMatch = str.match(/https?:\/\/[^\s"'>]+/i);
+      return urlMatch ? urlMatch[0] : "";
     }
 
     function showAlert(msg, isError = true) {
@@ -537,12 +552,25 @@
       } else {
         let html = "";
         pendingTravels.forEach(t => {
+          // KOTA TOKO DENGAN FALLBACK KE MASTER_TRACKER (KOLOM I)
+          let targetStoreCity = t.storeCity || t.city || t.storeCityName || "";
+          if (!targetStoreCity || targetStoreCity === "-") {
+            const foundStore = allStoresData.find(s => s.storeCode === t.storeCode);
+            if (foundStore) {
+              targetStoreCity = foundStore.city || foundStore.storeCity || foundStore.kabupaten || foundStore.kota || "-";
+            }
+          }
+          if (!targetStoreCity) targetStoreCity = "-";
+
+          // TANGGAL TANPA JAM
+          const displayDateOnly = formatDateNice(t.timestamp);
+
           html += `
             <div class="bg-white p-2 rounded-xl border border-amber-200 shadow-2xs flex justify-between items-center gap-2">
               <div>
                 <p class="font-bold text-slate-900">${t.implName} - Toko ${t.storeName} (${t.storeCode})</p>
-                <p class="text-[9.5px] text-slate-500">Jarak: <b>${t.distance}</b> | Budget Proposal: <b>Rp ${t.budget}</b> | Tgl: ${t.timestamp}</p>
-                <p class="text-[9.5px] text-purple-700 font-semibold">📍 Domisili Impl: <b>${t.implCity || '-'}</b> | 🏢 Kota Toko: <b>${t.storeCity || '-'}</b></p>
+                <p class="text-[9.5px] text-slate-500">Jarak: <b>${t.distance}</b> | Budget Proposal: <b>Rp ${t.budget}</b> | Tgl: ${displayDateOnly}</p>
+                <p class="text-[9.5px] text-purple-700 font-semibold">📍 Domisili Impl: <b>${t.implCity || '-'}</b> | 🏢 Kota Toko: <b>${targetStoreCity}</b></p>
               </div>
               <div class="flex gap-1 flex-none">
                 <button onclick="pmoApproveTravel('${t.storeCode}', 'Approved')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-[9.5px] transition-all">✅ Setujui</button>
@@ -770,7 +798,10 @@
         const travelStatus = store.travelStatus || "Belum Diajukan";
         const visitCount = store.visitCount || 0;
         const skuCompleted = store.skuCompleted || "-";
-        const bastLink = store.bastLink || "";
+        
+        // EKSTRAKSI LINK BAST DARI BAST_LOGS (KOLOM P)
+        const rawBast = store.bastLink || store.bastUrl || store.linkBast || "";
+        const validBastUrl = extractValidUrl(rawBast);
 
         const stUpper = status.toUpperCase();
         const statusBadgeClass = getStatusBadgeStyle(status);
@@ -825,7 +856,7 @@
                 <p>👔 <b>PMO Lead:</b> ${projectLeadName}</p>
                 <p>📦 <b>Device Package:</b> ${devicePackage}</p>
                 <p>🚗 <b>Status Travel Fee:</b> ${travelBadgeHtml}</p>
-                ${bastLink ? `<p class="text-emerald-800 font-bold bg-emerald-50 p-1.5 rounded-lg border border-emerald-200 mt-1">📄 <b>BAST Link:</b> <a href="${bastLink}" target="_blank" class="text-blue-600 underline font-bold ml-1">Lihat Dokumen BAST</a></p>` : ''}
+                ${validBastUrl ? `<p class="text-emerald-800 font-bold bg-emerald-50 p-1.5 rounded-lg border border-emerald-200 mt-1">📄 <b>BAST Link:</b> <a href="${validBastUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline font-bold ml-1">📑 Lihat Dokumen BAST (Drive)</a></p>` : ''}
                 ${store.pmoNote && store.pmoNote !== "-" ? `<p class="text-purple-800 font-bold bg-purple-50 p-1.5 rounded-lg border border-purple-200 mt-1">📝 PMO Note: ${store.pmoNote}</p>` : ''}
               </div>
               <div class="text-[10px] bg-blue-50/50 p-2 rounded-xl border border-blue-100 text-slate-600">${datesGridHtml}</div>
