@@ -408,25 +408,23 @@
       }
     };
 
-    // FUNGSI FORMAT TANGGAL TANPA JAM/MENIT/DETIK
+    // FORMAT TANGGAL RESMI DD-MMM-YYYY (CONTOH: 01-Jan-2026)
     function formatDateNice(dateVal) {
       if (!dateVal || dateVal === "-" || dateVal === "null" || dateVal === "undefined" || dateVal === "#N/A") return "-";
       const str = String(dateVal).trim();
       if (!str || str === "-") return "-";
       
-      // Jika string berisi jam (seperti '26/9/2026, 19.55.52' atau '2026-09-26T19:55:52'), potong hanya bagian tanggal
       const cleanDateStr = str.split(',')[0].split('T')[0].trim();
-      
       const d = new Date(cleanDateStr);
-      if (isNaN(d.getTime())) {
-        return cleanDateStr; // Kembali ke string tanggal murni tanpa jam
-      } 
+      if (isNaN(d.getTime())) return cleanDateStr;
+
       const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      return `${day}/${month}/${d.getFullYear()}`;
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthStr = months[d.getMonth()];
+      return `${day}-${monthStr}-${d.getFullYear()}`;
     }
 
-    // FUNGSI EKSTRAKSI MURNI URL DRIVESDK/DOCS UNTUK LINK BAST VALID
+    // FUNGSI EKSTRAKSI URL VALID MURNI
     function extractValidUrl(rawVal) {
       if (!rawVal || rawVal === "-" || rawVal === "null" || rawVal === "undefined") return "";
       const str = String(rawVal);
@@ -552,7 +550,6 @@
       } else {
         let html = "";
         pendingTravels.forEach(t => {
-          // KOTA TOKO DENGAN FALLBACK KE MASTER_TRACKER (KOLOM I)
           let targetStoreCity = t.storeCity || t.city || t.storeCityName || "";
           if (!targetStoreCity || targetStoreCity === "-") {
             const foundStore = allStoresData.find(s => s.storeCode === t.storeCode);
@@ -562,7 +559,6 @@
           }
           if (!targetStoreCity) targetStoreCity = "-";
 
-          // TANGGAL TANPA JAM
           const displayDateOnly = formatDateNice(t.timestamp);
 
           html += `
@@ -609,7 +605,7 @@
     }
 
     function autoSyncStatusAG() {
-      // Fungsi penyesuaian otomatis status jika diperlukan
+      // Penyesuaian otomatis status jika diperlukan
     }
 
     function openPMOEditModal(rowIndex) {
@@ -799,7 +795,6 @@
         const visitCount = store.visitCount || 0;
         const skuCompleted = store.skuCompleted || "-";
         
-        // EKSTRAKSI LINK BAST DARI BAST_LOGS (KOLOM P)
         const rawBast = store.bastLink || store.bastUrl || store.linkBast || "";
         const validBastUrl = extractValidUrl(rawBast);
 
@@ -856,7 +851,7 @@
                 <p>👔 <b>PMO Lead:</b> ${projectLeadName}</p>
                 <p>📦 <b>Device Package:</b> ${devicePackage}</p>
                 <p>🚗 <b>Status Travel Fee:</b> ${travelBadgeHtml}</p>
-                ${validBastUrl ? `<p class="text-emerald-800 font-bold bg-emerald-50 p-1.5 rounded-lg border border-emerald-200 mt-1">📄 <b>BAST Link:</b> <a href="${validBastUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline font-bold ml-1">📑 Lihat Dokumen BAST (Drive)</a></p>` : ''}
+                ${validBastUrl ? `<p class="text-emerald-800 font-bold bg-emerald-50 p-1.5 rounded-lg border border-emerald-200 mt-1">📄 <b>BAST Link:</b> <a href="${validBastUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline font-bold ml-1">📑 Lihat Dokumen BAST (Drive)</a></p>` : `<p class="text-slate-400 font-medium">📄 <b>BAST Link:</b> <span class="italic text-slate-400">Belum diunggah</span></p>`}
                 ${store.pmoNote && store.pmoNote !== "-" ? `<p class="text-purple-800 font-bold bg-purple-50 p-1.5 rounded-lg border border-purple-200 mt-1">📝 PMO Note: ${store.pmoNote}</p>` : ''}
               </div>
               <div class="text-[10px] bg-blue-50/50 p-2 rounded-xl border border-blue-100 text-slate-600">${datesGridHtml}</div>
